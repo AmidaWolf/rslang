@@ -1,0 +1,9 @@
+node_modules
+dist
+
+# IntelliJ project files
+.idea
+gen
+
+webpack.config.js
+
