@@ -64,13 +64,33 @@ export const Loader = {
     const response = await fetch(
       `${UrlI.baseUrl + UrlI.words}?group=${group}&page=${page}`
     );
+    if (
+      response.status === 401 ||
+      response.status === 404 ||
+      response.status === 500
+    ) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+      return [];
+    }
     const words = await response.json();
     return words;
   },
 
-  async getWord(id: string): Promise<IWord> {
+  async getWord(id: string): Promise<IWord | null> {
     const response = await fetch(`${UrlI.baseUrl + UrlI.words}/${id}`);
-    const words = await response.json();
-    return words;
+    if (
+      response.status === 401 ||
+      response.status === 404 ||
+      response.status === 500
+    ) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+      return null;
+    }
+    const word = await response.json();
+    return word;
   },
 };
