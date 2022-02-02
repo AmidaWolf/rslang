@@ -1,7 +1,25 @@
 export enum UrlI {
   baseUrl = 'https://rs-school-learn-words.herokuapp.com',
+  words = '/words',
   users = '/users',
   signIn = '/signin',
+}
+
+export interface IWord {
+  id: string;
+  group: number;
+  page: number;
+  word: string;
+  image: string;
+  audio: string;
+  audioMeaning: string;
+  audioExample: string;
+  textMeaning: string;
+  textExample: string;
+  transcription: string;
+  wordTranslate: string;
+  textMeaningTranslate: string;
+  textExampleTranslate: string;
 }
 
 export const Loader = {
@@ -40,5 +58,19 @@ export const Loader = {
       .then((res) => res.json())
       .then((data) => data)
       .catch((err) => console.error(err));
+  },
+
+  async getWords(group: number, page: number): Promise<IWord[]> {
+    const response = await fetch(
+      `${UrlI.baseUrl + UrlI.words}?group=${group}&page=${page}`
+    );
+    const words = await response.json();
+    return words;
+  },
+
+  async getWord(id: string): Promise<IWord> {
+    const response = await fetch(`${UrlI.baseUrl + UrlI.words}/${id}`);
+    const words = await response.json();
+    return words;
   },
 };
