@@ -1,0 +1,17 @@
+@import "../../../../global.scss";
+
+.statistics {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1em;
+
+  background-color: $bg-color;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+

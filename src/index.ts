@@ -1,19 +1,12 @@
-import image from './images/lazy.png';
+import { Router } from './components/app/router/router';
 
-const createImage = (src: string) =>
-  new Promise<HTMLImageElement>((res, rej) => {
-    const img = new Image();
-    img.onload = () => res(img);
-    img.onerror = rej;
-    img.src = src;
-  });
+import './reset.scss';
+import './global.scss';
+import './assets/fonts/fonts.css';
+import './components/view/pages/MainPage/MainPage.scss';
+import './components/shared/component/header/Header.scss';
+import './components/shared/component/modal/Modal.scss';
 
-async function render() {
-  const subHeader = document.createElement('h2');
-  subHeader.innerHTML = 'This elements was created by js';
-  const myImage = await createImage(image);
-  document.body.appendChild(subHeader);
-  document.body.appendChild(myImage);
-}
-
-render();
+const router = new Router();
+window.addEventListener('hashchange', router.rout);
+window.addEventListener('load', router.rout);
