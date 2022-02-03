@@ -30,6 +30,12 @@ export const Loader = {
     return Promise.resolve(res);
   },
 
+  errorHandlerConsole(res: Response) {
+    if (res.status === 401 || res.status === 404) {
+      console.log(`Sorry, but there is ${res.status} error: ${res.statusText}`);
+    }
+  },
+
   async getUser(id: string): Promise<void> {
     return fetch(`${UrlI.baseUrl + UrlI.users}/${id}`)
       .then(this.errorHandler)
@@ -64,7 +70,7 @@ export const Loader = {
     const response = await fetch(
       `${UrlI.baseUrl + UrlI.words}?group=${group}&page=${page}`
     );
-    this.errorHandler(response);
+    this.errorHandlerConsole(response);
     if (!response.ok) return [];
     const words = await response.json();
     return words;
@@ -72,7 +78,7 @@ export const Loader = {
 
   async getWord(id: string): Promise<IWord | null> {
     const response = await fetch(`${UrlI.baseUrl + UrlI.words}/${id}`);
-    this.errorHandler(response);
+    this.errorHandlerConsole(response);
     if (!response.ok) return null;
     const word = await response.json();
     return word;
