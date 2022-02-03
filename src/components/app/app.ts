@@ -1,11 +1,11 @@
 import { routes, RoutesI } from './routes';
-import { ErrorPage } from '../../view/pages/ErrorPage/ErrorPage';
-import { Header } from '../../shared/component/header/Header';
-import { parseLocationURL } from '../../shared/utils/parseLocationURL';
-import { Footer } from '../../shared/component/footer/Footer';
+import { ErrorPage } from '../view/pages/ErrorPage/ErrorPage';
+import { Header } from '../shared/common/header/Header';
+import { parseLocationURL } from '../shared/utils/parseLocationURL';
+import { Footer } from '../shared/common/footer/Footer';
 
-export class Router {
-  async rout() {
+export class App {
+  async renderContent() {
     const content = <HTMLElement>document.getElementById('pageContainer');
     const header = <HTMLElement>document.querySelector('.header');
     const footer = <HTMLElement>document.querySelector('.footer');

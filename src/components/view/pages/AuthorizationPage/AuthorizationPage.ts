@@ -1,5 +1,5 @@
 import { AppView } from '../../AppView';
-import { loadSources } from '../../../shared/utils/loadSources';
+import { loadSources } from '../../../shared/helpers/loadSources';
 
 async function returnHTML() {
   return loadSources.loadHTML(

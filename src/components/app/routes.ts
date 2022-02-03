@@ -1,8 +1,8 @@
-import { MainPage } from '../../view/pages/MainPage/MainPage';
-import { TextbookPage } from '../../view/pages/TextbookPage/TextbookPage';
-import { AuthorizationPage } from '../../view/pages/AuthorizationPage/AuthorizationPage';
-import { StatisticsPage } from '../../view/pages/StatisticsPage/StatisticsPage';
-import { MinigamesPage } from '../../view/pages/MinigamesPage/MinigamesPage';
+import { MainPage } from '../view/pages/MainPage/MainPage';
+import { TextbookPage } from '../view/pages/TextbookPage/TextbookPage';
+import { AuthorizationPage } from '../view/pages/AuthorizationPage/AuthorizationPage';
+import { StatisticsPage } from '../view/pages/StatisticsPage/StatisticsPage';
+import { MinigamesPage } from '../view/pages/MinigamesPage/MinigamesPage';
 
 export enum RoutesPath {
   START = '/',

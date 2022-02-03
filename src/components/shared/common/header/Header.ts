@@ -1,5 +1,5 @@
 import { AppView } from '../../../view/AppView';
-import { RoutesPath, routesText } from '../../../app/router/routes';
+import { RoutesPath, routesText } from '../../../app/routes';
 
 const returnHtml = () => `<div class="header-wrapper"></div>`;
 
@@ -12,7 +12,7 @@ function renderFunc() {
   const menuList = document.createElement('ul');
   menuList.className = 'header-menu';
   const pathList = Object.values(RoutesPath);
-  for (let i = 0; i < pathList.length; i++) {
+  for (let i = 0; i < pathList.length; i += 1) {
     const menuItem = document.createElement('li');
     menuItem.className = 'header-menu__item';
     const menuRef = document.createElement('a');
