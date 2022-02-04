@@ -1,5 +1,7 @@
 export interface Page {
-  renderHTML(): Promise<void | string>;
+  renderHTML(): Promise<void>;
 
-  afterRender(): Promise<void | string>;
+  afterRender(): Promise<void>;
+
+  run(): Promise<void>;
 }
