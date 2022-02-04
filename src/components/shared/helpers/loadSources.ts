@@ -13,8 +13,8 @@ export const loadSources = {
     });
   },
 
-  async loadHTML(url: string) {
-    const response = await fetch(url);
+  async loadHTML(path: string) {
+    const response = await fetch(path);
     return response.text();
   },
 };

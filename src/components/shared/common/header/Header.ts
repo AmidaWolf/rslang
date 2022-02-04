@@ -1,9 +1,8 @@
-import { AppView } from '../../../view/AppView';
-import { RoutesPath, routesText } from '../../../app/router/routes';
+// import { Page } from '../../../view/Page';
+import { RoutesPath, routesText } from '../../../app/routes';
+import baseHTML from './baseHTML';
 
-const returnHtml = () => `<div class="header-wrapper"></div>`;
-
-function renderFunc() {
+async function drawContent() {
   const headerWrapper = <HTMLElement>document.querySelector('.header-wrapper');
 
   const nav = document.createElement('nav');
@@ -12,7 +11,7 @@ function renderFunc() {
   const menuList = document.createElement('ul');
   menuList.className = 'header-menu';
   const pathList = Object.values(RoutesPath);
-  for (let i = 0; i < pathList.length; i++) {
+  for (let i = 0; i < pathList.length; i += 1) {
     const menuItem = document.createElement('li');
     menuItem.className = 'header-menu__item';
     const menuRef = document.createElement('a');
@@ -28,8 +27,12 @@ function renderFunc() {
   headerWrapper.appendChild(nav);
 }
 
-export class Header extends AppView {
-  constructor() {
-    super(returnHtml, renderFunc);
+export class Header {
+  async renderHTML() {
+    return baseHTML;
+  }
+
+  async afterRender() {
+    drawContent();
   }
 }

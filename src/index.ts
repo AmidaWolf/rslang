@@ -1,12 +1,14 @@
-import { Router } from './components/app/router/router';
+import { App } from './components/app/app';
 
 import './reset.scss';
 import './global.scss';
 import './assets/fonts/fonts.css';
 import './components/view/pages/MainPage/MainPage.scss';
-import './components/shared/component/header/Header.scss';
-import './components/shared/component/modal/Modal.scss';
+import './components/shared/common/header/Header.scss';
+import './components/shared/common/modal/Modal.scss';
 
-const router = new Router();
-window.addEventListener('hashchange', router.rout);
-window.addEventListener('load', router.rout);
+const app = new App();
+app.run();
+
+window.addEventListener('hashchange', App.renderContent);
+// window.addEventListener('load', app.run);

@@ -1,8 +1,17 @@
-import { MainPage } from '../../view/pages/MainPage/MainPage';
-import { TextbookPage } from '../../view/pages/TextbookPage/TextbookPage';
-import { AuthorizationPage } from '../../view/pages/AuthorizationPage/AuthorizationPage';
-import { StatisticsPage } from '../../view/pages/StatisticsPage/StatisticsPage';
-import { MinigamesPage } from '../../view/pages/MinigamesPage/MinigamesPage';
+import { MainPage } from '../view/pages/MainPage/MainPage';
+import { TextbookPage } from '../view/pages/TextbookPage/TextbookPage';
+import { AuthorizationPage } from '../view/pages/AuthorizationPage/AuthorizationPage';
+import { StatisticsPage } from '../view/pages/StatisticsPage/StatisticsPage';
+import { MinigamesPage } from '../view/pages/MinigamesPage/MinigamesPage';
+
+export interface RoutesI {
+  [key: string]:
+    | typeof MainPage
+    | typeof AuthorizationPage
+    | typeof TextbookPage
+    | typeof StatisticsPage
+    | typeof MinigamesPage;
+}
 
 export enum RoutesPath {
   START = '/',
@@ -19,15 +28,6 @@ export const routesText = {
   [RoutesPath.STATISTICS]: 'Statistics',
   [RoutesPath.MINIGAMES]: 'Minigames',
 };
-
-export interface RoutesI {
-  [key: string]:
-    | typeof MainPage
-    | typeof AuthorizationPage
-    | typeof TextbookPage
-    | typeof StatisticsPage
-    | typeof MinigamesPage;
-}
 
 export const routes = {
   [RoutesPath.START]: MainPage,
