@@ -19,7 +19,6 @@ export class App {
     await footerComponent.afterRender();
   }
 
-  // TODO - need to subdivide renderFooter into definePage() and renderContent()
   static async renderContent() {
     const container = <HTMLElement>document.getElementById('pageContainer');
     const request = parseLocationURL();
@@ -34,29 +33,6 @@ export class App {
     const page = GetPage ? new GetPage(container) : new ErrorPage(container);
     await page.run();
   }
-
-  // static async definePage() {
-  //   const request = parseLocationURL();
-  //   const parsedURL =
-  //     (request.resource ? `/${request.resource}` : '/') +
-  //     (request.id ? '/:id' : '') +
-  //     (request.verb ? `/${request.verb}` : '');
-
-  //   const getKeyValue = <T, K extends keyof T>(obj: T, key: K): T[K] =>
-  //     obj[key];
-  //   const Page = getKeyValue<RoutesI, keyof RoutesI>(routes, parsedURL);
-  //   return Page;
-  // }
-
-  // static async renderContent() {
-  //   const container = <HTMLElement>document.getElementById('pageContainer');
-  //   const Page = (await App.definePage())
-  //     ? await App.definePage()
-  //     : new ErrorPage();
-
-  //   container.innerHTML = Page.render();
-  //   await Page.afterRender();
-  // }
 
   async run() {
     App.renderHeader()

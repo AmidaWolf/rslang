@@ -1,4 +1,4 @@
-export type WordsType = {
+export type WordType = {
   id: string;
   group: number;
   page: number;
