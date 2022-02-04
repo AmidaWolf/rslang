@@ -8,5 +8,7 @@ import './components/shared/common/header/Header.scss';
 import './components/shared/common/modal/Modal.scss';
 
 const app = new App();
-window.addEventListener('hashchange', app.renderContent);
-window.addEventListener('load', app.renderContent);
+app.run();
+
+window.addEventListener('hashchange', App.renderContent);
+// window.addEventListener('load', app.run);

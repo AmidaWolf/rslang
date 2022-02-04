@@ -1,14 +1,17 @@
-import { AppView } from '../../../view/AppView';
+// import { Page } from '../../../view/Page';
+import baseHTML from './baseHTML';
 
-const returnHtml = () => `<div class="footer-wrapper"></div>`;
-
-function renderFunc() {
+async function drawContent() {
   const footerWrapper = <HTMLElement>document.querySelector('.footer-wrapper');
   footerWrapper.innerText = 'footer';
 }
 
-export class Footer extends AppView {
-  constructor() {
-    super(returnHtml, renderFunc);
+export class Footer {
+  async renderHTML() {
+    return baseHTML;
+  }
+
+  async afterRender() {
+    return drawContent();
   }
 }

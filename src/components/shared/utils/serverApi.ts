@@ -9,13 +9,7 @@ export default class ServerApi {
 
   static signInURL = `${ServerApi.baseURL}/signin`;
 
-  async getWords(group: number, page: number): Promise<WordsType> {
-    // const url: string =
-    //   group && page ? `${ServerApi.words}?group=${group}&page=${page}`
-    //     : group ? `${ServerApi.words}?group=${group}`
-    //       : page ? `${ServerApi.words}?group=${page}`
-    //         : ServerApi.words;
-
+  async getWords(group?: number, page?: number): Promise<WordsType> {
     const response: Response = await fetch(
       `${ServerApi.wordsURL}?group=${group}&page=${page}`
     );

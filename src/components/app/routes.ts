@@ -4,6 +4,15 @@ import { AuthorizationPage } from '../view/pages/AuthorizationPage/Authorization
 import { StatisticsPage } from '../view/pages/StatisticsPage/StatisticsPage';
 import { MinigamesPage } from '../view/pages/MinigamesPage/MinigamesPage';
 
+export interface RoutesI {
+  [key: string]:
+    | typeof MainPage
+    | typeof AuthorizationPage
+    | typeof TextbookPage
+    | typeof StatisticsPage
+    | typeof MinigamesPage;
+}
+
 export enum RoutesPath {
   START = '/',
   AUTHORIZATION = '/authorization',
@@ -19,15 +28,6 @@ export const routesText = {
   [RoutesPath.STATISTICS]: 'Statistics',
   [RoutesPath.MINIGAMES]: 'Minigames',
 };
-
-export interface RoutesI {
-  [key: string]:
-    | typeof MainPage
-    | typeof AuthorizationPage
-    | typeof TextbookPage
-    | typeof StatisticsPage
-    | typeof MinigamesPage;
-}
 
 export const routes = {
   [RoutesPath.START]: MainPage,
