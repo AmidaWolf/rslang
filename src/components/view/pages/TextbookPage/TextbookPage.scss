@@ -5,7 +5,7 @@
   flex-direction: column;
   min-height: 100vh;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 
   gap: 1em;
 
@@ -15,3 +15,111 @@
   background-size: cover;
 }
 
+.card-container {
+  border: 5px solid rgb(63, 63, 63);
+  width: 850px;
+  height: 260px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: rgb(158, 158, 158);
+}
+
+.card__content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-left: 50px;
+  font-size: 20px;
+  position: relative;
+}
+
+.btn-sound {
+  background-image: url("../../../../assets/img/sound.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 50px;
+  height: 60px;
+  cursor: pointer;
+}
+
+.card__example,
+.card__meaning,
+.card__word {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.card__word-container,
+.card__example-container,
+.card__meaning-container {
+  margin-left: 0px;
+  margin-right: 30px;
+}
+
+.textbook__pages,
+.container-manage {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+
+}
+
+.card__picture {
+  width: 400px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  width: 50px;
+  height: 50px;
+  background-color: gray;
+  cursor: pointer;
+  border: 3px solid black;
+  font-size: 30px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+}
+
+.page-text {
+  font-size: 30px;
+  width: 150px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+}
+
+#group-words {
+  width: 200px;
+  font-size: 30px;
+  margin-right: 50px;
+  padding-left: 15px;
+}
+
+.btn-sound {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.cards {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
