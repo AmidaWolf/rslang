@@ -9,10 +9,16 @@ export default class ServerApi {
 
   static signInURL = `${ServerApi.baseURL}/signin`;
 
-  async getWords(group?: number, page?: number): Promise<WordType[]> {
+  static async getWords(group: number, page: number): Promise<WordType[]> {
     const response: Response = await fetch(
-      `${ServerApi.wordsURL}?_group=${group}&page=${page}`
+      `${ServerApi.wordsURL}?group=${group}&page=${page}`
     );
+    if (!response.ok) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+      return [];
+    }
     return response.json();
   }
 }
