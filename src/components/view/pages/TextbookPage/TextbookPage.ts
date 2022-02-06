@@ -48,64 +48,91 @@ export class TextbookPage implements Page {
     });
 
     const btnsSound = document.querySelectorAll('.btn-sound');
+    const audio2 = document.querySelector('.audio') as HTMLAudioElement;
 
     btnsSound.forEach((el) => {
-      const target = el as HTMLElement & { dataset: Record<string, string> };
-      const { id } = target.dataset;
-
-      const audio = document.querySelector(
-        `audio[data-id="${id}"`
-      ) as HTMLAudioElement;
-
-      if (audio) {
-        el.addEventListener('click', () => {
-          audio.currentTime = 0;
-          audio.play();
-        });
-      }
+      const target = <HTMLElement & { dataset: Record<string, string> }>el;
+      const { src } = target.dataset;
+      el.addEventListener('click', () => {
+        audio2.src = src;
+        audio2.currentTime = 0;
+        audio2.play();
+      });
     });
   }
 
   static addEventsListnersBtns(): void {
-    const btnFirst = document.querySelector('#btn-first');
-    const btnPrev = document.querySelector('#btn-prev');
-    const btnNext = document.querySelector('#btn-next');
-    const btnLast = document.querySelector('#btn-last');
+    const btnFirst = document.querySelector('#btn-first') as HTMLButtonElement;
+    const btnPrev = document.querySelector('#btn-prev') as HTMLButtonElement;
+    const btnNext = document.querySelector('#btn-next') as HTMLButtonElement;
+    const btnLast = document.querySelector('#btn-last') as HTMLButtonElement;
     const selectGroup = document.querySelector('#group-words');
 
     selectGroup?.addEventListener('change', (el) => {
       const target = el.target as HTMLElement & { selectedIndex: string };
+      TextbookPage.currentPage = 0;
+      this.showPageNumber();
       TextbookPage.currentGroup = +target.selectedIndex;
       TextbookPage.renderCards();
     });
 
-    btnFirst?.addEventListener('click', () => {
+    btnFirst.addEventListener('click', () => {
       if (TextbookPage.currentPage !== 0) {
         TextbookPage.currentPage = 0;
+        btnNext.disabled = false;
+        btnLast.disabled = false;
+        btnFirst.disabled = true;
+        btnPrev.disabled = true;
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
     });
 
-    btnLast?.addEventListener('click', () => {
+    btnLast.addEventListener('click', () => {
       if (TextbookPage.currentPage !== 29) {
         TextbookPage.currentPage = 29;
+        btnNext.disabled = true;
+        btnLast.disabled = true;
+        btnFirst.disabled = false;
+        btnPrev.disabled = false;
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
     });
 
-    btnPrev?.addEventListener('click', () => {
+    btnPrev.addEventListener('click', () => {
       if (TextbookPage.currentPage > 0) {
         TextbookPage.currentPage -= 1;
+        if (TextbookPage.currentPage > 0) {
+          btnNext.disabled = false;
+          btnLast.disabled = false;
+          btnFirst.disabled = false;
+          btnPrev.disabled = false;
+        } else {
+          btnNext.disabled = false;
+          btnLast.disabled = false;
+          btnFirst.disabled = true;
+          btnPrev.disabled = true;
+        }
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
     });
 
-    btnNext?.addEventListener('click', () => {
+    btnNext.addEventListener('click', () => {
       if (TextbookPage.currentPage < 29) {
         TextbookPage.currentPage += 1;
+        if (TextbookPage.currentPage < 29) {
+          btnNext.disabled = false;
+          btnLast.disabled = false;
+          btnFirst.disabled = false;
+          btnPrev.disabled = false;
+        } else {
+          btnNext.disabled = true;
+          btnLast.disabled = true;
+          btnFirst.disabled = false;
+          btnPrev.disabled = false;
+        }
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }

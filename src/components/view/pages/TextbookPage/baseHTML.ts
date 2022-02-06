@@ -12,17 +12,19 @@ const content = `
       </select>
 
       <div class="textbook__pages">
-        <div id="btn-first" class="btn">&laquo;</div>
-        <div id="btn-prev" class="btn">&lt;</div>
-        <div id="page-text" class="page-text">Page&nbsp;<span>1</span></div>
-        <div id="btn-next" class="btn">&gt;</div>
-        <div id="btn-last" class="btn">&raquo;</div>
+        <button id="btn-first" disabled class="button">&laquo;</button>
+        <button id="btn-prev" disabled class="button">&lt;</button>
+        <p id="page-text" class="page-text">Page&nbsp;<span>1</span></p>
+        <button id="btn-next" class="button">&gt;</button>
+        <button id="btn-last" class="button">&raquo;</button>
       </div>
     </div>
 
     <div class="cards"></div>
 
     <div class="loading"></div>
+
+    <audio class="audio" src=""></audio>
   </section>
 `;
 
