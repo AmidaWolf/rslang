@@ -14,3 +14,61 @@ export type WordType = {
   textMeaningTranslate: string;
   wordTranslate: string;
 };
+
+export type UserBodyType = {
+  email: string;
+  password: string;
+  name?: string;
+};
+
+export type UpdateUserBodyType = {
+  email: string;
+  password: string;
+  name?: string;
+};
+
+export type GetTokensType = {
+  message: string;
+  token: string;
+  refreshToken: string;
+  userId: string;
+  name: string;
+};
+
+export type OptionalType = {
+  [key: string]: string | number | boolean;
+};
+
+export type UserWordType = {
+  difficulty: string;
+  optional: OptionalType;
+};
+
+export type StatisticsType = {
+  learnedWords: number;
+  optional: OptionalType;
+};
+
+export type SettingsType = {
+  wordsPerDay: number;
+  optional: OptionalType;
+};
+
+export type SignRequestBody = {
+  email: string;
+  password: string;
+};
+
+export type SignResponseBody = {
+  message: string;
+  token: string;
+  refreshToken: string;
+  userId: string;
+  name: string;
+};
+
+export type GetUserResponseType = {
+  id: string;
+  email: string;
+  name?: string | number;
+};
