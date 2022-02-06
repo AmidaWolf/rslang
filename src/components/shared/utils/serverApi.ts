@@ -23,7 +23,7 @@ export default class ServerApi {
   static testToken =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZmVkY2VmY2QyNGMwMDAxNjk5OThmNiIsImlhdCI6MTY0NDA5MjcwMCwiZXhwIjoxNjQ0MTA3MTAwfQ.kGkLbPl9W5X02L3qpoTNkVXY63-vdOVP_MWccOSXsWo';
 
-  async getWords(group: number, page: number): Promise<WordType[]> {
+  static async getWords(group: number, page: number): Promise<WordType[]> {
     const response: Response = await fetch(
       `${ServerApi.wordsURL}?group=${group}&page=${page}`,
       {
@@ -42,7 +42,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async getWord(id: string): Promise<WordType> {
+  static async getWord(id: string): Promise<WordType> {
     const response: Response = await fetch(`${ServerApi.wordsURL}/${id}`, {
       method: 'GET',
       headers: {
@@ -52,7 +52,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async createUser(body: UserBodyType): Promise<UserBodyType> {
+  static async createUser(body: UserBodyType): Promise<UserBodyType> {
     const response: Response = await fetch(ServerApi.usersURL, {
       method: 'POST',
       headers: {
@@ -63,7 +63,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async getUser(id: string): Promise<GetUserResponseType> {
+  static async getUser(id: string): Promise<GetUserResponseType> {
     const response: Response = await fetch(`${ServerApi.usersURL}/${id}`, {
       method: 'GET',
       headers: {
@@ -74,7 +74,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async updateUser(
+  static async updateUser(
     id: string,
     body: UpdateUserBodyType
   ): Promise<GetUserResponseType> {
@@ -89,7 +89,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async deleteUser(id: string): Promise<void> {
+  static async deleteUser(id: string): Promise<void> {
     await fetch(`${ServerApi.usersURL}/${id}`, {
       method: 'DELETE',
       headers: {
@@ -99,7 +99,7 @@ export default class ServerApi {
   }
 
   // TODO - need to realize how getNewUserTokens should work correctly
-  async getNewUserTokens(id: string): Promise<GetTokensType> {
+  static async getNewUserTokens(id: string): Promise<GetTokensType> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${id}/tokens`,
       {
@@ -113,7 +113,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async getUserWords(id: string): Promise<UserWordType[]> {
+  static async getUserWords(id: string): Promise<UserWordType[]> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${id}/words`,
       {
@@ -127,7 +127,10 @@ export default class ServerApi {
     return response.json();
   }
 
-  async getUserWord(userId: string, wordId: string): Promise<UserWordType> {
+  static async getUserWord(
+    userId: string,
+    wordId: string
+  ): Promise<UserWordType> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {
@@ -141,7 +144,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async createUserWord(
+  static async createUserWord(
     userId: string,
     wordId: string,
     body: UserWordType
@@ -160,7 +163,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async updateUserWord(
+  static async updateUserWord(
     userId: string,
     wordId: string,
     body: UserWordType
@@ -179,7 +182,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async deleteUserWord(userId: string, wordId: string): Promise<void> {
+  static async deleteUserWord(userId: string, wordId: string): Promise<void> {
     await fetch(`${ServerApi.usersURL}/${userId}/words/${wordId}`, {
       method: 'DELETE',
       headers: {
@@ -188,7 +191,7 @@ export default class ServerApi {
     });
   }
 
-  async getUserAggregatedWords(
+  static async getUserAggregatedWords(
     id: string,
     group = 0,
     page = 0,
@@ -209,7 +212,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async getUserAggregatedWord(
+  static async getUserAggregatedWord(
     userId: string,
     wordId: string
   ): Promise<WordType> {
@@ -226,7 +229,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async getUserStatistics(id: string): Promise<StatisticsType> {
+  static async getUserStatistics(id: string): Promise<StatisticsType> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${id}/statistics`,
       {
@@ -240,7 +243,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async updateUserStatistics(
+  static async updateUserStatistics(
     id: string,
     body: StatisticsType
   ): Promise<StatisticsType> {
@@ -258,7 +261,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async getSettings(id: string): Promise<SettingsType> {
+  static async getSettings(id: string): Promise<SettingsType> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${id}/settings`,
       {
@@ -272,7 +275,10 @@ export default class ServerApi {
     return response.json();
   }
 
-  async updateSettings(id: string, body: SettingsType): Promise<SettingsType> {
+  static async updateSettings(
+    id: string,
+    body: SettingsType
+  ): Promise<SettingsType> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${id}/settings`,
       {
@@ -287,7 +293,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  async signIn(body: SignRequestBody): Promise<SignResponseBody> {
+  static async signIn(body: SignRequestBody): Promise<SignResponseBody> {
     const response: Response = await fetch(`${ServerApi.signInURL}`, {
       method: 'POST',
       headers: {
