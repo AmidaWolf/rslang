@@ -12,11 +12,11 @@ const content = `
       </select>
 
       <div class="textbook__pages">
-        <button id="btn-first" class="btn disabled">&laquo;</button>
-        <button id="btn-prev" class="btn disabled">&lt;</button>
+        <button id="btn-first" disabled class="button">&laquo;</button>
+        <button id="btn-prev" disabled class="button">&lt;</button>
         <p id="page-text" class="page-text">Page&nbsp;<span>1</span></p>
-        <button id="btn-next" class="btn">&gt;</button>
-        <button id="btn-last" class="btn">&raquo;</button>
+        <button id="btn-next" class="button">&gt;</button>
+        <button id="btn-last" class="button">&raquo;</button>
       </div>
     </div>
 

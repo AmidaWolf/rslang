@@ -47,6 +47,9 @@
   cursor: pointer;
   position: absolute;
   opacity: 0.8;
+  border: none;
+  outline: none;
+  background-color: transparent;
 }
 
 .btn-sound.word {
@@ -94,24 +97,6 @@
   justify-content: center;
 }
 
-.btn {
-  width: 50px;
-  height: 50px;
-  background-color: gray;
-  cursor: pointer;
-  border: 3px solid $green-color;
-  font-size: 30px;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items:center;
-}
-
-.btn.disabled {
-  cursor: auto;
-  border: 3px solid black;
-}
-
 .page-text {
   font-size: 30px;
   width: 150px;
@@ -127,8 +112,6 @@
   margin-right: 50px;
   padding-left: 15px;
 }
-
-
 
 .cards {
   margin-top: 30px;

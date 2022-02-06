@@ -62,10 +62,10 @@ export class TextbookPage implements Page {
   }
 
   static addEventsListnersBtns(): void {
-    const btnFirst = document.querySelector('#btn-first');
-    const btnPrev = document.querySelector('#btn-prev');
-    const btnNext = document.querySelector('#btn-next');
-    const btnLast = document.querySelector('#btn-last');
+    const btnFirst = document.querySelector('#btn-first') as HTMLButtonElement;
+    const btnPrev = document.querySelector('#btn-prev') as HTMLButtonElement;
+    const btnNext = document.querySelector('#btn-next') as HTMLButtonElement;
+    const btnLast = document.querySelector('#btn-last') as HTMLButtonElement;
     const selectGroup = document.querySelector('#group-words');
 
     selectGroup?.addEventListener('change', (el) => {
@@ -77,10 +77,10 @@ export class TextbookPage implements Page {
     btnFirst?.addEventListener('click', () => {
       if (TextbookPage.currentPage !== 0) {
         TextbookPage.currentPage = 0;
-        btnNext?.classList.remove('disabled');
-        btnLast?.classList.remove('disabled');
-        btnFirst.classList.add('disabled');
-        btnPrev?.classList.add('disabled');
+        if (btnNext) btnNext.disabled = false;
+        if (btnLast) btnLast.disabled = false;
+        if (btnFirst) btnFirst.disabled = true;
+        if (btnPrev) btnPrev.disabled = true;
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
@@ -89,10 +89,10 @@ export class TextbookPage implements Page {
     btnLast?.addEventListener('click', () => {
       if (TextbookPage.currentPage !== 29) {
         TextbookPage.currentPage = 29;
-        btnNext?.classList.add('disabled');
-        btnLast?.classList.add('disabled');
-        btnFirst?.classList.remove('disabled');
-        btnPrev?.classList.remove('disabled');
+        if (btnNext) btnNext.disabled = true;
+        if (btnLast) btnLast.disabled = true;
+        if (btnFirst) btnFirst.disabled = false;
+        if (btnPrev) btnPrev.disabled = false;
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
@@ -102,15 +102,15 @@ export class TextbookPage implements Page {
       if (TextbookPage.currentPage > 0) {
         TextbookPage.currentPage -= 1;
         if (TextbookPage.currentPage > 0) {
-          btnNext?.classList.remove('disabled');
-          btnLast?.classList.remove('disabled');
-          btnFirst?.classList.remove('disabled');
-          btnPrev?.classList.remove('disabled');
+          if (btnNext) btnNext.disabled = false;
+          if (btnLast) btnLast.disabled = false;
+          if (btnFirst) btnFirst.disabled = false;
+          if (btnPrev) btnPrev.disabled = false;
         } else {
-          btnNext?.classList.remove('disabled');
-          btnLast?.classList.remove('disabled');
-          btnFirst?.classList.add('disabled');
-          btnPrev?.classList.add('disabled');
+          if (btnNext) btnNext.disabled = false;
+          if (btnLast) btnLast.disabled = false;
+          if (btnFirst) btnFirst.disabled = true;
+          if (btnPrev) btnPrev.disabled = true;
         }
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
@@ -121,15 +121,15 @@ export class TextbookPage implements Page {
       if (TextbookPage.currentPage < 29) {
         TextbookPage.currentPage += 1;
         if (TextbookPage.currentPage < 29) {
-          btnNext?.classList.remove('disabled');
-          btnLast?.classList.remove('disabled');
-          btnFirst?.classList.remove('disabled');
-          btnPrev?.classList.remove('disabled');
+          if (btnNext) btnNext.disabled = false;
+          if (btnLast) btnLast.disabled = false;
+          if (btnFirst) btnFirst.disabled = false;
+          if (btnPrev) btnPrev.disabled = false;
         } else {
-          btnNext?.classList.add('disabled');
-          btnLast?.classList.add('disabled');
-          btnFirst?.classList.remove('disabled');
-          btnPrev?.classList.remove('disabled');
+          if (btnNext) btnNext.disabled = true;
+          if (btnLast) btnLast.disabled = true;
+          if (btnFirst) btnFirst.disabled = false;
+          if (btnPrev) btnPrev.disabled = false;
         }
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
