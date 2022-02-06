@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import {
   WordType,
   UserBodyType,
@@ -24,7 +23,7 @@ export default class ServerApi {
   static testToken =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZmVkY2VmY2QyNGMwMDAxNjk5OThmNiIsImlhdCI6MTY0NDA5MjcwMCwiZXhwIjoxNjQ0MTA3MTAwfQ.kGkLbPl9W5X02L3qpoTNkVXY63-vdOVP_MWccOSXsWo';
 
-  async getWords(group = 0, page = 0): Promise<WordType[]> {
+  async getWords(group: number, page: number): Promise<WordType[]> {
     const response: Response = await fetch(
       `${ServerApi.wordsURL}?group=${group}&page=${page}`,
       {
@@ -34,6 +33,12 @@ export default class ServerApi {
         },
       }
     );
+    if (!response.ok) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+      return [];
+    }
     return response.json();
   }
 
