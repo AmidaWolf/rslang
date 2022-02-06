@@ -48,21 +48,16 @@ export class TextbookPage implements Page {
     });
 
     const btnsSound = document.querySelectorAll('.btn-sound');
+    const audio2 = document.querySelector('.audio') as HTMLAudioElement;
 
     btnsSound.forEach((el) => {
       const target = el as HTMLElement & { dataset: Record<string, string> };
-      const { id } = target.dataset;
-
-      const audio = document.querySelector(
-        `audio[data-id="${id}"`
-      ) as HTMLAudioElement;
-
-      if (audio) {
-        el.addEventListener('click', () => {
-          audio.currentTime = 0;
-          audio.play();
-        });
-      }
+      const { src } = target.dataset;
+      el.addEventListener('click', () => {
+        audio2.src = src;
+        audio2.currentTime = 0;
+        audio2.play();
+      });
     });
   }
 

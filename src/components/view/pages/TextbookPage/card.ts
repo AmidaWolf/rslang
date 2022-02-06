@@ -10,36 +10,30 @@ export function getCardWord(word: WordType): string {
       }" alt="Picture">
     </div>
     <div class="card__content">
-      <div class="btn-sound" data-id="${word.id}"></div>
-      <audio src="${`${ServerApi.baseURL}/${word.audio}`}" data-id="${
-    word.id
-  }"></audio>
+
       <div class="card__word">
+      <div class="btn-sound word" data-src="${`${ServerApi.baseURL}/${word.audio}`}"></div>
 
         <div class="card__word-container">
           <div class="card__word-block">
-            <div class="card__word-text">${word.word}</div>
-            <div class="card__word-transcription">${word.transcription}</div>
+            <h2 class="card__word-text">${word.word}</h2>
+            <h3 class="card__word-transcription">${word.transcription}</h3>
           </div>
-          <div class="card__word-translate">${word.wordTranslate}</div>
+          <h4 class="card__word-translate">${word.wordTranslate}</h4>
         </div>
       </div>
       <div class="card__meaning">
-
+      <div class="btn-sound meaning" data-src="${`${ServerApi.baseURL}/${word.audioMeaning}`}"></div>
         <div class="card__meaning-container">
-          <div class="card__meaning-text">${word.textMeaning}</div>
-          <div class="card__meaning-translate">${
-            word.textMeaningTranslate
-          }</div>
+          <h2 class="card__meaning-text">${word.textMeaning}</h2>
+          <h4 class="card__meaning-translate">${word.textMeaningTranslate}</h4>
         </div>
       </div>
       <div class="card__example">
-
+      <div class="btn-sound example" data-src="${`${ServerApi.baseURL}/${word.audioExample}`}"></div>
         <div class="card__example-container">
-          <div class="card__example-text">${word.textExample}</div>
-          <div class="card__example-translate">${
-            word.textExampleTranslate
-          }</div>
+          <h2 class="card__example-text">${word.textExample}</h2>
+          <h4 class="card__example-translate">${word.textExampleTranslate}</h4>
         </div>
       </div>
     </div>

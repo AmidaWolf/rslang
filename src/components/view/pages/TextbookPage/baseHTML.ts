@@ -23,6 +23,8 @@ const content = `
     <ul class="cards"></ul>
 
     <div class="loading"></div>
+
+    <audio class="audio" src=""></audio>
   </section>
 `;
 
