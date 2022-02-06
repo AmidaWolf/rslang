@@ -51,7 +51,7 @@ export class TextbookPage implements Page {
     const audio2 = document.querySelector('.audio') as HTMLAudioElement;
 
     btnsSound.forEach((el) => {
-      const target = el as HTMLElement & { dataset: Record<string, string> };
+      const target = <HTMLElement & { dataset: Record<string, string> }>el;
       const { src } = target.dataset;
       el.addEventListener('click', () => {
         audio2.src = src;
@@ -76,62 +76,62 @@ export class TextbookPage implements Page {
       TextbookPage.renderCards();
     });
 
-    btnFirst?.addEventListener('click', () => {
+    btnFirst.addEventListener('click', () => {
       if (TextbookPage.currentPage !== 0) {
         TextbookPage.currentPage = 0;
-        if (btnNext) btnNext.disabled = false;
-        if (btnLast) btnLast.disabled = false;
-        if (btnFirst) btnFirst.disabled = true;
-        if (btnPrev) btnPrev.disabled = true;
+        btnNext.disabled = false;
+        btnLast.disabled = false;
+        btnFirst.disabled = true;
+        btnPrev.disabled = true;
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
     });
 
-    btnLast?.addEventListener('click', () => {
+    btnLast.addEventListener('click', () => {
       if (TextbookPage.currentPage !== 29) {
         TextbookPage.currentPage = 29;
-        if (btnNext) btnNext.disabled = true;
-        if (btnLast) btnLast.disabled = true;
-        if (btnFirst) btnFirst.disabled = false;
-        if (btnPrev) btnPrev.disabled = false;
+        btnNext.disabled = true;
+        btnLast.disabled = true;
+        btnFirst.disabled = false;
+        btnPrev.disabled = false;
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
     });
 
-    btnPrev?.addEventListener('click', () => {
+    btnPrev.addEventListener('click', () => {
       if (TextbookPage.currentPage > 0) {
         TextbookPage.currentPage -= 1;
         if (TextbookPage.currentPage > 0) {
-          if (btnNext) btnNext.disabled = false;
-          if (btnLast) btnLast.disabled = false;
-          if (btnFirst) btnFirst.disabled = false;
-          if (btnPrev) btnPrev.disabled = false;
+          btnNext.disabled = false;
+          btnLast.disabled = false;
+          btnFirst.disabled = false;
+          btnPrev.disabled = false;
         } else {
-          if (btnNext) btnNext.disabled = false;
-          if (btnLast) btnLast.disabled = false;
-          if (btnFirst) btnFirst.disabled = true;
-          if (btnPrev) btnPrev.disabled = true;
+          btnNext.disabled = false;
+          btnLast.disabled = false;
+          btnFirst.disabled = true;
+          btnPrev.disabled = true;
         }
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
     });
 
-    btnNext?.addEventListener('click', () => {
+    btnNext.addEventListener('click', () => {
       if (TextbookPage.currentPage < 29) {
         TextbookPage.currentPage += 1;
         if (TextbookPage.currentPage < 29) {
-          if (btnNext) btnNext.disabled = false;
-          if (btnLast) btnLast.disabled = false;
-          if (btnFirst) btnFirst.disabled = false;
-          if (btnPrev) btnPrev.disabled = false;
+          btnNext.disabled = false;
+          btnLast.disabled = false;
+          btnFirst.disabled = false;
+          btnPrev.disabled = false;
         } else {
-          if (btnNext) btnNext.disabled = true;
-          if (btnLast) btnLast.disabled = true;
-          if (btnFirst) btnFirst.disabled = false;
-          if (btnPrev) btnPrev.disabled = false;
+          btnNext.disabled = true;
+          btnLast.disabled = true;
+          btnFirst.disabled = false;
+          btnPrev.disabled = false;
         }
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
