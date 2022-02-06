@@ -3,7 +3,7 @@ import ServerApi from '../../../shared/utils/serverApi';
 
 export function getCardWord(word: WordType): string {
   return `
-  <div class="card-container" data-id="${word.id}">
+  <li class="card-container" data-id="${word.id}">
     <div class="card__picture">
       <img class="card__picture-src" src="https://rs-school-learn-words.herokuapp.com/${
         word.image
@@ -43,6 +43,6 @@ export function getCardWord(word: WordType): string {
         </div>
       </div>
     </div>
-  </div>
+  </li>
 `;
 }

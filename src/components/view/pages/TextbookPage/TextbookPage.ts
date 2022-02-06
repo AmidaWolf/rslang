@@ -82,6 +82,10 @@ export class TextbookPage implements Page {
     btnFirst?.addEventListener('click', () => {
       if (TextbookPage.currentPage !== 0) {
         TextbookPage.currentPage = 0;
+        btnNext?.classList.remove('disabled');
+        btnLast?.classList.remove('disabled');
+        btnFirst.classList.add('disabled');
+        btnPrev?.classList.add('disabled');
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
@@ -90,6 +94,10 @@ export class TextbookPage implements Page {
     btnLast?.addEventListener('click', () => {
       if (TextbookPage.currentPage !== 29) {
         TextbookPage.currentPage = 29;
+        btnNext?.classList.add('disabled');
+        btnLast?.classList.add('disabled');
+        btnFirst?.classList.remove('disabled');
+        btnPrev?.classList.remove('disabled');
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
@@ -98,6 +106,17 @@ export class TextbookPage implements Page {
     btnPrev?.addEventListener('click', () => {
       if (TextbookPage.currentPage > 0) {
         TextbookPage.currentPage -= 1;
+        if (TextbookPage.currentPage > 0) {
+          btnNext?.classList.remove('disabled');
+          btnLast?.classList.remove('disabled');
+          btnFirst?.classList.remove('disabled');
+          btnPrev?.classList.remove('disabled');
+        } else {
+          btnNext?.classList.remove('disabled');
+          btnLast?.classList.remove('disabled');
+          btnFirst?.classList.add('disabled');
+          btnPrev?.classList.add('disabled');
+        }
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
@@ -106,6 +125,17 @@ export class TextbookPage implements Page {
     btnNext?.addEventListener('click', () => {
       if (TextbookPage.currentPage < 29) {
         TextbookPage.currentPage += 1;
+        if (TextbookPage.currentPage < 29) {
+          btnNext?.classList.remove('disabled');
+          btnLast?.classList.remove('disabled');
+          btnFirst?.classList.remove('disabled');
+          btnPrev?.classList.remove('disabled');
+        } else {
+          btnNext?.classList.add('disabled');
+          btnLast?.classList.add('disabled');
+          btnFirst?.classList.remove('disabled');
+          btnPrev?.classList.remove('disabled');
+        }
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }

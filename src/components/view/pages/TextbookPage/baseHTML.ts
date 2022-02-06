@@ -12,15 +12,15 @@ const content = `
       </select>
 
       <div class="textbook__pages">
-        <div id="btn-first" class="btn">&laquo;</div>
-        <div id="btn-prev" class="btn">&lt;</div>
-        <div id="page-text" class="page-text">Page&nbsp;<span>1</span></div>
-        <div id="btn-next" class="btn">&gt;</div>
-        <div id="btn-last" class="btn">&raquo;</div>
+        <button id="btn-first" class="btn disabled">&laquo;</button>
+        <button id="btn-prev" class="btn disabled">&lt;</button>
+        <p id="page-text" class="page-text">Page&nbsp;<span>1</span></p>
+        <button id="btn-next" class="btn">&gt;</button>
+        <button id="btn-last" class="btn">&raquo;</button>
       </div>
     </div>
 
-    <div class="cards"></div>
+    <ul class="cards"></ul>
 
     <div class="loading"></div>
   </section>

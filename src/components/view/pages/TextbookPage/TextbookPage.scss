@@ -18,7 +18,7 @@
 .card-container {
   border: 5px solid rgb(63, 63, 63);
   width: 850px;
-  height: 260px;
+  min-height: 260px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -84,12 +84,17 @@
   height: 50px;
   background-color: gray;
   cursor: pointer;
-  border: 3px solid black;
+  border: 3px solid green;
   font-size: 30px;
   font-weight: bold;
   display: flex;
   justify-content: center;
   align-items:center;
+}
+
+.btn.disabled {
+  cursor: auto;
+  border: 3px solid black;
 }
 
 .page-text {
