@@ -17,7 +17,8 @@
 
 .card-container {
   border: 5px solid rgb(63, 63, 63);
-  width: 850px;
+  max-width: 850px;
+  width: 100%;
   min-height: 260px;
   display: flex;
   justify-content: space-between;
@@ -33,7 +34,7 @@
   justify-content: space-between;
   align-items: flex-start;
   width: 100%;
-  margin-left: 80px;
+  margin-left: 50px;
   font-size: 20px;
   position: relative;
 }
@@ -42,10 +43,10 @@
   background-image: url("../../../../assets/img/sound.png");
   background-repeat: no-repeat;
   background-size: contain;
-  width: 50px;
+  min-width: 50px;
   height: 60px;
   cursor: pointer;
-  position: absolute;
+  position: relative;
   opacity: 0.8;
   border: none;
   outline: none;
@@ -53,15 +54,15 @@
 }
 
 .btn-sound.word {
-  left: -65px;
+  left: -25px;
 }
 
 .btn-sound.meaning {
-  left: -65px;
+  left: -25px;
 }
 
 .btn-sound.example {
-  left: -65px;
+  left: -25px;
 }
 
 .card__example,
@@ -127,16 +128,18 @@
   gap: 15px;
 }
 
-.card__content h2 {
+.card__word-text {
   font-size: 20px;
 }
 
-.card__content h3 {
+.card__word-transcription {
   font-size: 20px;
   opacity: 0.7;
 }
 
-.card__content h4 {
+.card__meaning-translate,
+.card__example-translate,
+.card__word-translate {
   font-size: 20px;
   opacity: 0.7;
 }

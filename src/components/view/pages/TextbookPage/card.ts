@@ -3,7 +3,7 @@ import ServerApi from '../../../shared/utils/serverApi';
 
 export function getCardWord(word: WordType): string {
   return `
-  <li class="card-container" data-id="${word.id}">
+  <article class="card-container" data-id="${word.id}">
     <div class="card__picture">
       <img class="card__picture-src" src="https://rs-school-learn-words.herokuapp.com/${
         word.image
@@ -15,26 +15,26 @@ export function getCardWord(word: WordType): string {
         <div class="card__word-container">
           <div class="card__word-block">
             <h2 class="card__word-text">${word.word}</h2>
-            <h3 class="card__word-transcription">${word.transcription}</h3>
+            <p class="card__word-transcription">${word.transcription}</p>
           </div>
-          <h4 class="card__word-translate">${word.wordTranslate}</h4>
+          <p class="card__word-translate">${word.wordTranslate}</p>
         </div>
       </div>
       <div class="card__meaning">
       <button class="btn-sound meaning" data-src="${`${ServerApi.baseURL}/${word.audioMeaning}`}"></button>
         <div class="card__meaning-container">
-          <h2 class="card__meaning-text">${word.textMeaning}</h2>
-          <h4 class="card__meaning-translate">${word.textMeaningTranslate}</h4>
+          <p class="card__meaning-text">${word.textMeaning}</p>
+          <p class="card__meaning-translate">${word.textMeaningTranslate}</p>
         </div>
       </div>
       <div class="card__example">
       <button class="btn-sound example" data-src="${`${ServerApi.baseURL}/${word.audioExample}`}"></button>
         <div class="card__example-container">
-          <h2 class="card__example-text">${word.textExample}</h2>
-          <h4 class="card__example-translate">${word.textExampleTranslate}</h4>
+          <p class="card__example-text">${word.textExample}</p>
+          <p class="card__example-translate">${word.textExampleTranslate}</p>
         </div>
       </div>
     </div>
-  </li>
+  </article>
 `;
 }

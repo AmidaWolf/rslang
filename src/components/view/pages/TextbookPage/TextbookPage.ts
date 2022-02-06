@@ -70,6 +70,8 @@ export class TextbookPage implements Page {
 
     selectGroup?.addEventListener('change', (el) => {
       const target = el.target as HTMLElement & { selectedIndex: string };
+      TextbookPage.currentPage = 0;
+      this.showPageNumber();
       TextbookPage.currentGroup = +target.selectedIndex;
       TextbookPage.renderCards();
     });

@@ -20,7 +20,7 @@ const content = `
       </div>
     </div>
 
-    <ul class="cards"></ul>
+    <div class="cards"></div>
 
     <div class="loading"></div>
 
