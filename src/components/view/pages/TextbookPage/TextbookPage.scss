@@ -1,4 +1,4 @@
-@import "../../../../global.scss";
+@import "../../../../colors";
 
 .textbook {
   display: flex;
@@ -77,7 +77,7 @@
 .card__word-container,
 .card__example-container,
 .card__meaning-container {
-  margin-left: 0px;
+  margin-left: 0;
   margin-right: 30px;
 }
 
