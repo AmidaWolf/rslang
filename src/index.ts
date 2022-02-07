@@ -5,6 +5,7 @@ import './global.scss';
 import './assets/fonts/fonts.css';
 import './components/view/pages/MainPage/MainPage.scss';
 import './components/shared/common/header/Header.scss';
+import './components/shared/common/footer/Footer.scss';
 import './components/shared/common/modal/Modal.scss';
 import './components/view/pages/TextbookPage/TextbookPage.scss';
 
