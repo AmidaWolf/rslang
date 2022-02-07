@@ -1,5 +1,6 @@
 import baseHTML from './baseHTML';
 import { renderSources } from '../../helpers/renderSources';
+import { RoutesPath } from '../../../app/routes';
 
 const developersLinks = {
   'insane-idea': 'https://github.com/insane-idea',
@@ -19,7 +20,11 @@ async function drawContent() {
     'RS Lang logo'
   );
   rsLogo.className = 'rs-logo';
+  rsLogo.height = 50;
   rsLogoWrapper.appendChild(rsLogo);
+
+  const developersInfo = document.createElement('div');
+  developersInfo.className = 'developers-info';
 
   const developersList = document.createElement('ul');
   developersList.className = 'developers-list';
@@ -31,16 +36,25 @@ async function drawContent() {
     developerLink.className = 'developers-list__link';
     developerLink.href = link;
     developerLink.innerText = name;
+    developerLink.target = '_blank';
+    developerLink.rel = 'noopener norefferer';
 
     developerItem.appendChild(developerLink);
     developersList.appendChild(developerItem);
   });
 
+  const developersButton = document.createElement('a');
+  developersButton.className = 'developers-button button';
+  developersButton.href = `/#${RoutesPath.DEVELOPERS}`;
+  developersButton.innerText = 'Learn more about development';
+
+  developersInfo.append(developersList, developersButton);
+
   const copyright = document.createElement('p');
   copyright.className = 'copyright';
   copyright.innerText = '©2021 RSLang';
 
-  footerWrapper.append(rsLogoWrapper, developersList, copyright);
+  footerWrapper.append(rsLogoWrapper, developersInfo, copyright);
 }
 
 export class Footer {
