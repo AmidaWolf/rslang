@@ -19,6 +19,7 @@ async function drawContent() {
     'RS Lang logo'
   );
   rsLogo.className = 'rs-logo';
+  rsLogo.height = 50;
   rsLogoWrapper.appendChild(rsLogo);
 
   const developersList = document.createElement('ul');
