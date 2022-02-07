@@ -32,6 +32,8 @@ async function drawContent() {
     developerLink.className = 'developers-list__link';
     developerLink.href = link;
     developerLink.innerText = name;
+    developerLink.target = '_blank';
+    developerLink.rel = 'noopener norefferer';
 
     developerItem.appendChild(developerLink);
     developersList.appendChild(developerItem);
