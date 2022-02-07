@@ -1,0 +1,32 @@
+@import "../../../../colors";
+
+.footer {
+  width: 100%;
+}
+.footer-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em;
+  gap: 1em;
+}
+
+.developers-list {
+  display: flex;
+  align-items: center;
+}
+
+.developers-list__link {
+  padding: 1em;
+
+  text-decoration: none;
+  color: $font-color;
+  transition: all 1s;
+}
+
+.developers-list__link:hover {
+  color: $favorite-color;
+  transition: all 1s;
+}
+
+@import 'Footer.media';
