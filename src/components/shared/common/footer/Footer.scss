@@ -11,6 +11,12 @@
   gap: 1em;
 }
 
+.developers-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
 .developers-list {
   display: flex;
   align-items: center;

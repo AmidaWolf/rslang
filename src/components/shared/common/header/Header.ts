@@ -24,7 +24,10 @@ async function drawContent() {
   menuList.className = 'header-menu';
   const pathList = Object.values(RoutesPath);
   for (let i = 0; i < pathList.length; i += 1) {
-    if (pathList[i] !== RoutesPath.AUTHORIZATION) {
+    if (
+      pathList[i] !== RoutesPath.AUTHORIZATION &&
+      pathList[i] !== RoutesPath.DEVELOPERS
+    ) {
       const menuItem = document.createElement('li');
       menuItem.className = 'header-menu__item';
       const menuRef = document.createElement('a');

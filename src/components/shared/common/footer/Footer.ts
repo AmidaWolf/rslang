@@ -1,5 +1,6 @@
 import baseHTML from './baseHTML';
 import { renderSources } from '../../helpers/renderSources';
+import { RoutesPath } from '../../../app/routes';
 
 const developersLinks = {
   'insane-idea': 'https://github.com/insane-idea',
@@ -22,6 +23,9 @@ async function drawContent() {
   rsLogo.height = 50;
   rsLogoWrapper.appendChild(rsLogo);
 
+  const developersInfo = document.createElement('div');
+  developersInfo.className = 'developers-info';
+
   const developersList = document.createElement('ul');
   developersList.className = 'developers-list';
 
@@ -39,11 +43,18 @@ async function drawContent() {
     developersList.appendChild(developerItem);
   });
 
+  const developersButton = document.createElement('a');
+  developersButton.className = 'developers-button button';
+  developersButton.href = `/#${RoutesPath.DEVELOPERS}`;
+  developersButton.innerText = 'Learn more about development';
+
+  developersInfo.append(developersList, developersButton);
+
   const copyright = document.createElement('p');
   copyright.className = 'copyright';
   copyright.innerText = '©2021 RSLang';
 
-  footerWrapper.append(rsLogoWrapper, developersList, copyright);
+  footerWrapper.append(rsLogoWrapper, developersInfo, copyright);
 }
 
 export class Footer {

@@ -6,7 +6,7 @@ function removeLoading() {
   loading.classList.add('visibility-hidden');
 }
 
-export class MainPage implements Page {
+export class DevelopersPage implements Page {
   container: HTMLElement;
 
   constructor(container: HTMLElement) {
@@ -18,14 +18,6 @@ export class MainPage implements Page {
   }
 
   async afterRender() {
-    const header = <HTMLElement>document.querySelector('.header');
-    const footer = <HTMLElement>document.querySelector('.footer');
-    const main = <HTMLElement>document.querySelector('.main');
-
-    const headerHeight = header.getBoundingClientRect().height;
-    const footerHeight = footer.getBoundingClientRect().height;
-    main.style.minHeight = `calc(100vh - ${headerHeight + footerHeight}px)`;
-
     removeLoading();
   }
 

@@ -3,6 +3,7 @@ import { TextbookPage } from '../view/pages/TextbookPage/TextbookPage';
 import { AuthorizationPage } from '../view/pages/AuthorizationPage/AuthorizationPage';
 import { StatisticsPage } from '../view/pages/StatisticsPage/StatisticsPage';
 import { MinigamesPage } from '../view/pages/MinigamesPage/MinigamesPage';
+import { DevelopersPage } from '../view/pages/DevelopersPage/DevelopersPage';
 
 export interface RoutesI {
   [key: string]:
@@ -19,6 +20,7 @@ export enum RoutesPath {
   TEXTBOOK = '/textbook',
   STATISTICS = '/statistics',
   MINIGAMES = '/minigames',
+  DEVELOPERS = '/developers',
 }
 
 export const routesText = {
@@ -27,6 +29,7 @@ export const routesText = {
   [RoutesPath.TEXTBOOK]: 'Textbook',
   [RoutesPath.STATISTICS]: 'Statistics',
   [RoutesPath.MINIGAMES]: 'Minigames',
+  [RoutesPath.DEVELOPERS]: 'Developers',
 };
 
 export const routes = {
@@ -35,4 +38,5 @@ export const routes = {
   [RoutesPath.TEXTBOOK]: TextbookPage,
   [RoutesPath.STATISTICS]: StatisticsPage,
   [RoutesPath.MINIGAMES]: MinigamesPage,
+  [RoutesPath.DEVELOPERS]: DevelopersPage,
 };
