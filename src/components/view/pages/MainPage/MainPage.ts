@@ -1,5 +1,6 @@
 import { Page } from '../../Page';
 import baseHTML from './baseHTML';
+import { setElementHeight } from '../../../shared/helpers/setElementHeight';
 
 function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -18,13 +19,7 @@ export class MainPage implements Page {
   }
 
   async afterRender() {
-    const header = <HTMLElement>document.querySelector('.header');
-    const footer = <HTMLElement>document.querySelector('.footer');
-    const main = <HTMLElement>document.querySelector('.main');
-
-    const headerHeight = header.getBoundingClientRect().height;
-    const footerHeight = footer.getBoundingClientRect().height;
-    main.style.minHeight = `calc(100vh - ${headerHeight + footerHeight}px)`;
+    setElementHeight();
 
     removeLoading();
   }

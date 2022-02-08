@@ -2,6 +2,7 @@ import { Page } from '../../Page';
 import baseHTML from './baseHTML';
 import { devInfo } from './developersText';
 import { renderSources } from '../../../shared/helpers/renderSources';
+import { setElementHeight } from '../../../shared/helpers/setElementHeight';
 
 function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -75,6 +76,9 @@ export class DevelopersPage implements Page {
     }
 
     mainWrapper.append(devCards);
+
+    setElementHeight();
+
     removeLoading();
   }
 
