@@ -24,15 +24,6 @@
 
 .developers-list__link {
   padding: 1em;
-
-  text-decoration: none;
-  color: $font-color;
-  transition: all 1s;
-}
-
-.developers-list__link:hover {
-  color: $favorite-color;
-  transition: all 1s;
 }
 
 @import 'Footer.media';

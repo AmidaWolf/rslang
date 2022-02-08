@@ -7,11 +7,48 @@
   align-items: center;
   justify-content: center;
 
+  padding: 1em;
   gap: 1em;
-
-  background-color: $bg-color;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
 }
+
+.developers__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  max-width: 680px;
+}
+
+.dev-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1em;
+}
+
+.dev-card {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  gap: 1em;
+  padding: 1em;
+
+  border: 2px solid $font-color;
+  border-radius: 2em;
+  background-color: transparent;
+}
+
+.dev-card__avatar {
+  width: 180px;
+  height: 180px;
+
+  border-radius: 2em;
+  //padding: 1em;
+}
+
+@import 'DevelopersPage.media';
 

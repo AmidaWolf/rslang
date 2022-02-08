@@ -8,6 +8,7 @@ import './components/shared/common/header/Header.scss';
 import './components/shared/common/footer/Footer.scss';
 import './components/shared/common/modal/Modal.scss';
 import './components/view/pages/TextbookPage/TextbookPage.scss';
+import './components/view/pages/DevelopersPage/DevelopersPage.scss';
 
 const app = new App();
 app.run();
