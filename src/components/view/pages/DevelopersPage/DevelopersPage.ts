@@ -28,15 +28,20 @@ export class DevelopersPage implements Page {
     const devCards = document.createElement('ul');
     devCards.className = 'dev-cards';
 
+    const avatarPromise: Promise<HTMLImageElement>[] = [];
+    for (let i = 0; i < devInfo.length; i += 1) {
+      avatarPromise.push(
+        renderSources.renderImage(devInfo[i].linkToPhoto, devInfo[i].fullName)
+      );
+    }
+
+    const avatars = await Promise.all(avatarPromise);
+
     for (let i = 0; i < devInfo.length; i += 1) {
       const cardItem = document.createElement('li');
       cardItem.className = 'dev-cards__item dev-card';
 
-      // eslint-disable-next-line no-await-in-loop
-      const avatar = await renderSources.renderImage(
-        devInfo[i].linkToPhoto,
-        devInfo[i].fullName
-      );
+      const avatar = avatars[i];
       avatar.className = 'dev-card__avatar';
 
       const infoWrapper = document.createElement('div');
