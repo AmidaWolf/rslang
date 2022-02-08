@@ -97,4 +97,18 @@
   text-align: center;
 }
 
+.link {
+  text-decoration: underline solid $font-color;
+  color: $font-color;
+
+  transition: all 1s;
+}
+
+.link:hover {
+  text-decoration: underline solid $favorite-color;
+  color: $favorite-color;
+
+  transition: all 1s;
+}
+
 @import "global.media";

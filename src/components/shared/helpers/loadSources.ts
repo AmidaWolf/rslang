@@ -1,10 +1,5 @@
 export const loadSources = {
-  async loadJsonData(resource: string) {
-    const res = await fetch(resource);
-    return res.json();
-  },
-
-  loadImage(src: string) {
+  loadImage(src: string): Promise<HTMLImageElement> {
     return new Promise((res, rej) => {
       const img = new Image();
       img.onload = () => res(img);
@@ -13,7 +8,7 @@ export const loadSources = {
     });
   },
 
-  async loadHTML(path: string) {
+  async loadHTML(path: string): Promise<string> {
     const response = await fetch(path);
     return response.text();
   },

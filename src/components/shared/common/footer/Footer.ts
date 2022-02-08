@@ -33,7 +33,7 @@ async function drawContent() {
     const developerItem = document.createElement('li');
     developerItem.className = 'developers-list__item';
     const developerLink = document.createElement('a');
-    developerLink.className = 'developers-list__link';
+    developerLink.className = 'developers-list__link link';
     developerLink.href = link;
     developerLink.innerText = name;
     developerLink.target = '_blank';
