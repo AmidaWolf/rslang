@@ -1,6 +1,11 @@
 import { RoutesPath, routesText } from '../../../app/routes';
 import baseHTML from './baseHTML';
 import { renderSources } from '../../helpers/renderSources';
+import { AuthorizationModal } from '../../../view/pages/AuthorizationPage/AuthorizationModal';
+import { AuthorizationPage } from '../../../view/pages/AuthorizationPage/AuthorizationPage';
+
+const authorizationModal = new AuthorizationModal();
+const authorizationPage = new AuthorizationPage();
 
 async function drawContent() {
   const headerWrapper = <HTMLElement>document.querySelector('.header-wrapper');
@@ -42,11 +47,13 @@ async function drawContent() {
   nav.appendChild(menuList);
 
   const login = document.createElement('a');
-  login.className = 'login button';
-  login.href = `/#${RoutesPath.AUTHORIZATION}`;
+  login.className = 'login button login-btn';
   login.innerText = routesText[RoutesPath.AUTHORIZATION];
 
   headerWrapper.append(logoWrapper, nav, login);
+  await authorizationModal.run(login).then(() => {
+    authorizationPage.run();
+  });
 }
 
 export class Header {
