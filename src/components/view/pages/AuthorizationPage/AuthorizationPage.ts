@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 import ServerApi from '../../../shared/utils/serverApi';
 import { AuthorizationModal } from './AuthorizationModal';
 import {
@@ -31,7 +30,8 @@ export class AuthorizationPage {
     const validationError = <HTMLElement>(
       document.querySelector('.validation-error')
     );
-    validationError.innerHTML = 'Error';
+    validationError.innerText =
+      'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required';
   }
 
   updateLocalStorageOnLogOut() {
@@ -56,7 +56,7 @@ export class AuthorizationPage {
   }
 
   async validateUserData(tokens: GetTokensType | ErrorType, email: string) {
-    if (tokens.message === 'Error') {
+    if (tokens.message === 'Error' || tokens.message === 'LoggedOut') {
       localStorage.setItem('userMessage', tokens.message);
       this.addValidationError();
     } else {
@@ -68,7 +68,7 @@ export class AuthorizationPage {
 
   async getCheckedFormData(): Promise<SignRequestBody | undefined> {
     const emailReg =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const passReg = /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}/g;
 
     const emailInput = <HTMLInputElement>document.getElementById('email');
@@ -127,6 +127,8 @@ export class AuthorizationPage {
       this.getCheckedFormData().then((logInData) => {
         if (logInData) {
           this.singInUser(logInData);
+        } else {
+          this.addValidationError();
         }
       });
     });
@@ -134,6 +136,8 @@ export class AuthorizationPage {
       this.getCheckedFormData().then((logInData) => {
         if (logInData) {
           this.signUpUser(logInData);
+        } else {
+          this.addValidationError();
         }
       });
     });

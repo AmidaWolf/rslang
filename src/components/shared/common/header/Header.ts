@@ -4,10 +4,9 @@ import { renderSources } from '../../helpers/renderSources';
 import { AuthorizationModal } from '../../../view/pages/AuthorizationPage/AuthorizationModal';
 import { AuthorizationPage } from '../../../view/pages/AuthorizationPage/AuthorizationPage';
 
-const authorizationModal = new AuthorizationModal();
-const authorizationPage = new AuthorizationPage();
-
 async function drawContent() {
+  const authorizationModal = new AuthorizationModal();
+  const authorizationPage = new AuthorizationPage();
   const headerWrapper = <HTMLElement>document.querySelector('.header-wrapper');
 
   const logoWrapper = document.createElement('a');
@@ -46,7 +45,7 @@ async function drawContent() {
   }
   nav.appendChild(menuList);
 
-  const login = document.createElement('a');
+  const login = document.createElement('button');
   login.className = 'login button login-btn';
   login.innerText = routesText[RoutesPath.AUTHORIZATION];
 

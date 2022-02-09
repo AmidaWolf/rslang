@@ -15,9 +15,9 @@ export class AuthorizationModal {
       </div>
     `;
     this.modalContent = `
+      <p class="validation-error"></p>
       <form class="authentication">
-      <div class="validation-error"></div>
-        <fieldset>
+        <fieldset class="auth-fieldset">
           <label for="email">Email: </label>
           <input id="email" type="email">
           <label for="password">Password: </label>
@@ -35,15 +35,19 @@ export class AuthorizationModal {
     const signInBtn = <HTMLElement>document.querySelector('.sign-in');
     const signUpBtn = <HTMLElement>document.querySelector('.sign-up');
     const logOutBtn = <HTMLElement>document.querySelector('.log-out');
+    const authFieldset = <HTMLElement>document.querySelector('.auth-fieldset');
     const message = localStorage.getItem('userMessage');
+
     if (message === 'Authenticated') {
       signInBtn.classList.add('hide-auth-btn');
       signUpBtn.classList.add('hide-auth-btn');
       logOutBtn.classList.remove('hide-auth-btn');
+      authFieldset.style.visibility = 'hidden';
     } else {
       signInBtn.classList.remove('hide-auth-btn');
       signUpBtn.classList.remove('hide-auth-btn');
       logOutBtn.classList.add('hide-auth-btn');
+      authFieldset.style.visibility = 'visible';
     }
   }
 
