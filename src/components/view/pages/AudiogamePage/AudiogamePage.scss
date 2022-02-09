@@ -15,3 +15,24 @@
   background-size: cover;
 }
 
+.button.true {
+  background-color: $green-color;
+}
+
+.button.false {
+  background-color: $red-color;
+}
+
+.audio-game__select-level {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  gap: 10px;
+}
+
+.audio-game__result-all {
+  border: 3px solid $font-color;
+  display: flex;
+  padding: 20px;
+  gap: 100px;
+}
