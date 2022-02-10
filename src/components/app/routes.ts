@@ -4,6 +4,7 @@ import { AuthorizationPage } from '../view/pages/AuthorizationPage/Authorization
 import { StatisticsPage } from '../view/pages/StatisticsPage/StatisticsPage';
 import { MinigamesPage } from '../view/pages/MinigamesPage/MinigamesPage';
 import { AudiogamePage } from '../view/pages/AudiogamePage/AudiogamePage';
+import { DevelopersPage } from '../view/pages/DevelopersPage/DevelopersPage';
 
 export interface RoutesI {
   [key: string]:
@@ -22,6 +23,7 @@ export enum RoutesPath {
   STATISTICS = '/statistics',
   MINIGAMES = '/minigames',
   AUDIOGAME = '/audiogame',
+  DEVELOPERS = '/developers',
 }
 
 export const routesText = {
@@ -31,13 +33,14 @@ export const routesText = {
   [RoutesPath.STATISTICS]: 'Statistics',
   [RoutesPath.MINIGAMES]: 'Minigames',
   [RoutesPath.AUDIOGAME]: 'Audiogame',
+  [RoutesPath.DEVELOPERS]: 'Developers',
 };
 
 export const routes = {
   [RoutesPath.START]: MainPage,
-  [RoutesPath.AUTHORIZATION]: AuthorizationPage,
   [RoutesPath.TEXTBOOK]: TextbookPage,
   [RoutesPath.STATISTICS]: StatisticsPage,
   [RoutesPath.MINIGAMES]: MinigamesPage,
   [RoutesPath.AUDIOGAME]: AudiogamePage,
+  [RoutesPath.DEVELOPERS]: DevelopersPage,
 };
