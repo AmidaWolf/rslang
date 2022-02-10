@@ -23,13 +23,13 @@ export class AudiogamePage implements Page {
 
   static arrayWords: WordType[] = [];
 
-  private static arrayIndexGameWords: number[] = [];
+  static arrayIndexGameWords: number[] = [];
 
   private static resultGameWordsTrue: number[] = [];
 
   private static resultGameWordsFalse: number[] = [];
 
-  private static indexGameStep = 0;
+  static indexGameStep = 0;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -149,6 +149,9 @@ export class AudiogamePage implements Page {
     ) as HTMLElement;
 
     resultContainer.innerHTML = `<image src="../../../../assets/img/sound_PNG13.png" alt="Sound"></image>`;
+
+    const header = document.querySelector('.audio-game__title') as HTMLElement;
+    header.textContent = `AudioGame - ${AudiogamePage.indexGameStep}/${AudiogamePage.arrayIndexGameWords.length}`;
 
     const btnNext = document.querySelector('.button.next') as HTMLButtonElement;
     btnNext.disabled = true;

@@ -5,7 +5,7 @@ import { AudiogamePage } from './AudiogamePage';
 
 export function getGameHTML(): string {
   return `
-  <h1 class="audio-game__title">AudioGame</h1>
+  <h1 class="audio-game__title">AudioGame - ${AudiogamePage.indexGameStep}/${AudiogamePage.arrayIndexGameWords.length}</h1>
 
   <div class="audio-game__result">
     <image src="../../../../assets/img/sound_PNG13.png" alt="Sound"></image>
