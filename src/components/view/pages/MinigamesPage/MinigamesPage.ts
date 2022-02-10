@@ -1,5 +1,6 @@
 import { Page } from '../../Page';
 import baseHTML from './baseHTML';
+import { AudiogamePage } from '../AudiogamePage/AudiogamePage';
 
 async function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -19,6 +20,19 @@ export class MinigamesPage implements Page {
 
   async afterRender() {
     removeLoading();
+
+    AudiogamePage.level = 0;
+
+    const selectAudio = document.querySelectorAll(
+      'input[name="select-audio"]'
+    ) as NodeListOf<HTMLInputElement>;
+
+    selectAudio.forEach((el) => {
+      el.addEventListener('change', (el2) => {
+        const target = el2.target as HTMLInputElement;
+        AudiogamePage.level = +target.value - 1;
+      });
+    });
   }
 
   async run() {

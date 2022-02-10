@@ -3,7 +3,7 @@ import ServerApi from '../../../shared/utils/serverApi';
 
 export function getGameHTML(step: number, length: number): string {
   return `
-  <h1 class="audio-game__title">AudioGame - ${step}/${length}</h1>
+  <h1 class="audio-game__title">AudioGame - ${step + 1}/${length}</h1>
 
   <div class="audio-game__result"></div>
 
@@ -76,20 +76,6 @@ export function getGameResultsHTML(): string {
       <h3 class="text-result">Wrong answers</h3>
       <div class="audio-game__answers-false"></div>
     </div>
-  </div>
-`;
-}
-
-export function getSelectLevelHTML(): string {
-  return `
-  <h1 class="audio-game__title">AudioGame - select level</h1>
-  <div class="audio-game__select-level">
-    <button class="button select-game" data-level="1">Level 1</button>
-    <button class="button select-game" data-level="2">Level 2</button>
-    <button class="button select-game" data-level="3">Level 3</button>
-    <button class="button select-game" data-level="4">Level 4</button>
-    <button class="button select-game" data-level="5">Level 5</button>
-    <button class="button select-game" data-level="6">Level 6</button>
   </div>
 `;
 }
