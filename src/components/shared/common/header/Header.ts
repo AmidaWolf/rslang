@@ -67,9 +67,9 @@ async function drawContent() {
 
   menuList.appendChild(textBook);
   nav.appendChild(menuList);
-
   headerWrapper.append(logo, nav, login);
-  await authorizationModal.run(login).then(() => {
+
+  await authorizationModal.run(headerWrapper).then(() => {
     authorizationPage.run();
   });
 }
