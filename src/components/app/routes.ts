@@ -3,6 +3,7 @@ import { TextbookPage } from '../view/pages/TextbookPage/TextbookPage';
 import { AuthorizationPage } from '../view/pages/AuthorizationPage/AuthorizationPage';
 import { StatisticsPage } from '../view/pages/StatisticsPage/StatisticsPage';
 import { MinigamesPage } from '../view/pages/MinigamesPage/MinigamesPage';
+import { AudiogamePage } from '../view/pages/AudiogamePage/AudiogamePage';
 import { DevelopersPage } from '../view/pages/DevelopersPage/DevelopersPage';
 
 export interface RoutesI {
@@ -11,7 +12,8 @@ export interface RoutesI {
     | typeof AuthorizationPage
     | typeof TextbookPage
     | typeof StatisticsPage
-    | typeof MinigamesPage;
+    | typeof MinigamesPage
+    | typeof AudiogamePage;
 }
 
 export enum RoutesPath {
@@ -20,6 +22,7 @@ export enum RoutesPath {
   TEXTBOOK = '/textbook',
   STATISTICS = '/statistics',
   MINIGAMES = '/minigames',
+  AUDIOGAME = '/audiogame',
   DEVELOPERS = '/developers',
 }
 
@@ -29,6 +32,7 @@ export const routesText = {
   [RoutesPath.TEXTBOOK]: 'Textbook',
   [RoutesPath.STATISTICS]: 'Statistics',
   [RoutesPath.MINIGAMES]: 'Minigames',
+  [RoutesPath.AUDIOGAME]: 'Audiogame',
   [RoutesPath.DEVELOPERS]: 'Developers',
 };
 
@@ -37,5 +41,6 @@ export const routes = {
   [RoutesPath.TEXTBOOK]: TextbookPage,
   [RoutesPath.STATISTICS]: StatisticsPage,
   [RoutesPath.MINIGAMES]: MinigamesPage,
+  [RoutesPath.AUDIOGAME]: AudiogamePage,
   [RoutesPath.DEVELOPERS]: DevelopersPage,
 };

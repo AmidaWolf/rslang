@@ -1,0 +1,52 @@
+@import "../../../../colors";
+
+.audio-game {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1em;
+
+  background-color: $bg-color;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.button_true {
+  background-color: $green-color;
+}
+
+.button_false {
+  background-color: $red-color;
+}
+
+.audio-game__select-level {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  gap: 10px;
+}
+
+.audio-game__result-all {
+  border: 3px solid $font-color;
+  display: flex;
+  padding: 20px;
+  gap: 100px;
+}
+
+.audio-game__result {
+  display: flex;
+  justify-content: center;
+}
+
+.audio-word {
+  width: 20rem;
+  height: 15rem;
+  background-image: url("../../../../assets/img/sound_PNG13.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
