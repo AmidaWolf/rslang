@@ -9,6 +9,7 @@ import {
   SignRequestBody,
   SignResponseBody,
   GetUserResponseType,
+  ErrorType,
 } from '../../types';
 
 export default class ServerApi {
@@ -19,9 +20,6 @@ export default class ServerApi {
   static usersURL = `${ServerApi.baseURL}/users`;
 
   static signInURL = `${ServerApi.baseURL}/signin`;
-
-  static testToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZmVkY2VmY2QyNGMwMDAxNjk5OThmNiIsImlhdCI6MTY0NDA5MjcwMCwiZXhwIjoxNjQ0MTA3MTAwfQ.kGkLbPl9W5X02L3qpoTNkVXY63-vdOVP_MWccOSXsWo';
 
   static async getWords(group: number, page: number): Promise<WordType[]> {
     const response: Response = await fetch(
@@ -52,7 +50,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  static async createUser(body: UserBodyType): Promise<UserBodyType> {
+  static async createUser(body: UserBodyType): Promise<GetUserResponseType> {
     const response: Response = await fetch(ServerApi.usersURL, {
       method: 'POST',
       headers: {
@@ -63,12 +61,12 @@ export default class ServerApi {
     return response.json();
   }
 
-  static async getUser(id: string): Promise<GetUserResponseType> {
+  static async getUser(id: string | null): Promise<GetUserResponseType> {
     const response: Response = await fetch(`${ServerApi.usersURL}/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${ServerApi.testToken}`,
+        Authorization: `Bearer ${localStorage.getItem('userToken')}`,
       },
     });
     return response.json();
@@ -82,7 +80,7 @@ export default class ServerApi {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${ServerApi.testToken}`,
+        Authorization: `Bearer ${localStorage.getItem('userToken')}`,
       },
       body: JSON.stringify(body),
     });
@@ -93,20 +91,20 @@ export default class ServerApi {
     await fetch(`${ServerApi.usersURL}/${id}`, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${ServerApi.testToken}`,
+        Authorization: `Bearer ${localStorage.getItem('userToken')}`,
       },
     });
   }
 
   // TODO - need to realize how getNewUserTokens should work correctly
-  static async getNewUserTokens(id: string): Promise<GetTokensType> {
+  static async getNewUserTokens(id: string | null): Promise<GetTokensType> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${id}/tokens`,
       {
         method: 'GET',
         headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${ServerApi.testToken}`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
       }
     );
@@ -120,7 +118,7 @@ export default class ServerApi {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${ServerApi.testToken}`,
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
       }
     );
@@ -137,7 +135,7 @@ export default class ServerApi {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${ServerApi.testToken}`,
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
       }
     );
@@ -155,7 +153,7 @@ export default class ServerApi {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${ServerApi.testToken}`,
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
         body: JSON.stringify(body),
       }
@@ -174,7 +172,7 @@ export default class ServerApi {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${ServerApi.testToken}`,
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
         body: JSON.stringify(body),
       }
@@ -186,7 +184,7 @@ export default class ServerApi {
     await fetch(`${ServerApi.usersURL}/${userId}/words/${wordId}`, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${ServerApi.testToken}`,
+        Authorization: `Bearer ${localStorage.getItem('userToken')}`,
       },
     });
   }
@@ -206,7 +204,7 @@ export default class ServerApi {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${ServerApi.testToken}`,
+        Authorization: `Bearer ${localStorage.getItem('userToken')}`,
       },
     });
     return response.json();
@@ -222,7 +220,7 @@ export default class ServerApi {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${ServerApi.testToken}`,
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
       }
     );
@@ -236,7 +234,7 @@ export default class ServerApi {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${ServerApi.testToken}`,
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
       }
     );
@@ -253,7 +251,7 @@ export default class ServerApi {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${ServerApi.testToken}`,
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
         body: JSON.stringify(body),
       }
@@ -268,7 +266,7 @@ export default class ServerApi {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${ServerApi.testToken}`,
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
       }
     );
@@ -285,7 +283,7 @@ export default class ServerApi {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${ServerApi.testToken}`,
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
         body: JSON.stringify(body),
       }
@@ -293,7 +291,9 @@ export default class ServerApi {
     return response.json();
   }
 
-  static async signIn(body: SignRequestBody): Promise<SignResponseBody> {
+  static async signIn(
+    body: SignRequestBody
+  ): Promise<SignResponseBody | ErrorType> {
     const response: Response = await fetch(`${ServerApi.signInURL}`, {
       method: 'POST',
       headers: {
@@ -301,6 +301,10 @@ export default class ServerApi {
       },
       body: JSON.stringify(body),
     });
+    if (!response.ok) {
+      console.log('signIn request error');
+      return { message: 'Error' };
+    }
     return response.json();
   }
 }

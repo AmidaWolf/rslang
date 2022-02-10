@@ -34,7 +34,6 @@ export const routesText = {
 
 export const routes = {
   [RoutesPath.START]: MainPage,
-  [RoutesPath.AUTHORIZATION]: AuthorizationPage,
   [RoutesPath.TEXTBOOK]: TextbookPage,
   [RoutesPath.STATISTICS]: StatisticsPage,
   [RoutesPath.MINIGAMES]: MinigamesPage,
