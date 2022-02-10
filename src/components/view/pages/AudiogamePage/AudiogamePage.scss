@@ -15,11 +15,11 @@
   background-size: cover;
 }
 
-.button.true {
+.button_true {
   background-color: $green-color;
 }
 
-.button.false {
+.button_false {
   background-color: $red-color;
 }
 
@@ -35,4 +35,18 @@
   display: flex;
   padding: 20px;
   gap: 100px;
+}
+
+.audio-game__result {
+  display: flex;
+  justify-content: center;
+}
+
+.audio-word {
+  width: 20rem;
+  height: 15rem;
+  background-image: url("../../../../assets/img/sound_PNG13.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
 }

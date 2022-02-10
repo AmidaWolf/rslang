@@ -1,7 +1,10 @@
 const content = `
     <section class="minigames">
         <div class="minigames__wrapper">
-          <a class="button minigames__game" href="#/audiogame">AudioGame</a>
+        <h1 class="minigames__title">Minigames</h1>
+          <ul>
+             <li><a class="button minigames__game" href="#/audiogame">AudioGame</a></li>
+          </ul>
         </div>
         <div class="loading"></div>
     </section>

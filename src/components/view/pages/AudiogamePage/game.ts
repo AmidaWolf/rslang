@@ -1,15 +1,11 @@
 import { WordType } from '../../../types';
 import ServerApi from '../../../shared/utils/serverApi';
-// eslint-disable-next-line import/no-cycle
-import { AudiogamePage } from './AudiogamePage';
 
-export function getGameHTML(): string {
+export function getGameHTML(step: number, length: number): string {
   return `
-  <h1 class="audio-game__title">AudioGame - ${AudiogamePage.indexGameStep}/${AudiogamePage.arrayIndexGameWords.length}</h1>
+  <h1 class="audio-game__title">AudioGame - ${step}/${length}</h1>
 
-  <div class="audio-game__result">
-    <image src="../../../../assets/img/sound_PNG13.png" alt="Sound"></image>
-  </div>
+  <div class="audio-game__result"></div>
 
   <div class="audio-game__answers"></div>
 
@@ -21,23 +17,13 @@ export function getGameHTML(): string {
 `;
 }
 
-export function getAnswersHTML(index: number[]): string {
+export function getAnswersHTML(index: string[]): string {
   return `
-    <button class="button" data-text="${
-      AudiogamePage.arrayWords[index[0]].word
-    }">${AudiogamePage.arrayWords[index[0]].word}</button>
-    <button class="button" data-text="${
-      AudiogamePage.arrayWords[index[1]].word
-    }">${AudiogamePage.arrayWords[index[1]].word}</button>
-    <button class="button" data-text="${
-      AudiogamePage.arrayWords[index[2]].word
-    }">${AudiogamePage.arrayWords[index[2]].word}</button>
-    <button class="button" data-text="${
-      AudiogamePage.arrayWords[index[3]].word
-    }">${AudiogamePage.arrayWords[index[3]].word}</button>
-    <button class="button" data-text="${
-      AudiogamePage.arrayWords[index[4]].word
-    }">${AudiogamePage.arrayWords[index[4]].word}</button>
+    <button class="button" data-text="${index[0]}">${index[0]}</button>
+    <button class="button" data-text="${index[1]}">${index[1]}</button>
+    <button class="button" data-text="${index[2]}">${index[2]}</button>
+    <button class="button" data-text="${index[3]}">${index[3]}</button>
+    <button class="button" data-text="${index[4]}">${index[4]}</button>
 `;
 }
 

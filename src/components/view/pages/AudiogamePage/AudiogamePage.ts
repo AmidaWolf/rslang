@@ -97,7 +97,10 @@ export class AudiogamePage implements Page {
       '.audio-game__wrapper'
     ) as HTMLElement;
 
-    audioGameWrapper.innerHTML = getGameHTML();
+    audioGameWrapper.innerHTML = getGameHTML(
+      AudiogamePage.indexGameStep,
+      AudiogamePage.arrayIndexGameWords.length
+    );
 
     AudiogamePage.showAnswers(
       AudiogamePage.arrayIndexGameWords[AudiogamePage.indexGameStep]
@@ -148,7 +151,9 @@ export class AudiogamePage implements Page {
       '.audio-game__result'
     ) as HTMLElement;
 
-    resultContainer.innerHTML = `<image src="../../../../assets/img/sound_PNG13.png" alt="Sound"></image>`;
+    resultContainer.innerHTML = `<div class="audio-word"></div>`;
+    resultContainer.style.backgroundImage =
+      '../../../../assets/img/sound_PNG13.png';
 
     const header = document.querySelector('.audio-game__title') as HTMLElement;
     header.textContent = `AudioGame - ${AudiogamePage.indexGameStep}/${AudiogamePage.arrayIndexGameWords.length}`;
@@ -169,7 +174,13 @@ export class AudiogamePage implements Page {
 
     const randomNum: number = Math.floor(Math.random() * 5);
     answersIndexes.splice(randomNum, 0, index);
-    answersWrapper.innerHTML = getAnswersHTML(answersIndexes);
+    answersWrapper.innerHTML = getAnswersHTML([
+      AudiogamePage.arrayWords[answersIndexes[0]].wordTranslate,
+      AudiogamePage.arrayWords[answersIndexes[1]].wordTranslate,
+      AudiogamePage.arrayWords[answersIndexes[2]].wordTranslate,
+      AudiogamePage.arrayWords[answersIndexes[3]].wordTranslate,
+      AudiogamePage.arrayWords[answersIndexes[4]].wordTranslate,
+    ]);
 
     const audio = document.querySelector('.question-audio') as HTMLAudioElement;
     const audioFail = document.querySelector('.audio-fail') as HTMLAudioElement;
@@ -186,22 +197,22 @@ export class AudiogamePage implements Page {
     audio.volume = 1;
     audio.play();
 
-    const audioBtn = document.querySelector(
-      '.audio-game__result'
-    ) as HTMLElement;
+    const audioBtn = document.querySelector('.audio-word') as HTMLElement;
 
     audioBtn.addEventListener('click', () => audio.play());
 
     const rightAnswer = document.querySelector(
-      `.button[data-text="${AudiogamePage.arrayWords[index].word}"]`
+      `.button[data-text="${AudiogamePage.arrayWords[index].wordTranslate}"]`
     ) as HTMLElement;
 
     // eslint-disable-next-line prefer-arrow-callback
     answersWrapper.addEventListener('click', function x(el) {
       const target = el.target as HTMLElement;
       if (target.classList.contains('button')) {
-        if (target.textContent !== AudiogamePage.arrayWords[index].word) {
-          target.classList.add('false');
+        if (
+          target.textContent !== AudiogamePage.arrayWords[index].wordTranslate
+        ) {
+          target.classList.add('button_false');
           AudiogamePage.resultGameWordsFalse.push(index);
           audioFail.play();
         } else {
@@ -210,8 +221,7 @@ export class AudiogamePage implements Page {
         }
       }
       btnNext.disabled = false;
-      rightAnswer.classList.remove('false');
-      rightAnswer.classList.add('true');
+      rightAnswer.classList.add('button_true');
       answersWrapper.removeEventListener('click', x);
       AudiogamePage.showRightAnswer(AudiogamePage.arrayWords[index]);
       audio.volume = 0;
