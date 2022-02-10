@@ -1,0 +1,58 @@
+@import "../../../../colors";
+
+.developers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 1em;
+  gap: 1em;
+}
+
+.developers__title {
+  padding-bottom: 1em;
+
+  font-size: 2em;
+}
+
+.developers__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  max-width: 680px;
+}
+
+.dev-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1em;
+}
+
+.dev-card {
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  gap: 1em;
+  padding: 1em;
+
+  border: 2px solid $font-color;
+  border-radius: 2em;
+  background-color: transparent;
+}
+
+.dev-card__avatar {
+  width: 180px;
+  height: 180px;
+
+  border-radius: 2em;
+}
+
+@import 'DevelopersPage.media';
+

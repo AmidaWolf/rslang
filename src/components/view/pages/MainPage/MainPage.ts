@@ -1,7 +1,8 @@
 import { Page } from '../../Page';
 import baseHTML from './baseHTML';
+import { setElementHeight } from '../../../shared/helpers/setElementHeight';
 
-async function removeLoading() {
+function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
   loading.classList.add('visibility-hidden');
 }
@@ -18,6 +19,8 @@ export class MainPage implements Page {
   }
 
   async afterRender() {
+    setElementHeight();
+
     removeLoading();
   }
 
