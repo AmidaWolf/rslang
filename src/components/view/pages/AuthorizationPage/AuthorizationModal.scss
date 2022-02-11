@@ -1,48 +1,65 @@
+@import "../../../../colors";
+
 .modal {
-  display: none;
   position: fixed;
   z-index: 1;
   left: -100%;
   top: 50%;
-  transform: translate(-100%, -50%);
-  transition: 1s;
+
+  display: none;
   width: 100%;
   height: 100%;
+
+  transform: translate(-100%, -50%);
+  transition: 1s;
   overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
+
+  background-color: $transparent-gray;
 }
 
 .modal_open {
-  display: block;
   left: 50%;
+
+  display: block;
+
   transform: translate(-50%, -50%);
 }
 
 .modal__content-wrapper {
   position: relative;
-  background-color: #fefefe;
-  margin: 4% auto;
-  padding: 11em;
-  border: 1px solid #888;
-  width: 40%;
+
+  display: flex;
+  flex-direction: column;
+  margin: 1em auto 0 auto;
+  padding: 2em;
+  width: auto;
+  max-width: 60%;
+
+  gap: 2em;
+
+  background-color: $light-bg-color;
   border-radius: 2em;
+}
+
+.button_modal {
+  width: 2em;
+  height: 2em;
+  min-width: auto;
+
+  color: $font-color;
+
+  background-size: 1em 1em;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: transparent;
 }
 
 .modal__close {
   position: absolute;
-  top: 4%;
-  right: 8%;
-  color: #aaa;
-  font-size: 2.8em;
-  font-weight: bold;
-}
+  top: 2em;
+  right: 2em;
 
-.modal__close:hover,
-.modal__close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
+  background-image: url("./../../../../assets/close.svg");
 }
 
 .modal__content {
@@ -50,32 +67,70 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 1em;
+
+  gap: 2em;
+
+  border: 2px solid $font-color;
+  border-radius: 1em;
 
   color: black;
   font-size: 1.6em;
 }
 
-.content img {
+.authentication {
   width: 100%;
-  height: 100%;
-  max-width: 200px;
-  max-height: 200px;
 }
 
-.content * {
-  margin: 0.5em 0;
+.auth-fieldset {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 0;
+  margin: 0;
+
+  border: none;
 }
 
-.hide-auth-btn {
-  display: none;
-  color: green;
+.auth-label {
+  color: $font-color;
+}
+
+.auth-input {
+  margin-bottom: 1em;
+  padding: 0 1em;
+
+  border: none;
+  border-radius: 1em;
+}
+
+.auth-input:focus {
+  outline: 2px solid $favorite-color;
+}
+
+.password-hint {
+  position: relative;
+  bottom: 1em;
+
+  color: $font-color;
+  font-size: 0.5em;
 }
 
 .validation-error {
-  width: 300px;
-  height: 120px;
-  color: red;
+  color: $red-color;
   font-size: 20px;
+}
+
+.auth-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1em;
+}
+
+.button_auth {
+  font-size: 0.8em;
 }
 
 @media (max-width: 700px) {

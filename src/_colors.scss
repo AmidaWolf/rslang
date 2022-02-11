@@ -1,7 +1,10 @@
 $bg-color: #192f2d;
 $font-color: #ffffff;
+$reversed-font-color: complement($font-color);
 $favorite-color: #fdd700;
 $red-color: #fd0000;
 $blue-color: #2299eb;
 $green-color: #08aa05;
 $disabled-color: gray;
+$transparent-gray: rgba(0, 0, 0, 0.6);
+$light-bg-color: lighten($bg-color, 10);

@@ -151,6 +151,6 @@ export class AuthorizationPage {
   }
 
   async run() {
-    this.addFormButtonsListener();
+    await this.addFormButtonsListener();
   }
 }
