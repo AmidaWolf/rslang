@@ -1,4 +1,11 @@
 /*media queries*/
+@media (max-width: 1499.98px) {
+  .modal__content-wrapper {
+    max-width: 60%;
+  }
+}
+
+/*1200-1499.98*/
 @media (max-width: 1199.98px) {
   .modal__content-wrapper {
     max-width: 60%;
