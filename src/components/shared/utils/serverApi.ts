@@ -50,7 +50,9 @@ export default class ServerApi {
     return response.json();
   }
 
-  static async createUser(body: UserBodyType): Promise<GetUserResponseType> {
+  static async createUser(
+    body: UserBodyType
+  ): Promise<GetUserResponseType | number> {
     const response: Response = await fetch(ServerApi.usersURL, {
       method: 'POST',
       headers: {
@@ -58,6 +60,9 @@ export default class ServerApi {
       },
       body: JSON.stringify(body),
     });
+    if (response.status === 417) {
+      return response.status;
+    }
     return response.json();
   }
 

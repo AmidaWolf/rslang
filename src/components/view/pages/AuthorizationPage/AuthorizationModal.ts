@@ -21,7 +21,7 @@ export class AuthorizationModal {
           <input class="auth-input" id="password" type="password">
           <p class="password-hint">Password must be at least 8 characters long, have uppercase and lowercase letters and numbers </p>
         </fieldset>
-        <p class="validation-error"></p>
+        <p class="error"></p>
         <div class="auth-buttons">
           <button class="button button_auth sign-in" type="button">Sign In</button>
           <button class="button button_auth sign-up" type="button">Sign Up</button>

@@ -26,12 +26,9 @@ export class AuthorizationPage {
     localStorage.setItem('userEmail', email);
   }
 
-  addValidationError() {
-    const validationError = <HTMLElement>(
-      document.querySelector('.validation-error')
-    );
-    validationError.innerText =
-      'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required';
+  addErrorMessage(text: string) {
+    const errorElement = <HTMLElement>document.querySelector('.error');
+    errorElement.innerText = text;
   }
 
   updateLocalStorageOnLogOut() {
@@ -58,7 +55,9 @@ export class AuthorizationPage {
   async validateUserData(tokens: GetTokensType | ErrorType, email: string) {
     if (tokens.message === 'Error' || tokens.message === 'LoggedOut') {
       localStorage.setItem('userMessage', tokens.message);
-      this.addValidationError();
+      this.addErrorMessage(
+        'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required'
+      );
     } else {
       this.setUserDataToLocalStorage(tokens);
       this.setEmailToLocalStorage(email);
@@ -100,14 +99,18 @@ export class AuthorizationPage {
 
   async signUpUser(signInData: UserBodyType) {
     ServerApi.createUser(signInData)
-      .then(() =>
-        ServerApi.signIn(signInData).then(
-          (tokens: GetTokensType | ErrorType) => {
-            this.validateUserData(tokens, signInData.email);
-            this.switchHiddenSectionsAccess();
-          }
-        )
-      )
+      .then((result) => {
+        if (result === 417) {
+          this.addErrorMessage('User with this email is already registered.');
+        } else {
+          ServerApi.signIn(signInData).then(
+            (tokens: GetTokensType | ErrorType) => {
+              this.validateUserData(tokens, signInData.email);
+              this.switchHiddenSectionsAccess();
+            }
+          );
+        }
+      })
       .catch((e) => {
         console.log(e);
       });
@@ -128,7 +131,9 @@ export class AuthorizationPage {
         if (logInData) {
           this.singInUser(logInData);
         } else {
-          this.addValidationError();
+          this.addErrorMessage(
+            'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required'
+          );
         }
       });
     });
@@ -137,7 +142,9 @@ export class AuthorizationPage {
         if (logInData) {
           this.signUpUser(logInData);
         } else {
-          this.addValidationError();
+          this.addErrorMessage(
+            'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required'
+          );
         }
       });
     });
