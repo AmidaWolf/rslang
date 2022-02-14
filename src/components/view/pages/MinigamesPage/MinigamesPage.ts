@@ -1,6 +1,7 @@
 import { Page } from '../../Page';
 import baseHTML from './baseHTML';
 import { AudiogamePage } from '../AudiogamePage/AudiogamePage';
+import { SprintgamePage } from '../SprintgamePage/SprintgamePage';
 
 async function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -31,6 +32,19 @@ export class MinigamesPage implements Page {
       el.addEventListener('change', (el2) => {
         const target = el2.target as HTMLInputElement;
         AudiogamePage.level = +target.value - 1;
+      });
+    });
+
+    SprintgamePage.level = 0;
+
+    const selectSprint = document.querySelectorAll(
+      'input[name="select-sprint"]'
+    ) as NodeListOf<HTMLInputElement>;
+
+    selectSprint.forEach((el) => {
+      el.addEventListener('change', (el2) => {
+        const target = el2.target as HTMLInputElement;
+        SprintgamePage.level = +target.value - 1;
       });
     });
   }
