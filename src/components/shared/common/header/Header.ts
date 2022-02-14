@@ -69,7 +69,9 @@ async function drawContent() {
   nav.appendChild(menuList);
   headerWrapper.append(logo, nav, login);
 
-  await authorizationModal.run(login).then(() => {
+  const isLogged = authorizationPage.userIsLogged();
+
+  await authorizationModal.run(login, isLogged).then(() => {
     authorizationPage.run();
   });
 }

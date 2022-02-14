@@ -298,7 +298,7 @@ export default class ServerApi {
 
   static async signIn(
     body: SignRequestBody
-  ): Promise<SignResponseBody | ErrorType> {
+  ): Promise<SignResponseBody | ErrorType | number> {
     const response: Response = await fetch(`${ServerApi.signInURL}`, {
       method: 'POST',
       headers: {
@@ -307,6 +307,12 @@ export default class ServerApi {
       body: JSON.stringify(body),
     });
     if (!response.ok) {
+      if (response.status === 403) {
+        return response.status;
+      }
+      if (response.status === 404) {
+        return response.status;
+      }
       console.log('signIn request error');
       return { message: 'Error' };
     }

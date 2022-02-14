@@ -1,11 +1,13 @@
 import ServerApi from '../../../shared/utils/serverApi';
 import { AuthorizationModal } from './AuthorizationModal';
 import {
-  UserBodyType,
-  SignRequestBody,
-  GetTokensType,
   ErrorType,
+  GetTokensType,
+  SignRequestBody,
+  UserBodyType,
 } from '../../../types';
+import { authContent } from './authContent';
+import { registerContent } from './registerContent';
 
 export class AuthorizationPage {
   modal: AuthorizationModal;
@@ -52,6 +54,11 @@ export class AuthorizationPage {
     }
   }
 
+  userIsLogged() {
+    const message = localStorage.getItem('userMessage');
+    return message === 'Authenticated';
+  }
+
   async validateUserData(tokens: GetTokensType | ErrorType, email: string) {
     if (tokens.message === 'Error' || tokens.message === 'LoggedOut') {
       localStorage.setItem('userMessage', tokens.message);
@@ -72,25 +79,56 @@ export class AuthorizationPage {
 
     const emailInput = <HTMLInputElement>document.getElementById('email');
     const passwordInput = <HTMLInputElement>document.getElementById('password');
+    const passwordRepeatInput = <HTMLInputElement>(
+      document.getElementById('passwordRepeat')
+    );
+
     const logInData = {
       email: emailInput.value,
       password: passwordInput.value,
     };
     let result: typeof logInData | undefined;
 
-    if (emailReg.test(emailInput.value) && passReg.test(passwordInput.value)) {
-      console.log(logInData);
-      result = logInData;
+    const checkEmailAndPassword = () => {
+      if (
+        emailReg.test(emailInput.value) &&
+        passReg.test(passwordInput.value)
+      ) {
+        console.log(logInData);
+        result = logInData;
+      } else {
+        this.addErrorMessage(
+          'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required'
+        );
+      }
+    };
+
+    if (passwordRepeatInput) {
+      if (passwordRepeatInput.value === passwordInput.value) {
+        checkEmailAndPassword();
+      } else {
+        this.addErrorMessage('The passwords must match');
+      }
+    } else {
+      checkEmailAndPassword();
     }
 
     return result;
   }
 
-  async singInUser(logInData: SignRequestBody) {
+  async signInUser(logInData: SignRequestBody) {
     ServerApi.signIn(logInData)
-      .then((tokens: GetTokensType | ErrorType) => {
-        this.validateUserData(tokens, logInData.email);
-        this.switchHiddenSectionsAccess();
+      .then((result: GetTokensType | ErrorType | number) => {
+        if (typeof result === 'number') {
+          if (result === 403) {
+            this.addErrorMessage('Incorrect password for this user.');
+          } else if (result === 404) {
+            this.addErrorMessage('This email is not registered.');
+          }
+        } else {
+          this.validateUserData(result, logInData.email);
+          this.switchHiddenSectionsAccess();
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -100,15 +138,12 @@ export class AuthorizationPage {
   async signUpUser(signInData: UserBodyType) {
     ServerApi.createUser(signInData)
       .then((result) => {
-        if (result === 417) {
-          this.addErrorMessage('User with this email is already registered.');
+        if (typeof result === 'number') {
+          if (result === 417) {
+            this.addErrorMessage('User with this email is already registered.');
+          }
         } else {
-          ServerApi.signIn(signInData).then(
-            (tokens: GetTokensType | ErrorType) => {
-              this.validateUserData(tokens, signInData.email);
-              this.switchHiddenSectionsAccess();
-            }
-          );
+          this.signInUser(signInData);
         }
       })
       .catch((e) => {
@@ -125,32 +160,50 @@ export class AuthorizationPage {
     const signInBtn = <HTMLElement>document.querySelector('.sign-in');
     const signUpBtn = <HTMLElement>document.querySelector('.sign-up');
     const logOutBtn = <HTMLElement>document.querySelector('.log-out');
+    const signInLinkBtn = <HTMLElement>document.querySelector('.sign-in-link');
+    const signUpLinkBtn = <HTMLElement>document.querySelector('.sign-up-link');
 
-    signInBtn.addEventListener('click', () => {
-      this.getCheckedFormData().then((logInData) => {
-        if (logInData) {
-          this.singInUser(logInData);
-        } else {
-          this.addErrorMessage(
-            'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required'
-          );
-        }
+    if (signInBtn) {
+      signInBtn.addEventListener('click', () => {
+        this.getCheckedFormData().then((logInData) => {
+          if (logInData) {
+            this.signInUser(logInData);
+          }
+        });
       });
-    });
-    signUpBtn.addEventListener('click', () => {
-      this.getCheckedFormData().then((logInData) => {
-        if (logInData) {
-          this.signUpUser(logInData);
-        } else {
-          this.addErrorMessage(
-            'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required'
-          );
-        }
+    }
+
+    if (signUpBtn) {
+      signUpBtn.addEventListener('click', () => {
+        this.getCheckedFormData().then((logInData) => {
+          if (logInData) {
+            this.signUpUser(logInData);
+          }
+        });
       });
-    });
-    logOutBtn.addEventListener('click', () => {
-      this.logOutUser();
-    });
+    }
+
+    if (logOutBtn) {
+      logOutBtn.addEventListener('click', () => {
+        this.logOutUser();
+      });
+    }
+
+    if (signInLinkBtn) {
+      signInLinkBtn.addEventListener('click', () => {
+        this.modal.createModal(authContent, true).then(() => {
+          this.addFormButtonsListener();
+        });
+      });
+    }
+
+    if (signUpLinkBtn) {
+      signUpLinkBtn.addEventListener('click', () => {
+        this.modal.createModal(registerContent, true).then(() => {
+          this.addFormButtonsListener();
+        });
+      });
+    }
   }
 
   async afterRender() {

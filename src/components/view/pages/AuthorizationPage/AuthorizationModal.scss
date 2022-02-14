@@ -127,12 +127,25 @@
 
 .auth-buttons {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   margin-top: 1em;
+
+  gap: 0.5em;
 }
 
-.button_auth {
+.auth-buttons__button {
   font-size: 0.8em;
 }
 
+.auth-buttons__link {
+  background-color: transparent;
+  border: none;
+
+  cursor: pointer;
+}
+
+
+.auth-buttons__text {
+  color: $font-color;
+}
 @import "AuthorizationModal.media";
