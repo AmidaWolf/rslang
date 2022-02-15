@@ -18,6 +18,11 @@ export const userContent: ModalContentType = {
     <div class="modal-loading visibility-hidden"></div>
     <button class="button auth-buttons__button log-out" type="button">Log out</button>
     <button class="button auth-buttons__button update" type="button">Update info</button>
+    <div class="auth-buttons__danger">
+      <label class="auth-label" for="emailRepeat">Danger zone! Write email for delete account: </label>
+      <input class="auth-input" id="emailRepeat" type="email">
+      <button class="button auth-buttons__button delete" type="button">Delete user</button>
+    </div>
   </div>
 </form>
 `,

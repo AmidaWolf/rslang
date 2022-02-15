@@ -92,7 +92,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  static async deleteUser(id: string): Promise<void> {
+  static async deleteUser(id: string | null): Promise<void> {
     await fetch(`${ServerApi.usersURL}/${id}`, {
       method: 'DELETE',
       headers: {

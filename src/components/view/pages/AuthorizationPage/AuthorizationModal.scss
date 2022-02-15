@@ -144,8 +144,20 @@
   cursor: pointer;
 }
 
-
 .auth-buttons__text {
   color: $font-color;
 }
+
+.auth-buttons__danger {
+  display: flex;
+  flex-direction: column;
+
+  padding: 1em;
+
+  gap: 1em;
+
+  border: 2px solid $red-color;
+  border-radius: 1em;
+}
+
 @import "AuthorizationModal.media";

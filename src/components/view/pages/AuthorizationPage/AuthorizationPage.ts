@@ -104,6 +104,9 @@ export class AuthorizationPage {
     const passwordRepeatInput = <HTMLInputElement>(
       document.getElementById('passwordRepeat')
     );
+    const emailRepeatInput = <HTMLInputElement>(
+      document.getElementById('emailRepeat')
+    );
 
     const logInData = {
       email: emailInput.value,
@@ -130,6 +133,12 @@ export class AuthorizationPage {
         checkEmailAndPassword();
       } else {
         this.addErrorMessage('The passwords must match');
+      }
+    } else if (emailRepeatInput) {
+      if (emailRepeatInput.value !== emailInput.value) {
+        this.addErrorMessage('Try write email correctly');
+      } else {
+        result = logInData;
       }
     } else {
       checkEmailAndPassword();
@@ -178,6 +187,14 @@ export class AuthorizationPage {
     window.location.reload();
   }
 
+  async deleteUser() {
+    const userId = localStorage.getItem('userId');
+
+    await ServerApi.deleteUser(userId).then(async () => {
+      await this.logOutUser();
+    });
+  }
+
   async updateUserInfo() {
     const usernameInput = <HTMLInputElement>document.getElementById('username');
     const emailInput = <HTMLInputElement>document.getElementById('email');
@@ -209,10 +226,10 @@ export class AuthorizationPage {
     const signInLinkBtn = <HTMLElement>document.querySelector('.sign-in-link');
     const signUpLinkBtn = <HTMLElement>document.querySelector('.sign-up-link');
     const updateBtn = <HTMLElement>document.querySelector('.update');
+    const deleteBtn = <HTMLElement>document.querySelector('.delete');
 
     const signInClick = (event) => {
       const button = <HTMLButtonElement>event.target;
-      console.log(button);
       this.getCheckedFormData().then((logInData) => {
         if (logInData) {
           this.addLoading();
@@ -261,6 +278,20 @@ export class AuthorizationPage {
       });
     };
 
+    const deleteClick = (event) => {
+      const button = <HTMLButtonElement>event.target;
+      this.getCheckedFormData().then((logInData) => {
+        if (logInData) {
+          button.disabled = true;
+          this.addLoading();
+          this.deleteUser().then(() => {
+            this.removeLoading();
+            button.disabled = false;
+          });
+        }
+      });
+    };
+
     const updateClick = (event) => {
       const button = <HTMLButtonElement>event.target;
       this.getCheckedFormData().then((loginData) => {
@@ -300,6 +331,10 @@ export class AuthorizationPage {
 
     if (updateBtn) {
       updateBtn.addEventListener('click', updateClick);
+    }
+
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', deleteClick);
     }
   }
 
