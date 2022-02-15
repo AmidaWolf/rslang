@@ -85,6 +85,8 @@ export class SprintgamePage implements Page {
   }
 
   static showGame(): void {
+    const audioFail = new Audio('../../../../assets/fail.mp3');
+    const audioFanfar = new Audio('../../../../assets/fanfar.mp3');
     const sprintGameWrapper = document.querySelector(
       '.sprint__wrapper'
     ) as HTMLElement;
@@ -138,8 +140,13 @@ export class SprintgamePage implements Page {
           answer = false;
         }
 
+        audioFanfar.pause();
+        audioFanfar.currentTime = 0;
+        audioFail.pause();
+        audioFail.currentTime = 0;
+
         if (answerUser === answer) {
-          this.playSound(true);
+          audioFanfar.play();
           this.resultGameWordsTrue.push(
             SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
           );
@@ -149,7 +156,7 @@ export class SprintgamePage implements Page {
           if (this.countStepsNoErrors === 8) this.scoreAdd = 40;
           if (this.countStepsNoErrors === 12) this.scoreAdd = 80;
         } else {
-          this.playSound(false);
+          audioFail.play();
           this.resultGameWordsFalse.push(
             SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
           );
@@ -241,23 +248,5 @@ export class SprintgamePage implements Page {
       <div class="word-wrapper">${SprintgamePage.arrayWords[i].word}&nbsp;${SprintgamePage.arrayWords[i].transcription}&nbsp;${SprintgamePage.arrayWords[i].wordTranslate}</div>
       `;
     });
-  }
-
-  static playSound(res: boolean): void {
-    const audioFail = document.querySelector('.audio-fail') as HTMLAudioElement;
-    const audioFanfar = document.querySelector(
-      '.audio-fanfar'
-    ) as HTMLAudioElement;
-
-    audioFail.currentTime = 0;
-    audioFail.pause();
-    audioFanfar.currentTime = 0;
-    audioFanfar.pause();
-
-    if (res) {
-      audioFanfar.play();
-    } else {
-      audioFail.play();
-    }
   }
 }
