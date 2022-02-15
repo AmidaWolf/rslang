@@ -52,3 +52,13 @@
     font-size: 0.8em;
   }
 }
+
+/*320-479.98*/
+@media (max-width: 479.98px) {
+  .auth-buttons__danger {
+    margin-top: 1em;
+    padding: 0;
+
+    border: none;
+  }
+}
