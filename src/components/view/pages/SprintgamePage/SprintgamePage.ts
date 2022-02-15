@@ -41,9 +41,9 @@ export class SprintgamePage implements Page {
   }
 
   async afterRender() {
+    await this.setDataGame();
     removeLoading();
-
-    this.setDataGame();
+    SprintgamePage.showGame();
   }
 
   async run() {
@@ -78,7 +78,6 @@ export class SprintgamePage implements Page {
       );
       SprintgamePage.arrayIndexGameWords.push(+result);
     }
-    SprintgamePage.showGame();
   }
 
   private static getIndexRandomWord(): number {
@@ -98,7 +97,7 @@ export class SprintgamePage implements Page {
 
     let timeLeft = 60;
 
-    setInterval(() => {
+    const timerInterval = setInterval(() => {
       timeLeft -= 1;
       if (timeLeft > 9) {
         textTimer.textContent = `00:${timeLeft}`;
@@ -109,7 +108,10 @@ export class SprintgamePage implements Page {
 
     this.updateDataQuestion();
 
-    setInterval(this.showResultsGame, 60000);
+    setInterval(() => {
+      clearInterval(timerInterval);
+      this.showResultsGame();
+    }, 60000);
 
     const buttonsContainer = document.querySelector(
       '.sprint-buttons'

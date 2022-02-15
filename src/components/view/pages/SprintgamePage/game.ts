@@ -1,6 +1,3 @@
-// import { WordType } from '../../../types';
-// import ServerApi from '../../../shared/utils/serverApi';
-
 export function getGameHTML(): string {
   return `
   <h1 class="sprint__title">SprintGame. Score - <span>0</span></h1>
@@ -25,8 +22,6 @@ export function getGameHTML(): string {
 
   </div>
   <h2 class="sprint__timer">Time left - <span>01:00</span></h2>
-
-
 `;
 }
 

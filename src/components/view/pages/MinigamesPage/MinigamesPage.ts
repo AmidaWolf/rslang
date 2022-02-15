@@ -24,27 +24,30 @@ export class MinigamesPage implements Page {
 
     AudiogamePage.level = 0;
 
-    const selectAudio = document.querySelectorAll(
-      'input[name="select-audio"]'
-    ) as NodeListOf<HTMLInputElement>;
+    SprintgamePage.level = 0;
 
-    selectAudio.forEach((el) => {
-      el.addEventListener('change', (el2) => {
-        const target = el2.target as HTMLInputElement;
-        AudiogamePage.level = +target.value - 1;
+    const btnStartAudioGame = document.querySelector(
+      '.minigames__btn-start_audio'
+    );
+    const btnStartSprintGame = document.querySelector(
+      '.minigames__btn-start_sprint'
+    );
+
+    btnStartAudioGame?.addEventListener('click', () => {
+      const selectAudio = document.querySelectorAll(
+        '[name="select-audio"]'
+      ) as NodeListOf<HTMLInputElement>;
+      selectAudio.forEach((el) => {
+        if (el.checked) AudiogamePage.level = +el.value;
       });
     });
 
-    SprintgamePage.level = 0;
-
-    const selectSprint = document.querySelectorAll(
-      'input[name="select-sprint"]'
-    ) as NodeListOf<HTMLInputElement>;
-
-    selectSprint.forEach((el) => {
-      el.addEventListener('change', (el2) => {
-        const target = el2.target as HTMLInputElement;
-        SprintgamePage.level = +target.value - 1;
+    btnStartSprintGame?.addEventListener('click', () => {
+      const selectSPrint = document.querySelectorAll(
+        '[name="select-sprint"]'
+      ) as NodeListOf<HTMLInputElement>;
+      selectSPrint.forEach((el) => {
+        if (el.checked) SprintgamePage.level = +el.value;
       });
     });
   }
