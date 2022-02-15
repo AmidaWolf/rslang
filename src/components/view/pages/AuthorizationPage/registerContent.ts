@@ -15,6 +15,7 @@ export const registerContent: ModalContentType = {
   </fieldset>
   <p class="error"></p>
   <div class="auth-buttons">
+    <div class="modal-loading visibility-hidden"></div>
     <button class="button auth-buttons__button sign-up" type="button">Sign Up</button>
     <p class="auth-buttons__text">Already registered?</p>
     <button class="link auth-buttons__link sign-in-link">Sign In</button>

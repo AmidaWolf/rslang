@@ -16,6 +16,16 @@ export class AuthorizationPage {
     this.modal = new AuthorizationModal();
   }
 
+  removeLoading() {
+    const loading = <HTMLElement>document.querySelector('.modal-loading');
+    loading.classList.add('visibility-hidden');
+  }
+
+  addLoading() {
+    const loading = <HTMLElement>document.querySelector('.modal-loading');
+    loading.classList.remove('visibility-hidden');
+  }
+
   setUserDataToLocalStorage(tokens: GetTokensType | ErrorType) {
     localStorage.setItem('userMessage', tokens.message);
     localStorage.setItem('userName', tokens.name);
@@ -163,18 +173,31 @@ export class AuthorizationPage {
     const signInLinkBtn = <HTMLElement>document.querySelector('.sign-in-link');
     const signUpLinkBtn = <HTMLElement>document.querySelector('.sign-up-link');
 
-    const signInClick = () => {
+    const signInClick = (event) => {
+      const button = <HTMLButtonElement>event.target;
+      console.log(button);
       this.getCheckedFormData().then((logInData) => {
         if (logInData) {
-          this.signInUser(logInData);
+          this.addLoading();
+          button.disabled = true;
+          this.signInUser(logInData).then(() => {
+            this.removeLoading();
+            button.disabled = false;
+          });
         }
       });
     };
 
-    const signUpClick = () => {
+    const signUpClick = (event) => {
+      const button = <HTMLButtonElement>event.target;
       this.getCheckedFormData().then((logInData) => {
         if (logInData) {
-          this.signUpUser(logInData);
+          button.disabled = true;
+          this.addLoading();
+          this.signUpUser(logInData).then(() => {
+            this.removeLoading();
+            button.disabled = false;
+          });
         }
       });
     };
@@ -191,8 +214,14 @@ export class AuthorizationPage {
       });
     };
 
-    const logOutClick = () => {
-      this.logOutUser();
+    const logOutClick = (event) => {
+      const button = <HTMLButtonElement>event.target;
+      button.disabled = true;
+      this.addLoading();
+      this.logOutUser().then(() => {
+        this.removeLoading();
+        button.disabled = false;
+      });
     };
 
     if (signInBtn) {

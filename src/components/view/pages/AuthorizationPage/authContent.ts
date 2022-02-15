@@ -13,6 +13,7 @@ export const authContent: ModalContentType = {
   </fieldset>
   <p class="error"></p>
   <div class="auth-buttons">
+    <div class="modal-loading visibility-hidden"></div>
     <button class="button auth-buttons__button sign-in" type="button">Sign In</button>
     <p class="auth-buttons__text">Needed register new account?</p>
     <button class="link auth-buttons__link sign-up-link">Sign Up</button>
