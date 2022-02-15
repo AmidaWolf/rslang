@@ -163,46 +163,56 @@ export class AuthorizationPage {
     const signInLinkBtn = <HTMLElement>document.querySelector('.sign-in-link');
     const signUpLinkBtn = <HTMLElement>document.querySelector('.sign-up-link');
 
-    if (signInBtn) {
-      signInBtn.addEventListener('click', () => {
-        this.getCheckedFormData().then((logInData) => {
-          if (logInData) {
-            this.signInUser(logInData);
-          }
-        });
+    const signInClick = () => {
+      this.getCheckedFormData().then((logInData) => {
+        if (logInData) {
+          this.signInUser(logInData);
+        }
       });
+    };
+
+    const signUpClick = () => {
+      this.getCheckedFormData().then((logInData) => {
+        if (logInData) {
+          this.signUpUser(logInData);
+        }
+      });
+    };
+
+    const signInClickLink = () => {
+      this.modal.createModal(authContent, true).then(() => {
+        this.addFormButtonsListener();
+      });
+    };
+
+    const signUpClickLink = () => {
+      this.modal.createModal(registerContent, true).then(() => {
+        this.addFormButtonsListener();
+      });
+    };
+
+    const logOutClick = () => {
+      this.logOutUser();
+    };
+
+    if (signInBtn) {
+      signInBtn.addEventListener('click', signInClick);
     }
 
     if (signUpBtn) {
-      signUpBtn.addEventListener('click', () => {
-        this.getCheckedFormData().then((logInData) => {
-          if (logInData) {
-            this.signUpUser(logInData);
-          }
-        });
-      });
+      signUpBtn.addEventListener('click', signUpClick);
     }
 
     if (logOutBtn) {
-      logOutBtn.addEventListener('click', () => {
-        this.logOutUser();
-      });
+      logOutBtn.addEventListener('click', logOutClick);
     }
 
     if (signInLinkBtn) {
-      signInLinkBtn.addEventListener('click', () => {
-        this.modal.createModal(authContent, true).then(() => {
-          this.addFormButtonsListener();
-        });
-      });
+      signInLinkBtn.addEventListener('click', signInClickLink);
     }
 
     if (signUpLinkBtn) {
-      signUpLinkBtn.addEventListener('click', () => {
-        this.modal.createModal(registerContent, true).then(() => {
-          this.addFormButtonsListener();
-        });
-      });
+      signUpLinkBtn.addEventListener('click', signUpClickLink);
     }
   }
 
