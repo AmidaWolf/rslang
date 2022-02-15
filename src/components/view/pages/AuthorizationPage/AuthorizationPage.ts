@@ -4,6 +4,7 @@ import {
   ErrorType,
   GetTokensType,
   SignRequestBody,
+  UpdateUserBodyType,
   UserBodyType,
 } from '../../../types';
 import { authContent } from './authContent';
@@ -28,7 +29,12 @@ export class AuthorizationPage {
 
   setUserDataToLocalStorage(tokens: GetTokensType | ErrorType) {
     localStorage.setItem('userMessage', tokens.message);
-    localStorage.setItem('userName', tokens.name);
+    console.log(tokens.name);
+    if (tokens.name) {
+      localStorage.setItem('userName', tokens.name);
+    } else {
+      localStorage.setItem('userName', '');
+    }
     localStorage.setItem('userRefToken', tokens.refreshToken);
     localStorage.setItem('userToken', tokens.token);
     localStorage.setItem('userId', tokens.userId);
@@ -36,6 +42,12 @@ export class AuthorizationPage {
 
   setEmailToLocalStorage(email: string) {
     localStorage.setItem('userEmail', email);
+  }
+
+  setUserNameToLocalStorage(username: string | undefined) {
+    if (typeof username === 'string') {
+      localStorage.setItem('userName', username);
+    }
   }
 
   addErrorMessage(text: string) {
@@ -166,12 +178,37 @@ export class AuthorizationPage {
     window.location.reload();
   }
 
+  async updateUserInfo() {
+    const usernameInput = <HTMLInputElement>document.getElementById('username');
+    const emailInput = <HTMLInputElement>document.getElementById('email');
+    const passwordInput = <HTMLInputElement>document.getElementById('password');
+
+    const userId = localStorage.getItem('userId');
+    let userInfo: UpdateUserBodyType;
+
+    if (usernameInput.value) {
+      userInfo = {
+        email: emailInput.value,
+        password: passwordInput.value,
+        name: usernameInput.value,
+      };
+    } else {
+      userInfo = {
+        email: emailInput.value,
+        password: passwordInput.value,
+      };
+    }
+
+    return ServerApi.updateUser(userId, userInfo);
+  }
+
   async addFormButtonsListener() {
     const signInBtn = <HTMLElement>document.querySelector('.sign-in');
     const signUpBtn = <HTMLElement>document.querySelector('.sign-up');
     const logOutBtn = <HTMLElement>document.querySelector('.log-out');
     const signInLinkBtn = <HTMLElement>document.querySelector('.sign-in-link');
     const signUpLinkBtn = <HTMLElement>document.querySelector('.sign-up-link');
+    const updateBtn = <HTMLElement>document.querySelector('.update');
 
     const signInClick = (event) => {
       const button = <HTMLButtonElement>event.target;
@@ -224,6 +261,23 @@ export class AuthorizationPage {
       });
     };
 
+    const updateClick = (event) => {
+      const button = <HTMLButtonElement>event.target;
+      this.getCheckedFormData().then((loginData) => {
+        if (loginData) {
+          button.disabled = true;
+          this.addLoading();
+          this.updateUserInfo().then((result) => {
+            this.removeLoading();
+            button.disabled = false;
+            this.setEmailToLocalStorage(result.email);
+            this.setUserNameToLocalStorage(result.name);
+            this.modal.setUserInfo();
+          });
+        }
+      });
+    };
+
     if (signInBtn) {
       signInBtn.addEventListener('click', signInClick);
     }
@@ -242,6 +296,10 @@ export class AuthorizationPage {
 
     if (signUpLinkBtn) {
       signUpLinkBtn.addEventListener('click', signUpClickLink);
+    }
+
+    if (updateBtn) {
+      updateBtn.addEventListener('click', updateClick);
     }
   }
 

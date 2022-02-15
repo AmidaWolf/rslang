@@ -64,6 +64,19 @@ export class AuthorizationModal {
     }
   }
 
+  setUserInfo() {
+    const usernameInput = <HTMLInputElement>document.getElementById('username');
+    const emailInput = <HTMLInputElement>document.getElementById('email');
+
+    const username = localStorage.getItem('userName');
+    const email = localStorage.getItem('userEmail');
+
+    if (typeof username === 'string') {
+      usernameInput.value = username;
+    }
+    emailInput.value = email || '';
+  }
+
   async run(
     loginButton: HTMLElement,
     logged: boolean,
@@ -71,6 +84,7 @@ export class AuthorizationModal {
   ) {
     if (logged) {
       this.createModal(userContent, true).then(() => {
+        this.setUserInfo();
         loginButton.addEventListener('click', () => {
           this.toggleModal();
         });

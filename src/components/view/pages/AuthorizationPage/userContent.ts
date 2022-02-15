@@ -5,8 +5,8 @@ export const userContent: ModalContentType = {
   html: `
 <form class="authentication">
   <fieldset class="auth-fieldset">
-    <label class="auth-label" for="userName">Change user name: </label>
-    <input class="auth-input" id="userName" type="text">
+    <label class="auth-label" for="username">Change user name: </label>
+    <input class="auth-input" id="username" type="text">
     <label class="auth-label" for="email">Change email: </label>
     <input class="auth-input" id="email" type="email">
     <label class="auth-label" for="password">Change password: </label>
@@ -17,7 +17,7 @@ export const userContent: ModalContentType = {
   <div class="auth-buttons">
     <div class="modal-loading visibility-hidden"></div>
     <button class="button auth-buttons__button log-out" type="button">Log out</button>
-    <button class="button auth-buttons__button update" type="button" disabled>Update info</button>
+    <button class="button auth-buttons__button update" type="button">Update info</button>
   </div>
 </form>
 `,

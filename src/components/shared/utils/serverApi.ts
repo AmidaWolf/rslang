@@ -78,7 +78,7 @@ export default class ServerApi {
   }
 
   static async updateUser(
-    id: string,
+    id: string | null,
     body: UpdateUserBodyType
   ): Promise<GetUserResponseType> {
     const response: Response = await fetch(`${ServerApi.usersURL}/${id}`, {
