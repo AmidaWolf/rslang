@@ -50,7 +50,9 @@ export default class ServerApi {
     return response.json();
   }
 
-  static async createUser(body: UserBodyType): Promise<GetUserResponseType> {
+  static async createUser(
+    body: UserBodyType
+  ): Promise<GetUserResponseType | number> {
     const response: Response = await fetch(ServerApi.usersURL, {
       method: 'POST',
       headers: {
@@ -58,6 +60,9 @@ export default class ServerApi {
       },
       body: JSON.stringify(body),
     });
+    if (response.status === 417) {
+      return response.status;
+    }
     return response.json();
   }
 
@@ -73,7 +78,7 @@ export default class ServerApi {
   }
 
   static async updateUser(
-    id: string,
+    id: string | null,
     body: UpdateUserBodyType
   ): Promise<GetUserResponseType> {
     const response: Response = await fetch(`${ServerApi.usersURL}/${id}`, {
@@ -87,7 +92,7 @@ export default class ServerApi {
     return response.json();
   }
 
-  static async deleteUser(id: string): Promise<void> {
+  static async deleteUser(id: string | null): Promise<void> {
     await fetch(`${ServerApi.usersURL}/${id}`, {
       method: 'DELETE',
       headers: {
@@ -293,7 +298,7 @@ export default class ServerApi {
 
   static async signIn(
     body: SignRequestBody
-  ): Promise<SignResponseBody | ErrorType> {
+  ): Promise<SignResponseBody | ErrorType | number> {
     const response: Response = await fetch(`${ServerApi.signInURL}`, {
       method: 'POST',
       headers: {
@@ -302,6 +307,12 @@ export default class ServerApi {
       body: JSON.stringify(body),
     });
     if (!response.ok) {
+      if (response.status === 403) {
+        return response.status;
+      }
+      if (response.status === 404) {
+        return response.status;
+      }
       console.log('signIn request error');
       return { message: 'Error' };
     }

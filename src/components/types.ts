@@ -77,3 +77,8 @@ export type GetUserResponseType = {
 export type ErrorType = {
   [key: string]: string;
 };
+
+export type ModalContentType = {
+  title: string;
+  html: string;
+};

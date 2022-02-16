@@ -31,9 +31,9 @@ function createMenuItem(route: string): HTMLElement {
   return menuItem;
 }
 
-function createHeaderButton(route: string): HTMLElement {
+function createHeaderButton(text: string): HTMLElement {
   const button = document.createElement('button');
-  button.innerText = routesText[route];
+  button.innerText = text;
   return button;
 }
 
@@ -48,7 +48,13 @@ async function drawContent() {
   const logo = await createLogo(RoutesPath.START);
   const menuList = document.createElement('ul');
   const textBook = createMenuItem(RoutesPath.TEXTBOOK);
-  const login = createHeaderButton(RoutesPath.AUTHORIZATION);
+
+  const isLogged = authorizationPage.userIsLogged();
+
+  const loginText = isLogged
+    ? 'User info'
+    : routesText[RoutesPath.AUTHORIZATION];
+  const login = createHeaderButton(loginText);
 
   nav.className = 'nav';
   menuList.className = 'header-menu';
@@ -69,7 +75,7 @@ async function drawContent() {
   nav.appendChild(menuList);
   headerWrapper.append(logo, nav, login);
 
-  await authorizationModal.run(login).then(() => {
+  await authorizationModal.run(login, isLogged).then(() => {
     authorizationPage.run();
   });
 }

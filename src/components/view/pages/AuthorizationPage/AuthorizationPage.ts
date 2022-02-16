@@ -1,11 +1,14 @@
 import ServerApi from '../../../shared/utils/serverApi';
 import { AuthorizationModal } from './AuthorizationModal';
 import {
-  UserBodyType,
-  SignRequestBody,
-  GetTokensType,
   ErrorType,
+  GetTokensType,
+  SignRequestBody,
+  UpdateUserBodyType,
+  UserBodyType,
 } from '../../../types';
+import { authContent } from './authContent';
+import { registerContent } from './registerContent';
 
 export class AuthorizationPage {
   modal: AuthorizationModal;
@@ -14,9 +17,24 @@ export class AuthorizationPage {
     this.modal = new AuthorizationModal();
   }
 
+  removeLoading() {
+    const loading = <HTMLElement>document.querySelector('.modal-loading');
+    loading.classList.add('visibility-hidden');
+  }
+
+  addLoading() {
+    const loading = <HTMLElement>document.querySelector('.modal-loading');
+    loading.classList.remove('visibility-hidden');
+  }
+
   setUserDataToLocalStorage(tokens: GetTokensType | ErrorType) {
     localStorage.setItem('userMessage', tokens.message);
-    localStorage.setItem('userName', tokens.name);
+    console.log(tokens.name);
+    if (tokens.name) {
+      localStorage.setItem('userName', tokens.name);
+    } else {
+      localStorage.setItem('userName', '');
+    }
     localStorage.setItem('userRefToken', tokens.refreshToken);
     localStorage.setItem('userToken', tokens.token);
     localStorage.setItem('userId', tokens.userId);
@@ -26,12 +44,15 @@ export class AuthorizationPage {
     localStorage.setItem('userEmail', email);
   }
 
-  addValidationError() {
-    const validationError = <HTMLElement>(
-      document.querySelector('.validation-error')
-    );
-    validationError.innerText =
-      'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required';
+  setUserNameToLocalStorage(username: string | undefined) {
+    if (typeof username === 'string') {
+      localStorage.setItem('userName', username);
+    }
+  }
+
+  addErrorMessage(text: string) {
+    const errorElement = <HTMLElement>document.querySelector('.error');
+    errorElement.innerText = text;
   }
 
   updateLocalStorageOnLogOut() {
@@ -55,10 +76,17 @@ export class AuthorizationPage {
     }
   }
 
+  userIsLogged() {
+    const message = localStorage.getItem('userMessage');
+    return message === 'Authenticated';
+  }
+
   async validateUserData(tokens: GetTokensType | ErrorType, email: string) {
     if (tokens.message === 'Error' || tokens.message === 'LoggedOut') {
       localStorage.setItem('userMessage', tokens.message);
-      this.addValidationError();
+      this.addErrorMessage(
+        'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required'
+      );
     } else {
       this.setUserDataToLocalStorage(tokens);
       this.setEmailToLocalStorage(email);
@@ -73,25 +101,65 @@ export class AuthorizationPage {
 
     const emailInput = <HTMLInputElement>document.getElementById('email');
     const passwordInput = <HTMLInputElement>document.getElementById('password');
+    const passwordRepeatInput = <HTMLInputElement>(
+      document.getElementById('passwordRepeat')
+    );
+    const emailRepeatInput = <HTMLInputElement>(
+      document.getElementById('emailRepeat')
+    );
+
     const logInData = {
       email: emailInput.value,
       password: passwordInput.value,
     };
     let result: typeof logInData | undefined;
 
-    if (emailReg.test(emailInput.value) && passReg.test(passwordInput.value)) {
-      console.log(logInData);
-      result = logInData;
+    const checkEmailAndPassword = () => {
+      if (
+        emailReg.test(emailInput.value) &&
+        passReg.test(passwordInput.value)
+      ) {
+        console.log(logInData);
+        result = logInData;
+      } else {
+        this.addErrorMessage(
+          'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required'
+        );
+      }
+    };
+
+    if (passwordRepeatInput) {
+      if (passwordRepeatInput.value === passwordInput.value) {
+        checkEmailAndPassword();
+      } else {
+        this.addErrorMessage('The passwords must match');
+      }
+    } else if (emailRepeatInput) {
+      if (emailRepeatInput.value !== emailInput.value) {
+        this.addErrorMessage('Try write email correctly');
+      } else {
+        result = logInData;
+      }
+    } else {
+      checkEmailAndPassword();
     }
 
     return result;
   }
 
-  async singInUser(logInData: SignRequestBody) {
+  async signInUser(logInData: SignRequestBody) {
     ServerApi.signIn(logInData)
-      .then((tokens: GetTokensType | ErrorType) => {
-        this.validateUserData(tokens, logInData.email);
-        this.switchHiddenSectionsAccess();
+      .then((result: GetTokensType | ErrorType | number) => {
+        if (typeof result === 'number') {
+          if (result === 403) {
+            this.addErrorMessage('Incorrect password for this user.');
+          } else if (result === 404) {
+            this.addErrorMessage('This email is not registered.');
+          }
+        } else {
+          this.validateUserData(result, logInData.email);
+          this.switchHiddenSectionsAccess();
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -100,14 +168,15 @@ export class AuthorizationPage {
 
   async signUpUser(signInData: UserBodyType) {
     ServerApi.createUser(signInData)
-      .then(() =>
-        ServerApi.signIn(signInData).then(
-          (tokens: GetTokensType | ErrorType) => {
-            this.validateUserData(tokens, signInData.email);
-            this.switchHiddenSectionsAccess();
+      .then((result) => {
+        if (typeof result === 'number') {
+          if (result === 417) {
+            this.addErrorMessage('User with this email is already registered.');
           }
-        )
-      )
+        } else {
+          this.signInUser(signInData);
+        }
+      })
       .catch((e) => {
         console.log(e);
       });
@@ -118,32 +187,155 @@ export class AuthorizationPage {
     window.location.reload();
   }
 
+  async deleteUser() {
+    const userId = localStorage.getItem('userId');
+
+    await ServerApi.deleteUser(userId).then(async () => {
+      await this.logOutUser();
+    });
+  }
+
+  async updateUserInfo() {
+    const usernameInput = <HTMLInputElement>document.getElementById('username');
+    const emailInput = <HTMLInputElement>document.getElementById('email');
+    const passwordInput = <HTMLInputElement>document.getElementById('password');
+
+    const userId = localStorage.getItem('userId');
+    let userInfo: UpdateUserBodyType;
+
+    if (usernameInput.value) {
+      userInfo = {
+        email: emailInput.value,
+        password: passwordInput.value,
+        name: usernameInput.value,
+      };
+    } else {
+      userInfo = {
+        email: emailInput.value,
+        password: passwordInput.value,
+      };
+    }
+
+    return ServerApi.updateUser(userId, userInfo);
+  }
+
   async addFormButtonsListener() {
     const signInBtn = <HTMLElement>document.querySelector('.sign-in');
     const signUpBtn = <HTMLElement>document.querySelector('.sign-up');
     const logOutBtn = <HTMLElement>document.querySelector('.log-out');
+    const signInLinkBtn = <HTMLElement>document.querySelector('.sign-in-link');
+    const signUpLinkBtn = <HTMLElement>document.querySelector('.sign-up-link');
+    const updateBtn = <HTMLElement>document.querySelector('.update');
+    const deleteBtn = <HTMLElement>document.querySelector('.delete');
 
-    signInBtn.addEventListener('click', () => {
+    const signInClick = (event) => {
+      const button = <HTMLButtonElement>event.target;
       this.getCheckedFormData().then((logInData) => {
         if (logInData) {
-          this.singInUser(logInData);
-        } else {
-          this.addValidationError();
+          this.addLoading();
+          button.disabled = true;
+          this.signInUser(logInData).then(() => {
+            this.removeLoading();
+            button.disabled = false;
+          });
         }
       });
-    });
-    signUpBtn.addEventListener('click', () => {
+    };
+
+    const signUpClick = (event) => {
+      const button = <HTMLButtonElement>event.target;
       this.getCheckedFormData().then((logInData) => {
         if (logInData) {
-          this.signUpUser(logInData);
-        } else {
-          this.addValidationError();
+          button.disabled = true;
+          this.addLoading();
+          this.signUpUser(logInData).then(() => {
+            this.removeLoading();
+            button.disabled = false;
+          });
         }
       });
-    });
-    logOutBtn.addEventListener('click', () => {
-      this.logOutUser();
-    });
+    };
+
+    const signInClickLink = () => {
+      this.modal.createModal(authContent, true).then(() => {
+        this.addFormButtonsListener();
+      });
+    };
+
+    const signUpClickLink = () => {
+      this.modal.createModal(registerContent, true).then(() => {
+        this.addFormButtonsListener();
+      });
+    };
+
+    const logOutClick = (event) => {
+      const button = <HTMLButtonElement>event.target;
+      button.disabled = true;
+      this.addLoading();
+      this.logOutUser().then(() => {
+        this.removeLoading();
+        button.disabled = false;
+      });
+    };
+
+    const deleteClick = (event) => {
+      const button = <HTMLButtonElement>event.target;
+      this.getCheckedFormData().then((logInData) => {
+        if (logInData) {
+          button.disabled = true;
+          this.addLoading();
+          this.deleteUser().then(() => {
+            this.removeLoading();
+            button.disabled = false;
+          });
+        }
+      });
+    };
+
+    const updateClick = (event) => {
+      const button = <HTMLButtonElement>event.target;
+      this.getCheckedFormData().then((loginData) => {
+        if (loginData) {
+          button.disabled = true;
+          this.addLoading();
+          this.updateUserInfo().then((result) => {
+            this.removeLoading();
+            button.disabled = false;
+            this.setEmailToLocalStorage(result.email);
+            this.setUserNameToLocalStorage(result.name);
+            this.modal.setUserInfo();
+          });
+        }
+      });
+    };
+
+    if (signInBtn) {
+      signInBtn.addEventListener('click', signInClick);
+    }
+
+    if (signUpBtn) {
+      signUpBtn.addEventListener('click', signUpClick);
+    }
+
+    if (logOutBtn) {
+      logOutBtn.addEventListener('click', logOutClick);
+    }
+
+    if (signInLinkBtn) {
+      signInLinkBtn.addEventListener('click', signInClickLink);
+    }
+
+    if (signUpLinkBtn) {
+      signUpLinkBtn.addEventListener('click', signUpClickLink);
+    }
+
+    if (updateBtn) {
+      updateBtn.addEventListener('click', updateClick);
+    }
+
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', deleteClick);
+    }
   }
 
   async afterRender() {
@@ -151,6 +343,6 @@ export class AuthorizationPage {
   }
 
   async run() {
-    this.addFormButtonsListener();
+    await this.addFormButtonsListener();
   }
 }
