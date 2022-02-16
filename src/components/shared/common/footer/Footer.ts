@@ -1,6 +1,6 @@
 import baseHTML from './baseHTML';
 import { renderSources } from '../../helpers/renderSources';
-import { RoutesPath } from '../../../app/routes';
+import { RoutesPath } from '../../../app/RoutesPath';
 
 const developersLinks = {
   'insane-idea': 'https://github.com/insane-idea',

@@ -1,8 +1,9 @@
-import { RoutesPath, routesText } from '../../../app/routes';
+import { routesText } from '../../../app/routes';
 import baseHTML from './baseHTML';
 import { renderSources } from '../../helpers/renderSources';
 import { AuthorizationModal } from '../../../view/pages/AuthorizationPage/AuthorizationModal';
 import { AuthorizationPage } from '../../../view/pages/AuthorizationPage/AuthorizationPage';
+import { RoutesPath } from '../../../app/RoutesPath';
 
 async function createLogo(route: string) {
   const logoWrapper = document.createElement('a');

@@ -33,8 +33,8 @@ const content = `
             </div>
 
           </div>
-          <div class="start-container">
-            <a class="button minigames__btn-start_audio" href="#/audiogame">Start Game</a>
+          <div class="start-container audio-container">
+            
           </div>
         </form>
       </li>
@@ -67,8 +67,8 @@ const content = `
               <label class="premium-label four col" for="sprint-level-6">Level 6</label>
             </div>
           </div>
-          <div class="start-container">
-            <a class="button minigames__btn-start_sprint" href="#/sprintgame">Start Game</a>
+          <div class="start-container sprint-container">
+            
           </div>
         </form>
       </li>
