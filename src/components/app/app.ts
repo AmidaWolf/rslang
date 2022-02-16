@@ -3,6 +3,7 @@ import { ErrorPage } from '../view/pages/ErrorPage/ErrorPage';
 import { Header } from '../shared/common/header/Header';
 import { parseLocationURL } from '../shared/utils/parseLocationURL';
 import { Footer } from '../shared/common/footer/Footer';
+import { RoutesPath } from './RoutesPath';
 
 export class App {
   static async renderHeader() {
@@ -20,23 +21,33 @@ export class App {
   }
 
   static async renderContent() {
+    await App.renderHeader();
+
     const container = <HTMLElement>document.getElementById('pageContainer');
     const request = parseLocationURL();
+    console.log(request);
     const parsedURL =
       (request.resource ? `/${request.resource}` : '/') +
-      (request.id ? '/:id' : '') +
+      (request.subresource ? `/${request.subresource}` : '') +
       (request.verb ? `/${request.verb}` : '');
+
+    console.log(parsedURL);
 
     const getKeyValue = <T, K extends keyof T>(obj: T, key: K): T[K] =>
       obj[key];
     const GetPage = getKeyValue<RoutesI, keyof RoutesI>(routes, parsedURL);
     const page = GetPage ? new GetPage(container) : new ErrorPage(container);
     await page.run();
+
+    if (
+      parsedURL !== RoutesPath.AUDIOGAME &&
+      parsedURL !== RoutesPath.SPRINTGAME
+    ) {
+      await App.renderFooter();
+    }
   }
 
   async run() {
-    App.renderHeader()
-      .then(() => App.renderFooter())
-      .then(() => App.renderContent());
+    await App.renderContent();
   }
 }

@@ -4,7 +4,7 @@ export const parseLocationURL = () => {
   const splitUrl = url.split('/');
   return {
     resource: splitUrl[1],
-    id: splitUrl[2],
+    subresource: splitUrl[2],
     verb: splitUrl[3],
   };
 };

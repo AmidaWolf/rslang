@@ -2,8 +2,9 @@ import { Page } from '../../Page';
 import baseHTML from './baseHTML';
 import { AudiogamePage } from '../AudiogamePage/AudiogamePage';
 import { SprintgamePage } from '../SprintgamePage/SprintgamePage';
+import { RoutesPath } from '../../../app/RoutesPath';
 
-async function removeLoading() {
+function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
   loading.classList.add('visibility-hidden');
 }
@@ -20,20 +21,31 @@ export class MinigamesPage implements Page {
   }
 
   async afterRender() {
-    removeLoading();
-
     AudiogamePage.level = 0;
 
     SprintgamePage.level = 0;
 
-    const btnStartAudioGame = document.querySelector(
-      '.minigames__btn-start_audio'
+    const buttonsAudioContainer = <HTMLElement>(
+      document.querySelector('.audio-container')
     );
-    const btnStartSprintGame = document.querySelector(
-      '.minigames__btn-start_sprint'
+    const buttonsSprintContainer = <HTMLElement>(
+      document.querySelector('.sprint-container')
     );
 
-    btnStartAudioGame?.addEventListener('click', () => {
+    const btnStartAudioGame = document.createElement('a');
+    btnStartAudioGame.className = 'button minigames__btn-start_audio';
+    btnStartAudioGame.href = `#${RoutesPath.AUDIOGAME}`;
+    btnStartAudioGame.innerText = 'Start Game';
+
+    const btnStartSprintGame = document.createElement('a');
+    btnStartSprintGame.className = 'button minigames__btn-start_sprint';
+    btnStartSprintGame.href = `#${RoutesPath.SPRINTGAME}`;
+    btnStartSprintGame.innerText = 'Start Game';
+
+    buttonsAudioContainer.appendChild(btnStartAudioGame);
+    buttonsSprintContainer.appendChild(btnStartSprintGame);
+
+    btnStartAudioGame.addEventListener('click', () => {
       const selectAudio = document.querySelectorAll(
         '[name="select-audio"]'
       ) as NodeListOf<HTMLInputElement>;
@@ -42,7 +54,7 @@ export class MinigamesPage implements Page {
       });
     });
 
-    btnStartSprintGame?.addEventListener('click', () => {
+    btnStartSprintGame.addEventListener('click', () => {
       const selectSPrint = document.querySelectorAll(
         '[name="select-sprint"]'
       ) as NodeListOf<HTMLInputElement>;
@@ -50,6 +62,8 @@ export class MinigamesPage implements Page {
         if (el.checked) SprintgamePage.level = +el.value;
       });
     });
+
+    removeLoading();
   }
 
   async run() {
