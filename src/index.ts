@@ -10,6 +10,8 @@ import './components/shared/common/modal/Modal.scss';
 import './components/view/pages/TextbookPage/TextbookPage.scss';
 import './components/view/pages/AudiogamePage/AudiogamePage.scss';
 import './components/view/pages/DevelopersPage/DevelopersPage.scss';
+import './components/view/pages/MinigamesPage/MinigamesPage.scss';
+import './components/view/pages/SprintgamePage/SprintgamePage.scss';
 
 const app = new App();
 app.run();
