@@ -8,3 +8,10 @@ export enum RoutesPath {
   SPRINTGAME = '/minigames/sprintgame',
   DEVELOPERS = '/developers',
 }
+
+export enum RoutesPathMainNav {
+  START = '/',
+  TEXTBOOK = '/textbook',
+  MINIGAMES = '/minigames',
+  STATISTICS = '/statistics',
+}

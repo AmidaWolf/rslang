@@ -3,7 +3,7 @@ import baseHTML from './baseHTML';
 import { renderSources } from '../../helpers/renderSources';
 import { AuthorizationModal } from '../../../view/pages/AuthorizationPage/AuthorizationModal';
 import { AuthorizationPage } from '../../../view/pages/AuthorizationPage/AuthorizationPage';
-import { RoutesPath } from '../../../app/RoutesPath';
+import { RoutesPath, RoutesPathMainNav } from '../../../app/RoutesPath';
 
 async function createLogo(route: string) {
   const logoWrapper = document.createElement('a');
@@ -42,13 +42,12 @@ async function drawContent() {
   const authorizationModal = new AuthorizationModal();
   const authorizationPage = new AuthorizationPage();
 
-  const pathList = Object.values(RoutesPath);
+  const pathList = Object.values(RoutesPathMainNav);
   const headerWrapper = <HTMLElement>document.querySelector('.header-wrapper');
 
   const nav = document.createElement('nav');
   const logo = await createLogo(RoutesPath.START);
   const menuList = document.createElement('ul');
-  const textBook = createMenuItem(RoutesPath.TEXTBOOK);
 
   const isLogged = authorizationPage.userIsLogged();
 
@@ -62,17 +61,10 @@ async function drawContent() {
   login.className = 'login button login-btn';
 
   pathList.forEach((navItem) => {
-    if (
-      navItem !== RoutesPath.AUTHORIZATION &&
-      navItem !== RoutesPath.DEVELOPERS &&
-      navItem !== RoutesPath.TEXTBOOK
-    ) {
-      const item = createMenuItem(navItem);
-      menuList.appendChild(item);
-    }
+    const item = createMenuItem(navItem);
+    menuList.appendChild(item);
   });
 
-  menuList.appendChild(textBook);
   nav.appendChild(menuList);
   headerWrapper.append(logo, nav, login);
 
