@@ -12,6 +12,10 @@ async function removeLoading() {
 export class SprintgamePage implements Page {
   container: HTMLElement;
 
+  private static audioFail = new Audio('../../../../assets/fail.mp3');
+
+  private static audioFanfar = new Audio('../../../../assets/fanfar.mp3');
+
   static level = 0;
 
   static arrayWords: WordType[] = [];
@@ -85,8 +89,7 @@ export class SprintgamePage implements Page {
   }
 
   static showGame(): void {
-    const audioFail = new Audio('../../../../assets/fail.mp3');
-    const audioFanfar = new Audio('../../../../assets/fanfar.mp3');
+
     const sprintGameWrapper = document.querySelector(
       '.sprint__wrapper'
     ) as HTMLElement;
@@ -123,50 +126,59 @@ export class SprintgamePage implements Page {
       const target = el.target as HTMLElement;
       if (target.classList.contains('button')) {
         const answerUser = target.id.slice(4) === 'true';
-
-        let answer: boolean;
-        const wordCurrent =
-          SprintgamePage.arrayWords[
-            SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
-          ];
-        const translateContainer = document.querySelector(
-          '.word-translate'
-        ) as HTMLElement;
-        const translateCurrent = translateContainer.textContent;
-
-        if (wordCurrent.wordTranslate === translateCurrent) {
-          answer = true;
-        } else {
-          answer = false;
-        }
-
-        audioFanfar.pause();
-        audioFanfar.currentTime = 0;
-        audioFail.pause();
-        audioFail.currentTime = 0;
-
-        if (answerUser === answer) {
-          audioFanfar.play();
-          this.resultGameWordsTrue.push(
-            SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
-          );
-          this.countStepsNoErrors += 1;
-          this.score += this.scoreAdd;
-          if (this.countStepsNoErrors === 4) this.scoreAdd = 20;
-          if (this.countStepsNoErrors === 8) this.scoreAdd = 40;
-          if (this.countStepsNoErrors === 12) this.scoreAdd = 80;
-        } else {
-          audioFail.play();
-          this.resultGameWordsFalse.push(
-            SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
-          );
-          this.scoreAdd = 10;
-          this.countStepsNoErrors = 0;
-        }
-        this.indexGameStep += 1;
-        this.updateDataQuestion();
+        this.checkAnswer(answerUser);
       }
     });
+
+    document.addEventListener('keydown', (el) => {
+      console.log(el.code);
+      if (el.code === 'ArrowRight') this.checkAnswer(true);
+      if (el.code === 'ArrowLeft') this.checkAnswer(false);
+    });
+  }
+
+  static checkAnswer(answerUser: boolean): void {
+    let answer: boolean;
+    const wordCurrent =
+      SprintgamePage.arrayWords[
+        SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
+      ];
+    const translateContainer = document.querySelector(
+      '.word-translate'
+    ) as HTMLElement;
+    const translateCurrent = translateContainer.textContent;
+
+    if (wordCurrent.wordTranslate === translateCurrent) {
+      answer = true;
+    } else {
+      answer = false;
+    }
+
+    SprintgamePage.audioFanfar.pause();
+    SprintgamePage.audioFanfar.currentTime = 0;
+    SprintgamePage.audioFail.pause();
+    SprintgamePage.audioFail.currentTime = 0;
+
+    if (answerUser === answer) {
+      SprintgamePage.audioFanfar.play();
+      this.resultGameWordsTrue.push(
+        SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
+      );
+      this.countStepsNoErrors += 1;
+      this.score += this.scoreAdd;
+      if (this.countStepsNoErrors === 4) this.scoreAdd = 20;
+      if (this.countStepsNoErrors === 8) this.scoreAdd = 40;
+      if (this.countStepsNoErrors === 12) this.scoreAdd = 80;
+    } else {
+      SprintgamePage.audioFail.play();
+      this.resultGameWordsFalse.push(
+        SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
+      );
+      this.scoreAdd = 10;
+      this.countStepsNoErrors = 0;
+    }
+    this.indexGameStep += 1;
+    this.updateDataQuestion();
   }
 
   static updateDataQuestion(): void {
