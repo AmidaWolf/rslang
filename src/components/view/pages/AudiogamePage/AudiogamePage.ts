@@ -8,7 +8,6 @@ import {
   getAnswersHTML,
   getRightAnswerHTML,
   getGameResultsHTML,
-  getSelectLevelHTML,
 } from './game';
 
 async function removeLoading() {
@@ -19,7 +18,7 @@ async function removeLoading() {
 export class AudiogamePage implements Page {
   container: HTMLElement;
 
-  private static level = 0;
+  static level = 0;
 
   static arrayWords: WordType[] = [];
 
@@ -42,24 +41,7 @@ export class AudiogamePage implements Page {
   async afterRender() {
     removeLoading();
 
-    const audioGameWrapper = document.querySelector(
-      '.audio-game__wrapper'
-    ) as HTMLElement;
-
-    audioGameWrapper.innerHTML = getSelectLevelHTML();
-
-    const btnWrapper = document.querySelector('.audio-game__select-level');
-
-    btnWrapper?.addEventListener('click', (el) => {
-      const target = el.target as HTMLElement & {
-        dataset: Record<string, string>;
-      };
-      const { level } = target.dataset;
-      if (target.classList.contains('button')) {
-        AudiogamePage.level = +level - 1;
-      }
-      AudiogamePage.runGame();
-    });
+    AudiogamePage.runGame();
   }
 
   static async runGame(): Promise<void> {
@@ -156,7 +138,9 @@ export class AudiogamePage implements Page {
       '../../../../assets/img/sound_PNG13.png';
 
     const header = document.querySelector('.audio-game__title') as HTMLElement;
-    header.textContent = `AudioGame - ${AudiogamePage.indexGameStep}/${AudiogamePage.arrayIndexGameWords.length}`;
+    header.textContent = `AudioGame - ${AudiogamePage.indexGameStep + 1}/${
+      AudiogamePage.arrayIndexGameWords.length
+    }`;
 
     const btnNext = document.querySelector('.button.next') as HTMLButtonElement;
     btnNext.disabled = true;
