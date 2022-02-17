@@ -44,7 +44,6 @@ export class AudiogamePage implements Page {
 
   async afterRender() {
     removeLoading();
-
     AudiogamePage.runGame();
   }
 
@@ -211,6 +210,10 @@ export class AudiogamePage implements Page {
     });
 
     document.addEventListener('keydown', AudiogamePage.checkKeys);
+    window.addEventListener('hashchange', function x() {
+      document.removeEventListener('keydown', AudiogamePage.checkKeys);
+      window.removeEventListener('hashchange', x);
+    });
   }
 
   private static checkKeys(el: KeyboardEvent): void {

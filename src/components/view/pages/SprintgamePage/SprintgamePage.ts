@@ -131,7 +131,7 @@ export class SprintgamePage implements Page {
 
     this.updateDataQuestion();
 
-    setInterval(() => {
+    const timerResult = setInterval(() => {
       clearInterval(timerInterval);
       document.removeEventListener('keydown', SprintgamePage.checkKeys);
       this.showResultsGame();
@@ -150,6 +150,12 @@ export class SprintgamePage implements Page {
     });
 
     document.addEventListener('keydown', SprintgamePage.checkKeys);
+    window.addEventListener('hashchange', function x() {
+      document.removeEventListener('keydown', SprintgamePage.checkKeys);
+      clearInterval(timerInterval);
+      clearTimeout(timerResult);
+      window.removeEventListener('hashchange', x);
+    });
   }
 
   private static checkKeys(el: KeyboardEvent): void {
