@@ -12,6 +12,12 @@ async function removeLoading() {
 export class SprintgamePage implements Page {
   container: HTMLElement;
 
+  private static timerStart: NodeJS.Timer;
+
+  private static audioFail = new Audio('../../../../assets/fail.mp3');
+
+  private static audioFanfar = new Audio('../../../../assets/fanfar.mp3');
+
   static level = 0;
 
   static arrayWords: WordType[] = [];
@@ -41,16 +47,6 @@ export class SprintgamePage implements Page {
   }
 
   async afterRender() {
-    await this.setDataGame();
-    removeLoading();
-    SprintgamePage.showGame();
-  }
-
-  async run() {
-    await this.renderHTML().then(() => this.afterRender());
-  }
-
-  async setDataGame(): Promise<void> {
     SprintgamePage.score = 0;
     SprintgamePage.scoreAdd = 10;
     SprintgamePage.countStepsNoErrors = 0;
@@ -59,6 +55,39 @@ export class SprintgamePage implements Page {
     SprintgamePage.arrayIndexGameWords = [];
     SprintgamePage.indexGameStep = 0;
 
+    await this.setDataGame();
+    removeLoading();
+    const sprintGameWrapper = document.querySelector(
+      '.sprint__wrapper'
+    ) as HTMLElement;
+    sprintGameWrapper.innerHTML = '';
+    let secondsLast = 4;
+    SprintgamePage.timerStart = setInterval(() => {
+      if (secondsLast === 4) {
+        sprintGameWrapper.innerHTML = `<div class="timer-start">READY?</div>`;
+        secondsLast -= 1;
+      } else if (secondsLast > 0 && secondsLast < 4) {
+        sprintGameWrapper.innerHTML = `<div class="timer-start">${secondsLast}</div>`;
+        secondsLast -= 1;
+      } else if (secondsLast === 0) {
+        sprintGameWrapper.innerHTML = `<div class="timer-start">GO!</div>`;
+        secondsLast -= 1;
+      } else {
+        clearInterval(SprintgamePage.timerStart);
+        SprintgamePage.showGame();
+      }
+    }, 1000);
+    window.addEventListener('hashchange', function y() {
+      clearInterval(SprintgamePage.timerStart);
+      window.removeEventListener('hashchange', y);
+    });
+  }
+
+  async run() {
+    await this.renderHTML().then(() => this.afterRender());
+  }
+
+  async setDataGame(): Promise<void> {
     const arrayPromise: Promise<WordType[]>[] = [];
     for (let i = 0; i <= 29; i += 1) {
       arrayPromise.push(ServerApi.getWords(SprintgamePage.level, i));
@@ -85,8 +114,6 @@ export class SprintgamePage implements Page {
   }
 
   static showGame(): void {
-    const audioFail = new Audio('../../../../assets/fail.mp3');
-    const audioFanfar = new Audio('../../../../assets/fanfar.mp3');
     const sprintGameWrapper = document.querySelector(
       '.sprint__wrapper'
     ) as HTMLElement;
@@ -110,8 +137,9 @@ export class SprintgamePage implements Page {
 
     this.updateDataQuestion();
 
-    setInterval(() => {
+    const timerResult = setInterval(() => {
       clearInterval(timerInterval);
+      document.removeEventListener('keydown', SprintgamePage.checkKeys);
       this.showResultsGame();
     }, 60000);
 
@@ -123,50 +151,61 @@ export class SprintgamePage implements Page {
       const target = el.target as HTMLElement;
       if (target.classList.contains('button')) {
         const answerUser = target.id.slice(4) === 'true';
-
-        let answer: boolean;
-        const wordCurrent =
-          SprintgamePage.arrayWords[
-            SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
-          ];
-        const translateContainer = document.querySelector(
-          '.word-translate'
-        ) as HTMLElement;
-        const translateCurrent = translateContainer.textContent;
-
-        if (wordCurrent.wordTranslate === translateCurrent) {
-          answer = true;
-        } else {
-          answer = false;
-        }
-
-        audioFanfar.pause();
-        audioFanfar.currentTime = 0;
-        audioFail.pause();
-        audioFail.currentTime = 0;
-
-        if (answerUser === answer) {
-          audioFanfar.play();
-          this.resultGameWordsTrue.push(
-            SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
-          );
-          this.countStepsNoErrors += 1;
-          this.score += this.scoreAdd;
-          if (this.countStepsNoErrors === 4) this.scoreAdd = 20;
-          if (this.countStepsNoErrors === 8) this.scoreAdd = 40;
-          if (this.countStepsNoErrors === 12) this.scoreAdd = 80;
-        } else {
-          audioFail.play();
-          this.resultGameWordsFalse.push(
-            SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
-          );
-          this.scoreAdd = 10;
-          this.countStepsNoErrors = 0;
-        }
-        this.indexGameStep += 1;
-        this.updateDataQuestion();
+        this.checkAnswer(answerUser);
       }
     });
+
+    document.addEventListener('keydown', SprintgamePage.checkKeys);
+    window.addEventListener('hashchange', function x() {
+      document.removeEventListener('keydown', SprintgamePage.checkKeys);
+      clearInterval(timerInterval);
+      clearTimeout(timerResult);
+      window.removeEventListener('hashchange', x);
+    });
+  }
+
+  private static checkKeys(el: KeyboardEvent): void {
+    if (el.code === 'ArrowRight') SprintgamePage.checkAnswer(true);
+    if (el.code === 'ArrowLeft') SprintgamePage.checkAnswer(false);
+  }
+
+  static checkAnswer(answerUser: boolean): void {
+    const wordCurrent =
+      SprintgamePage.arrayWords[
+        SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
+      ];
+    const translateContainer = document.querySelector(
+      '.word-translate'
+    ) as HTMLElement;
+    const translateCurrent = translateContainer.textContent;
+
+    const answer = wordCurrent.wordTranslate === translateCurrent;
+
+    SprintgamePage.audioFanfar.pause();
+    SprintgamePage.audioFanfar.currentTime = 0;
+    SprintgamePage.audioFail.pause();
+    SprintgamePage.audioFail.currentTime = 0;
+
+    if (answerUser === answer) {
+      SprintgamePage.audioFanfar.play();
+      this.resultGameWordsTrue.push(
+        SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
+      );
+      this.countStepsNoErrors += 1;
+      this.score += this.scoreAdd;
+      if (this.countStepsNoErrors === 4) this.scoreAdd = 20;
+      if (this.countStepsNoErrors === 8) this.scoreAdd = 40;
+      if (this.countStepsNoErrors === 12) this.scoreAdd = 80;
+    } else {
+      SprintgamePage.audioFail.play();
+      this.resultGameWordsFalse.push(
+        SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
+      );
+      this.scoreAdd = 10;
+      this.countStepsNoErrors = 0;
+    }
+    this.indexGameStep += 1;
+    this.updateDataQuestion();
   }
 
   static updateDataQuestion(): void {

@@ -3,6 +3,12 @@ import ServerApi from '../../../shared/utils/serverApi';
 
 export function getGameHTML(step: number, length: number): string {
   return `
+  <pre>
+  Keyboard controls:
+  - 1, 2, 3, 4, 5 - choice of answer;
+  - space - word audio repeat;
+  - enter - next question;
+  </pre>
   <h1 class="audio-game__title">AudioGame - ${step + 1}/${length}</h1>
 
   <div class="audio-game__result"></div>
@@ -19,11 +25,11 @@ export function getGameHTML(step: number, length: number): string {
 
 export function getAnswersHTML(index: string[]): string {
   return `
-    <button class="button" data-text="${index[0]}">${index[0]}</button>
-    <button class="button" data-text="${index[1]}">${index[1]}</button>
-    <button class="button" data-text="${index[2]}">${index[2]}</button>
-    <button class="button" data-text="${index[3]}">${index[3]}</button>
-    <button class="button" data-text="${index[4]}">${index[4]}</button>
+    <button class="button" data-text="${index[0]}"><span class="btn_choise">1 </span>${index[0]}</button>
+    <button class="button" data-text="${index[1]}"><span class="btn_choise">2 </span>${index[1]}</button>
+    <button class="button" data-text="${index[2]}"><span class="btn_choise">3 </span>${index[2]}</button>
+    <button class="button" data-text="${index[3]}"><span class="btn_choise">4 </span>${index[3]}</button>
+    <button class="button" data-text="${index[4]}"><span class="btn_choise">5 </span>${index[4]}</button>
 `;
 }
 

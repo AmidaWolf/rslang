@@ -18,6 +18,12 @@ async function removeLoading() {
 export class AudiogamePage implements Page {
   container: HTMLElement;
 
+  private static timerStart: NodeJS.Timer;
+
+  private static audioFail = new Audio('../../../../assets/fail.mp3');
+
+  private static audioFanfar = new Audio('../../../../assets/fanfar.mp3');
+
   static level = 0;
 
   static arrayWords: WordType[] = [];
@@ -39,17 +45,40 @@ export class AudiogamePage implements Page {
   }
 
   async afterRender() {
-    removeLoading();
-
-    AudiogamePage.runGame();
-  }
-
-  static async runGame(): Promise<void> {
     AudiogamePage.arrayIndexGameWords = [];
     AudiogamePage.resultGameWordsTrue = [];
     AudiogamePage.resultGameWordsFalse = [];
     AudiogamePage.indexGameStep = 0;
 
+    await AudiogamePage.setDataGame();
+    removeLoading();
+    const audioGameWrapper = document.querySelector(
+      '.audio-game__wrapper'
+    ) as HTMLElement;
+
+    let secondsLast = 4;
+    AudiogamePage.timerStart = setInterval(() => {
+      if (secondsLast === 4) {
+        audioGameWrapper.innerHTML = `<div class="timer-start">READY?</div>`;
+        secondsLast -= 1;
+      } else if (secondsLast > 0 && secondsLast < 4) {
+        audioGameWrapper.innerHTML = `<div class="timer-start">${secondsLast}</div>`;
+        secondsLast -= 1;
+      } else if (secondsLast === 0) {
+        audioGameWrapper.innerHTML = `<div class="timer-start">GO!</div>`;
+        secondsLast -= 1;
+      } else {
+        clearInterval(AudiogamePage.timerStart);
+        AudiogamePage.showGame();
+      }
+    }, 1000);
+    window.addEventListener('hashchange', function y() {
+      clearInterval(AudiogamePage.timerStart);
+      window.removeEventListener('hashchange', y);
+    });
+  }
+
+  static async setDataGame(): Promise<void> {
     const arrayPromise: Promise<WordType[]>[] = [];
     for (let i = 0; i <= 29; i += 1) {
       arrayPromise.push(ServerApi.getWords(AudiogamePage.level, i));
@@ -62,8 +91,6 @@ export class AudiogamePage implements Page {
       if (!AudiogamePage.arrayIndexGameWords.includes(result))
         AudiogamePage.arrayIndexGameWords.push(result);
     }
-
-    AudiogamePage.showGame();
   }
 
   async run() {
@@ -90,37 +117,45 @@ export class AudiogamePage implements Page {
 
     const btnNext = document.querySelector('.button.next') as HTMLButtonElement;
 
-    btnNext.addEventListener('click', () => {
-      AudiogamePage.indexGameStep += 1;
-      if (
-        AudiogamePage.indexGameStep < AudiogamePage.arrayIndexGameWords.length
-      ) {
-        AudiogamePage.showAnswers(
-          AudiogamePage.arrayIndexGameWords[AudiogamePage.indexGameStep]
-        );
-      } else {
-        btnNext.disabled = true;
-        audioGameWrapper.innerHTML = getGameResultsHTML();
-        const resTrueCont = document.querySelector(
-          '.audio-game__answers-true'
-        ) as HTMLElement;
-        AudiogamePage.resultGameWordsTrue.forEach((i) => {
-          resTrueCont.innerHTML += `
-          <div class="word-wrapper">${AudiogamePage.arrayWords[i].word}&nbsp;${AudiogamePage.arrayWords[i].transcription}&nbsp;${AudiogamePage.arrayWords[i].wordTranslate}</div>
-          `;
-        });
-        const resFalseCont = document.querySelector(
-          '.audio-game__answers-false'
-        ) as HTMLElement;
-        AudiogamePage.resultGameWordsFalse.forEach((i) => {
-          resFalseCont.innerHTML += `
-          <div class="word-wrapper">${AudiogamePage.arrayWords[i].word}&nbsp;${AudiogamePage.arrayWords[i].transcription}&nbsp;${AudiogamePage.arrayWords[i].wordTranslate}</div>
-          `;
-        });
+    btnNext.addEventListener('click', AudiogamePage.btnNext);
+  }
 
-        console.log(AudiogamePage.resultGameWordsTrue);
-        console.log(AudiogamePage.resultGameWordsFalse);
-      }
+  private static btnNext(): void {
+    const btnNext = document.querySelector('.button.next') as HTMLButtonElement;
+    AudiogamePage.indexGameStep += 1;
+    if (
+      AudiogamePage.indexGameStep < AudiogamePage.arrayIndexGameWords.length
+    ) {
+      AudiogamePage.showAnswers(
+        AudiogamePage.arrayIndexGameWords[AudiogamePage.indexGameStep]
+      );
+    } else {
+      btnNext.disabled = true;
+      document.removeEventListener('keydown', AudiogamePage.checkKeys);
+      AudiogamePage.showResults();
+    }
+  }
+
+  static showResults(): void {
+    const audioGameWrapper = document.querySelector(
+      '.audio-game__wrapper'
+    ) as HTMLElement;
+    audioGameWrapper.innerHTML = getGameResultsHTML();
+    const resTrueCont = document.querySelector(
+      '.audio-game__answers-true'
+    ) as HTMLElement;
+    AudiogamePage.resultGameWordsTrue.forEach((i) => {
+      resTrueCont.innerHTML += `
+      <div class="word-wrapper">${AudiogamePage.arrayWords[i].word}&nbsp;${AudiogamePage.arrayWords[i].transcription}&nbsp;${AudiogamePage.arrayWords[i].wordTranslate}</div>
+      `;
+    });
+    const resFalseCont = document.querySelector(
+      '.audio-game__answers-false'
+    ) as HTMLElement;
+    AudiogamePage.resultGameWordsFalse.forEach((i) => {
+      resFalseCont.innerHTML += `
+      <div class="word-wrapper">${AudiogamePage.arrayWords[i].word}&nbsp;${AudiogamePage.arrayWords[i].transcription}&nbsp;${AudiogamePage.arrayWords[i].wordTranslate}</div>
+      `;
     });
   }
 
@@ -166,16 +201,20 @@ export class AudiogamePage implements Page {
       AudiogamePage.arrayWords[answersIndexes[4]].wordTranslate,
     ]);
 
-    const audio = document.querySelector('.question-audio') as HTMLAudioElement;
-    const audioFail = document.querySelector('.audio-fail') as HTMLAudioElement;
-    const audioFanfar = document.querySelector(
-      '.audio-fanfar'
-    ) as HTMLAudioElement;
+    const btnsAnswers = document.querySelectorAll(
+      '.audio-game__answers .button'
+    ) as NodeListOf<HTMLButtonElement>;
+    btnsAnswers.forEach((el) => {
+      const btn = el;
+      btn.disabled = false;
+    });
 
-    audioFail.currentTime = 0;
-    audioFail.pause();
-    audioFanfar.currentTime = 0;
-    audioFanfar.pause();
+    const audio = document.querySelector('.question-audio') as HTMLAudioElement;
+
+    AudiogamePage.audioFail.currentTime = 0;
+    AudiogamePage.audioFail.pause();
+    AudiogamePage.audioFanfar.currentTime = 0;
+    AudiogamePage.audioFanfar.pause();
 
     audio.src = `${ServerApi.baseURL}/${AudiogamePage.arrayWords[index].audio}`;
     audio.volume = 1;
@@ -185,31 +224,68 @@ export class AudiogamePage implements Page {
 
     audioBtn.addEventListener('click', () => audio.play());
 
+    answersWrapper.addEventListener('click', (el) => {
+      const target = el.target as HTMLElement;
+      if (target.classList.contains('button')) {
+        AudiogamePage.checkAnswer(target);
+        btnNext.disabled = false;
+        audio.volume = 0;
+      }
+    });
+
+    document.addEventListener('keydown', AudiogamePage.checkKeys);
+    window.addEventListener('hashchange', function x() {
+      document.removeEventListener('keydown', AudiogamePage.checkKeys);
+      window.removeEventListener('hashchange', x);
+    });
+  }
+
+  private static checkKeys(el: KeyboardEvent): void {
+    const btnsAnswers = document.querySelectorAll(
+      '.audio-game__answers .button'
+    ) as NodeListOf<HTMLButtonElement>;
+    const btnNext = document.querySelector('.button.next') as HTMLButtonElement;
+    const audio = document.querySelector('.question-audio') as HTMLAudioElement;
+
+    if (+el.key >= 1 && +el.key <= 5 && !btnsAnswers[+el.key - 1].disabled) {
+      AudiogamePage.checkAnswer(btnsAnswers[+el.key - 1]);
+      btnNext.disabled = false;
+      audio.volume = 0;
+    }
+    if (el.key === 'Enter' && !btnNext.disabled) {
+      AudiogamePage.btnNext();
+    }
+    if (el.key === ' ') {
+      el.preventDefault();
+      audio.play();
+    }
+  }
+
+  static checkAnswer(target: HTMLElement): void {
+    const btnsAnswers = document.querySelectorAll(
+      '.audio-game__answers .button'
+    ) as NodeListOf<HTMLButtonElement>;
+    btnsAnswers.forEach((el) => {
+      const btn = el;
+      btn.disabled = true;
+    });
+    const answerWordTranslate = (target.textContent as string).split(' ')[1];
+    const index =
+      AudiogamePage.arrayIndexGameWords[AudiogamePage.indexGameStep];
     const rightAnswer = document.querySelector(
       `.button[data-text="${AudiogamePage.arrayWords[index].wordTranslate}"]`
     ) as HTMLElement;
 
-    // eslint-disable-next-line prefer-arrow-callback
-    answersWrapper.addEventListener('click', function x(el) {
-      const target = el.target as HTMLElement;
-      if (target.classList.contains('button')) {
-        if (
-          target.textContent !== AudiogamePage.arrayWords[index].wordTranslate
-        ) {
-          target.classList.add('button_false');
-          AudiogamePage.resultGameWordsFalse.push(index);
-          audioFail.play();
-        } else {
-          AudiogamePage.resultGameWordsTrue.push(index);
-          audioFanfar.play();
-        }
-      }
-      btnNext.disabled = false;
-      rightAnswer.classList.add('button_true');
-      answersWrapper.removeEventListener('click', x);
-      AudiogamePage.showRightAnswer(AudiogamePage.arrayWords[index]);
-      audio.volume = 0;
-    });
+    if (answerWordTranslate !== AudiogamePage.arrayWords[index].wordTranslate) {
+      target.classList.add('button_false');
+      AudiogamePage.resultGameWordsFalse.push(index);
+      AudiogamePage.audioFail.play();
+    } else {
+      AudiogamePage.resultGameWordsTrue.push(index);
+      AudiogamePage.audioFanfar.play();
+    }
+    rightAnswer.classList.add('button_true');
+    AudiogamePage.showRightAnswer(AudiogamePage.arrayWords[index]);
   }
 
   private static showRightAnswer(word: WordType): void {

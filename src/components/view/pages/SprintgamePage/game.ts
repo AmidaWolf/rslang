@@ -1,5 +1,9 @@
 export function getGameHTML(): string {
   return `
+  <pre>
+  Keyboard controls:
+  - ArrowLeft and ArrowRight - choice of answer;
+  </pre>
   <h1 class="sprint__title">SprintGame. Score - <span>0</span></h1>
 
   <div class="sprint__question-container">
@@ -16,8 +20,8 @@ export function getGameHTML(): string {
       <p class="word-translate">молоко</p>
     </div>
     <div class="sprint-buttons">
-      <button class="button" id="btn-false">< Wrong</button>
-      <button class="button" id="btn-true">Right ></button>
+      <button class="button" id="btn-false"><span class="btn_choise">&#8592</span> Wrong</button>
+      <button class="button" id="btn-true">Right <span class="btn_choise">&#8594</span></button>
     </div>
 
   </div>
