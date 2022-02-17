@@ -47,18 +47,26 @@ export class SprintgamePage implements Page {
   }
 
   async afterRender() {
+    SprintgamePage.score = 0;
+    SprintgamePage.scoreAdd = 10;
+    SprintgamePage.countStepsNoErrors = 0;
+    SprintgamePage.resultGameWordsTrue = [];
+    SprintgamePage.resultGameWordsFalse = [];
+    SprintgamePage.arrayIndexGameWords = [];
+    SprintgamePage.indexGameStep = 0;
+
     await this.setDataGame();
     removeLoading();
     const sprintGameWrapper = document.querySelector(
       '.sprint__wrapper'
     ) as HTMLElement;
     sprintGameWrapper.innerHTML = '';
-    let secondsLast = 6;
+    let secondsLast = 4;
     SprintgamePage.timerStart = setInterval(() => {
-      if (secondsLast === 6) {
+      if (secondsLast === 4) {
         sprintGameWrapper.innerHTML = `<div class="timer-start">READY?</div>`;
         secondsLast -= 1;
-      } else if (secondsLast > 0 && secondsLast < 6) {
+      } else if (secondsLast > 0 && secondsLast < 4) {
         sprintGameWrapper.innerHTML = `<div class="timer-start">${secondsLast}</div>`;
         secondsLast -= 1;
       } else if (secondsLast === 0) {
@@ -80,14 +88,6 @@ export class SprintgamePage implements Page {
   }
 
   async setDataGame(): Promise<void> {
-    SprintgamePage.score = 0;
-    SprintgamePage.scoreAdd = 10;
-    SprintgamePage.countStepsNoErrors = 0;
-    SprintgamePage.resultGameWordsTrue = [];
-    SprintgamePage.resultGameWordsFalse = [];
-    SprintgamePage.arrayIndexGameWords = [];
-    SprintgamePage.indexGameStep = 0;
-
     const arrayPromise: Promise<WordType[]>[] = [];
     for (let i = 0; i <= 29; i += 1) {
       arrayPromise.push(ServerApi.getWords(SprintgamePage.level, i));
@@ -170,7 +170,6 @@ export class SprintgamePage implements Page {
   }
 
   static checkAnswer(answerUser: boolean): void {
-    let answer: boolean;
     const wordCurrent =
       SprintgamePage.arrayWords[
         SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
@@ -180,11 +179,7 @@ export class SprintgamePage implements Page {
     ) as HTMLElement;
     const translateCurrent = translateContainer.textContent;
 
-    if (wordCurrent.wordTranslate === translateCurrent) {
-      answer = true;
-    } else {
-      answer = false;
-    }
+    const answer = wordCurrent.wordTranslate === translateCurrent;
 
     SprintgamePage.audioFanfar.pause();
     SprintgamePage.audioFanfar.currentTime = 0;

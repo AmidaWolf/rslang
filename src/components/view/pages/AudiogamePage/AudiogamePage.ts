@@ -18,6 +18,8 @@ async function removeLoading() {
 export class AudiogamePage implements Page {
   container: HTMLElement;
 
+  private static timerStart: NodeJS.Timer;
+
   private static audioFail = new Audio('../../../../assets/fail.mp3');
 
   private static audioFanfar = new Audio('../../../../assets/fanfar.mp3');
@@ -43,16 +45,40 @@ export class AudiogamePage implements Page {
   }
 
   async afterRender() {
-    removeLoading();
-    AudiogamePage.runGame();
-  }
-
-  static async runGame(): Promise<void> {
     AudiogamePage.arrayIndexGameWords = [];
     AudiogamePage.resultGameWordsTrue = [];
     AudiogamePage.resultGameWordsFalse = [];
     AudiogamePage.indexGameStep = 0;
 
+    await AudiogamePage.setDataGame();
+    removeLoading();
+    const audioGameWrapper = document.querySelector(
+      '.audio-game__wrapper'
+    ) as HTMLElement;
+
+    let secondsLast = 4;
+    AudiogamePage.timerStart = setInterval(() => {
+      if (secondsLast === 4) {
+        audioGameWrapper.innerHTML = `<div class="timer-start">READY?</div>`;
+        secondsLast -= 1;
+      } else if (secondsLast > 0 && secondsLast < 4) {
+        audioGameWrapper.innerHTML = `<div class="timer-start">${secondsLast}</div>`;
+        secondsLast -= 1;
+      } else if (secondsLast === 0) {
+        audioGameWrapper.innerHTML = `<div class="timer-start">GO!</div>`;
+        secondsLast -= 1;
+      } else {
+        clearInterval(AudiogamePage.timerStart);
+        AudiogamePage.showGame();
+      }
+    }, 1000);
+    window.addEventListener('hashchange', function y() {
+      clearInterval(AudiogamePage.timerStart);
+      window.removeEventListener('hashchange', y);
+    });
+  }
+
+  static async setDataGame(): Promise<void> {
     const arrayPromise: Promise<WordType[]>[] = [];
     for (let i = 0; i <= 29; i += 1) {
       arrayPromise.push(ServerApi.getWords(AudiogamePage.level, i));
@@ -65,8 +91,6 @@ export class AudiogamePage implements Page {
       if (!AudiogamePage.arrayIndexGameWords.includes(result))
         AudiogamePage.arrayIndexGameWords.push(result);
     }
-
-    AudiogamePage.showGame();
   }
 
   async run() {
@@ -228,7 +252,7 @@ export class AudiogamePage implements Page {
       btnNext.disabled = false;
       audio.volume = 0;
     }
-    if (el.key === 'Enter' && btnNext.disabled === false) {
+    if (el.key === 'Enter' && !btnNext.disabled) {
       AudiogamePage.btnNext();
     }
     if (el.key === ' ') {
