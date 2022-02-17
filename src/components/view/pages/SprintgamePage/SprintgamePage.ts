@@ -47,7 +47,26 @@ export class SprintgamePage implements Page {
   async afterRender() {
     await this.setDataGame();
     removeLoading();
-    SprintgamePage.showGame();
+    const sprintGameWrapper = document.querySelector(
+      '.sprint__wrapper'
+    ) as HTMLElement;
+
+    let secondsLast = 5;
+    const timer = setInterval(() => {
+      if (secondsLast === 5) {
+        sprintGameWrapper.innerHTML = `<div class="timer-start">READY?</div>`;
+        secondsLast -= 1;
+      } else if (secondsLast > 0 && secondsLast < 5) {
+        sprintGameWrapper.innerHTML = `<div class="timer-start">${secondsLast}</div>`;
+        secondsLast -= 1;
+      } else if (secondsLast === 0) {
+        sprintGameWrapper.innerHTML = `<div class="timer-start">GO!</div>`;
+        secondsLast -= 1;
+      } else {
+        clearInterval(timer);
+        SprintgamePage.showGame();
+      }
+    }, 1000);
   }
 
   async run() {
@@ -89,7 +108,6 @@ export class SprintgamePage implements Page {
   }
 
   static showGame(): void {
-
     const sprintGameWrapper = document.querySelector(
       '.sprint__wrapper'
     ) as HTMLElement;
@@ -115,6 +133,7 @@ export class SprintgamePage implements Page {
 
     setInterval(() => {
       clearInterval(timerInterval);
+      document.removeEventListener('keydown', SprintgamePage.checkKeys);
       this.showResultsGame();
     }, 60000);
 
@@ -130,11 +149,12 @@ export class SprintgamePage implements Page {
       }
     });
 
-    document.addEventListener('keydown', (el) => {
-      console.log(el.code);
-      if (el.code === 'ArrowRight') this.checkAnswer(true);
-      if (el.code === 'ArrowLeft') this.checkAnswer(false);
-    });
+    document.addEventListener('keydown', SprintgamePage.checkKeys);
+  }
+
+  private static checkKeys(el: KeyboardEvent): void {
+    if (el.code === 'ArrowRight') SprintgamePage.checkAnswer(true);
+    if (el.code === 'ArrowLeft') SprintgamePage.checkAnswer(false);
   }
 
   static checkAnswer(answerUser: boolean): void {
