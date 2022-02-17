@@ -20,8 +20,8 @@ export function getGameHTML(): string {
       <p class="word-translate">молоко</p>
     </div>
     <div class="sprint-buttons">
-      <button class="button" id="btn-false"><span class="btn_choise"><</span> Wrong</button>
-      <button class="button" id="btn-true">Right <span class="btn_choise">></span></button>
+      <button class="button" id="btn-false"><span class="btn_choise">&#8592</span> Wrong</button>
+      <button class="button" id="btn-true">Right <span class="btn_choise">&#8594</span></button>
     </div>
 
   </div>
