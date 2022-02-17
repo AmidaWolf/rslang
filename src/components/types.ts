@@ -1,6 +1,6 @@
 // GetTokensType and SignResponseBody are the same
 export type OptionalType = {
-  [key: string]: string | number | boolean;
+  [key: string]: string;
 };
 
 export type WordType = {
@@ -41,6 +41,13 @@ export type GetTokensType = {
 };
 
 export type UserWordType = {
+  id: string;
+  difficulty: string;
+  optional: OptionalType;
+  wordId: string;
+};
+
+export type UserWordInitialType = {
   difficulty: string;
   optional: OptionalType;
 };
