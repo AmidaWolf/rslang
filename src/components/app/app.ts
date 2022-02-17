@@ -20,18 +20,21 @@ export class App {
     await footerComponent.afterRender();
   }
 
+  static clearFooter() {
+    const footer = <HTMLElement>document.querySelector('.footer');
+    footer.innerHTML = '';
+  }
+
   static async renderContent() {
     await App.renderHeader();
 
     const container = <HTMLElement>document.getElementById('pageContainer');
     const request = parseLocationURL();
-    console.log(request);
+
     const parsedURL =
       (request.resource ? `/${request.resource}` : '/') +
       (request.subresource ? `/${request.subresource}` : '') +
       (request.verb ? `/${request.verb}` : '');
-
-    console.log(parsedURL);
 
     const getKeyValue = <T, K extends keyof T>(obj: T, key: K): T[K] =>
       obj[key];
@@ -40,9 +43,11 @@ export class App {
     await page.run();
 
     if (
-      parsedURL !== RoutesPath.AUDIOGAME &&
-      parsedURL !== RoutesPath.SPRINTGAME
+      parsedURL === RoutesPath.AUDIOGAME ||
+      parsedURL === RoutesPath.SPRINTGAME
     ) {
+      App.clearFooter();
+    } else {
       await App.renderFooter();
     }
   }
