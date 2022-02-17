@@ -1,13 +1,17 @@
 import { WordType } from '../../../types';
 import ServerApi from '../../../shared/utils/serverApi';
 
-export function getCardWord(word: WordType): string {
+export function getWordCard(word: WordType): string {
   return `
-  <article class="card-container" data-id="${word.id}">
+  <div class="card-container" data-id="${word.id}">
     <div class="card__picture">
       <img class="card__picture-src" src="https://rs-school-learn-words.herokuapp.com/${
         word.image
       }" alt="Picture">
+      <div class="card__controls">
+        <button class="difficult-word" data-button="difficult">Difficult word</button>
+        <button class="learnt-word" data-button="learnt">Learnt word</button>
+      </div>
     </div>
     <div class="card__content">
       <div class="card__word">
@@ -35,6 +39,6 @@ export function getCardWord(word: WordType): string {
         </div>
       </div>
     </div>
-  </article>
+  </div>
 `;
 }

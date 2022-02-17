@@ -7,6 +7,7 @@ import './components/view/pages/MainPage/MainPage.scss';
 import './components/shared/common/header/Header.scss';
 import './components/shared/common/footer/Footer.scss';
 import './components/view/pages/TextbookPage/TextbookPage.scss';
+import './components/view/pages/VocabularyPage/VocabularyPage.scss';
 import './components/view/pages/AudiogamePage/AudiogamePage.scss';
 import './components/view/pages/DevelopersPage/DevelopersPage.scss';
 import './components/view/pages/AuthorizationPage/AuthorizationModal.scss';

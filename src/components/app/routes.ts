@@ -1,5 +1,6 @@
 import { MainPage } from '../view/pages/MainPage/MainPage';
 import { TextbookPage } from '../view/pages/TextbookPage/TextbookPage';
+import { VocabularyPage } from '../view/pages/VocabularyPage/VocabularyPage';
 import { StatisticsPage } from '../view/pages/StatisticsPage/StatisticsPage';
 import { MinigamesPage } from '../view/pages/MinigamesPage/MinigamesPage';
 import { AudiogamePage } from '../view/pages/AudiogamePage/AudiogamePage';
@@ -11,6 +12,7 @@ export interface RoutesI {
   [key: string]:
     | typeof MainPage
     | typeof TextbookPage
+    | typeof VocabularyPage
     | typeof StatisticsPage
     | typeof MinigamesPage
     | typeof AudiogamePage;
@@ -20,6 +22,7 @@ export const routesText = {
   [RoutesPath.START]: 'Main',
   [RoutesPath.AUTHORIZATION]: 'Authorization',
   [RoutesPath.TEXTBOOK]: 'Textbook',
+  [RoutesPath.VOCABULARY]: 'Vocabulary',
   [RoutesPath.STATISTICS]: 'Statistics',
   [RoutesPath.MINIGAMES]: 'Minigames',
   [RoutesPath.AUDIOGAME]: 'Audiogame',
@@ -30,6 +33,7 @@ export const routesText = {
 export const routes = {
   [RoutesPath.START]: MainPage,
   [RoutesPath.TEXTBOOK]: TextbookPage,
+  [RoutesPath.VOCABULARY]: VocabularyPage,
   [RoutesPath.STATISTICS]: StatisticsPage,
   [RoutesPath.MINIGAMES]: MinigamesPage,
   [RoutesPath.AUDIOGAME]: AudiogamePage,

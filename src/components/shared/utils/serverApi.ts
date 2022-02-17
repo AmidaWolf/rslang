@@ -10,6 +10,7 @@ import {
   SignResponseBody,
   GetUserResponseType,
   ErrorType,
+  UserWordInitialType,
 } from '../../types';
 
 export default class ServerApi {
@@ -40,11 +41,12 @@ export default class ServerApi {
     return response.json();
   }
 
-  static async getWord(id: string): Promise<WordType> {
-    const response: Response = await fetch(`${ServerApi.wordsURL}/${id}`, {
+  static async getWord(userId: string): Promise<WordType> {
+    const response: Response = await fetch(`${ServerApi.wordsURL}/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
     });
     return response.json();
@@ -56,6 +58,7 @@ export default class ServerApi {
     const response: Response = await fetch(ServerApi.usersURL, {
       method: 'POST',
       headers: {
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
@@ -66,64 +69,66 @@ export default class ServerApi {
     return response.json();
   }
 
-  static async getUser(id: string | null): Promise<GetUserResponseType> {
-    const response: Response = await fetch(`${ServerApi.usersURL}/${id}`, {
+  static async getUser(userId: string | null): Promise<GetUserResponseType> {
+    const response: Response = await fetch(`${ServerApi.usersURL}/${userId}`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+        Accept: 'application/json',
       },
     });
     return response.json();
   }
 
   static async updateUser(
-    id: string | null,
+    userId: string | null,
     body: UpdateUserBodyType
   ): Promise<GetUserResponseType> {
-    const response: Response = await fetch(`${ServerApi.usersURL}/${id}`, {
+    const response: Response = await fetch(`${ServerApi.usersURL}/${userId}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
     });
     return response.json();
   }
 
-  static async deleteUser(id: string | null): Promise<void> {
-    await fetch(`${ServerApi.usersURL}/${id}`, {
+  static async deleteUser(userId: string | null): Promise<void> {
+    await fetch(`${ServerApi.usersURL}/${userId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+        Accept: 'application/json',
       },
     });
   }
 
-  // TODO - need to realize how getNewUserTokens should work correctly
-  static async getNewUserTokens(id: string | null): Promise<GetTokensType> {
+  static async getNewUserTokens(userId: string | null): Promise<GetTokensType> {
+    // TODO - need to realize how getNewUserTokens should work correctly
     const response: Response = await fetch(
-      `${ServerApi.usersURL}/${id}/tokens`,
+      `${ServerApi.usersURL}/${userId}/tokens`,
       {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
         },
       }
     );
     return response.json();
   }
 
-  static async getUserWords(id: string): Promise<UserWordType[]> {
+  static async getUserWords(userId: string): Promise<UserWordType[]> {
     const response: Response = await fetch(
-      `${ServerApi.usersURL}/${id}/words`,
+      `${ServerApi.usersURL}/${userId}/words`,
       {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
         },
       }
     );
@@ -139,45 +144,58 @@ export default class ServerApi {
       {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
+          Accept: 'application/json',
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         },
       }
     );
+    if (response.status === 404) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+    }
     return response.json();
   }
 
   static async createUserWord(
     userId: string,
     wordId: string,
-    body: UserWordType
-  ): Promise<UserWordType> {
+    body: UserWordInitialType
+  ): Promise<UserWordType | []> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
       }
     );
+    if (!response.ok) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+      return [];
+    }
     return response.json();
   }
 
   static async updateUserWord(
     userId: string,
     wordId: string,
-    body: UserWordType
+    body: UserWordInitialType
   ): Promise<UserWordType> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
       }
@@ -195,21 +213,21 @@ export default class ServerApi {
   }
 
   static async getUserAggregatedWords(
-    id: string,
+    userId: string,
     group = 0,
     page = 0,
     wordsPerPage = 20,
     filter?: { [key: string]: string | number | boolean }
   ): Promise<WordType[]> {
     const URL = filter
-      ? `${ServerApi.usersURL}/${id}/aggregatedWords?group=${group}&page=${page}&wordsPerPage=${wordsPerPage}&filter=${filter}`
-      : `${ServerApi.usersURL}/${id}/aggregatedWords?group=${group}&page=${page}&wordsPerPage=${wordsPerPage}`;
+      ? `${ServerApi.usersURL}/${userId}/aggregatedWords?group=${group}&page=${page}&wordsPerPage=${wordsPerPage}&filter=${filter}`
+      : `${ServerApi.usersURL}/${userId}/aggregatedWords?group=${group}&page=${page}&wordsPerPage=${wordsPerPage}`;
 
     const response: Response = await fetch(URL, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+        Accept: 'application/json',
       },
     });
     return response.json();
@@ -224,22 +242,22 @@ export default class ServerApi {
       {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
         },
       }
     );
     return response.json();
   }
 
-  static async getUserStatistics(id: string): Promise<StatisticsType> {
+  static async getUserStatistics(userId: string): Promise<StatisticsType> {
     const response: Response = await fetch(
-      `${ServerApi.usersURL}/${id}/statistics`,
+      `${ServerApi.usersURL}/${userId}/statistics`,
       {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
         },
       }
     );
@@ -247,16 +265,17 @@ export default class ServerApi {
   }
 
   static async updateUserStatistics(
-    id: string,
+    userId: string,
     body: StatisticsType
   ): Promise<StatisticsType> {
     const response: Response = await fetch(
-      `${ServerApi.usersURL}/${id}/statistics`,
+      `${ServerApi.usersURL}/${userId}/statistics`,
       {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
       }
@@ -264,14 +283,14 @@ export default class ServerApi {
     return response.json();
   }
 
-  static async getSettings(id: string): Promise<SettingsType> {
+  static async getSettings(userId: string): Promise<SettingsType> {
     const response: Response = await fetch(
-      `${ServerApi.usersURL}/${id}/settings`,
+      `${ServerApi.usersURL}/${userId}/settings`,
       {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
         },
       }
     );
@@ -279,16 +298,17 @@ export default class ServerApi {
   }
 
   static async updateSettings(
-    id: string,
+    userId: string,
     body: SettingsType
   ): Promise<SettingsType> {
     const response: Response = await fetch(
-      `${ServerApi.usersURL}/${id}/settings`,
+      `${ServerApi.usersURL}/${userId}/settings`,
       {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
       }
@@ -302,6 +322,7 @@ export default class ServerApi {
     const response: Response = await fetch(`${ServerApi.signInURL}`, {
       method: 'POST',
       headers: {
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
