@@ -12,6 +12,8 @@ async function removeLoading() {
 export class SprintgamePage implements Page {
   container: HTMLElement;
 
+  private static timerStart: NodeJS.Timer;
+
   private static audioFail = new Audio('../../../../assets/fail.mp3');
 
   private static audioFanfar = new Audio('../../../../assets/fanfar.mp3');
@@ -50,23 +52,27 @@ export class SprintgamePage implements Page {
     const sprintGameWrapper = document.querySelector(
       '.sprint__wrapper'
     ) as HTMLElement;
-
-    let secondsLast = 5;
-    const timer = setInterval(() => {
-      if (secondsLast === 5) {
+    sprintGameWrapper.innerHTML = '';
+    let secondsLast = 6;
+    SprintgamePage.timerStart = setInterval(() => {
+      if (secondsLast === 6) {
         sprintGameWrapper.innerHTML = `<div class="timer-start">READY?</div>`;
         secondsLast -= 1;
-      } else if (secondsLast > 0 && secondsLast < 5) {
+      } else if (secondsLast > 0 && secondsLast < 6) {
         sprintGameWrapper.innerHTML = `<div class="timer-start">${secondsLast}</div>`;
         secondsLast -= 1;
       } else if (secondsLast === 0) {
         sprintGameWrapper.innerHTML = `<div class="timer-start">GO!</div>`;
         secondsLast -= 1;
       } else {
-        clearInterval(timer);
+        clearInterval(SprintgamePage.timerStart);
         SprintgamePage.showGame();
       }
     }, 1000);
+    window.addEventListener('hashchange', function y() {
+      clearInterval(SprintgamePage.timerStart);
+      window.removeEventListener('hashchange', y);
+    });
   }
 
   async run() {
