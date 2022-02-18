@@ -81,12 +81,13 @@ export default class ServerApi {
       },
     });
 
-    let userData = await response.json();
-
+    let userData;
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         userData = await ServerApi.getUser(userId);
       }
+    } else {
+      userData = response.json();
     }
 
     return userData;
@@ -106,12 +107,13 @@ export default class ServerApi {
       body: JSON.stringify(body),
     });
 
-    let userData = await response.json();
-
+    let userData;
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         userData = await ServerApi.updateUser(userId, body);
       }
+    } else {
+      userData = response.json();
     }
 
     return userData;
@@ -146,10 +148,12 @@ export default class ServerApi {
     );
 
     if (response.ok) {
+      console.log('new tokens: ', response.json());
       userDataLocalStorageWorker(await response.json());
       return true;
     }
 
+    console.log('response not ok ', response);
     await logOutUser();
     return false;
   }
@@ -166,12 +170,14 @@ export default class ServerApi {
       }
     );
 
-    let wordsData = await response.json();
+    let wordsData;
 
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         wordsData = await ServerApi.getUserWords(userId);
       }
+    } else {
+      wordsData = response.json();
     }
 
     return wordsData;
@@ -192,12 +198,14 @@ export default class ServerApi {
       }
     );
 
-    let wordData = await response.json();
+    let wordData;
 
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         wordData = await ServerApi.getUserWord(userId, wordId);
       }
+    } else {
+      wordData = response.json();
     }
 
     if (response.status === 404) {
@@ -227,12 +235,14 @@ export default class ServerApi {
       }
     );
 
-    let wordData = await response.json();
+    let wordData;
 
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         wordData = await ServerApi.createUserWord(userId, wordId, body);
       }
+    } else {
+      wordData = response.json();
     }
 
     if (!response.ok) {
@@ -263,12 +273,14 @@ export default class ServerApi {
       }
     );
 
-    let wordData = await response.json();
+    let wordData;
 
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         wordData = await ServerApi.updateUserWord(userId, wordId, body);
       }
+    } else {
+      wordData = response.json();
     }
 
     if (response.status === 404) {
@@ -323,12 +335,14 @@ export default class ServerApi {
       },
     });
 
-    let wordsData = await response.json();
+    let wordsData;
 
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         wordsData = await ServerApi.getUserAggregatedWords(userId);
       }
+    } else {
+      wordsData = response.json();
     }
 
     if (response.status === 404) {
@@ -355,12 +369,14 @@ export default class ServerApi {
       }
     );
 
-    let wordData = await response.json();
+    let wordData;
 
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         wordData = await ServerApi.getUserAggregatedWord(userId, wordId);
       }
+    } else {
+      wordData = response.json();
     }
 
     if (response.status === 404) {
@@ -384,12 +400,14 @@ export default class ServerApi {
       }
     );
 
-    let statisticsData = await response.json();
+    let statisticsData;
 
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         statisticsData = await ServerApi.getUserStatistics(userId);
       }
+    } else {
+      statisticsData = response.json();
     }
 
     if (response.status === 404) {
@@ -418,12 +436,14 @@ export default class ServerApi {
       }
     );
 
-    let statisticsData = await response.json();
+    let statisticsData;
 
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         statisticsData = await ServerApi.updateUserStatistics(userId, body);
       }
+    } else {
+      statisticsData = response.json();
     }
 
     if (response.status === 404) {
@@ -447,12 +467,14 @@ export default class ServerApi {
       }
     );
 
-    let settingsData = await response.json();
+    let settingsData;
 
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         settingsData = await ServerApi.getSettings(userId);
       }
+    } else {
+      settingsData = response.json();
     }
 
     if (response.status === 404) {
@@ -481,12 +503,14 @@ export default class ServerApi {
       }
     );
 
-    let settingsData = await response.json();
+    let settingsData;
 
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         settingsData = await ServerApi.updateSettings(userId, body);
       }
+    } else {
+      settingsData = response.json();
     }
 
     if (response.status === 404) {
