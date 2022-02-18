@@ -9,6 +9,10 @@ import {
 } from '../../../types';
 import { authContent } from './authContent';
 import { registerContent } from './registerContent';
+import {
+  logOutUser,
+  userDataLocalStorageWorker,
+} from '../../../shared/helpers/UserDataLocalStorageWorker';
 
 export class AuthorizationPage {
   modal: AuthorizationModal;
@@ -27,19 +31,6 @@ export class AuthorizationPage {
     loading.classList.remove('visibility-hidden');
   }
 
-  setUserDataToLocalStorage(tokens: GetTokensType | ErrorType) {
-    localStorage.setItem('userMessage', tokens.message);
-    console.log(tokens.name);
-    if (tokens.name) {
-      localStorage.setItem('userName', tokens.name);
-    } else {
-      localStorage.setItem('userName', '');
-    }
-    localStorage.setItem('userRefToken', tokens.refreshToken);
-    localStorage.setItem('userToken', tokens.token);
-    localStorage.setItem('userId', tokens.userId);
-  }
-
   setEmailToLocalStorage(email: string) {
     localStorage.setItem('userEmail', email);
   }
@@ -53,16 +44,6 @@ export class AuthorizationPage {
   addErrorMessage(text: string) {
     const errorElement = <HTMLElement>document.querySelector('.error');
     errorElement.innerText = text;
-  }
-
-  updateLocalStorageOnLogOut() {
-    localStorage.setItem('userMessage', 'LoggedOut');
-    localStorage.setItem('userName', '');
-    localStorage.setItem('userRefToken', '');
-    localStorage.setItem('userToken', '');
-    localStorage.setItem('userId', '');
-    localStorage.setItem('userEmail', '');
-    localStorage.setItem('userOptions', '');
   }
 
   async switchHiddenSectionsAccess() {
@@ -88,7 +69,7 @@ export class AuthorizationPage {
         'Password minimum 8 symbols, uppercase and lowercase character, one digit. Correct email required'
       );
     } else {
-      this.setUserDataToLocalStorage(tokens);
+      userDataLocalStorageWorker(tokens);
       this.setEmailToLocalStorage(email);
       window.location.reload();
     }
@@ -197,16 +178,11 @@ export class AuthorizationPage {
       });
   }
 
-  async logOutUser() {
-    this.updateLocalStorageOnLogOut();
-    window.location.reload();
-  }
-
   async deleteUser() {
     const userId = localStorage.getItem('userId');
 
     await ServerApi.deleteUser(userId).then(async () => {
-      await this.logOutUser();
+      await logOutUser();
     });
   }
 
@@ -287,10 +263,9 @@ export class AuthorizationPage {
       const button = <HTMLButtonElement>event.target;
       button.disabled = true;
       this.addLoading();
-      this.logOutUser().then(() => {
-        this.removeLoading();
-        button.disabled = false;
-      });
+      logOutUser();
+      this.removeLoading();
+      button.disabled = false;
     };
 
     const deleteClick = (event) => {
