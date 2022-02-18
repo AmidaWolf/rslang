@@ -63,6 +63,8 @@ export class AuthorizationPage {
     localStorage.setItem('userId', '');
     localStorage.setItem('userEmail', '');
     localStorage.setItem('userOptions', '');
+    localStorage.setItem('learntWords', '');
+    localStorage.setItem('difficultWords', '');
   }
 
   async switchHiddenSectionsAccess() {

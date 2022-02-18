@@ -17,7 +17,11 @@ export function getSetFromString(string: string) {
   return new Set(array);
 }
 
-export async function getDifficultWordsSet(
+export function getSetFromArray(array: string[] | never[]) {
+  return new Set(array);
+}
+
+export async function getRemoteDifficultSet(
   userId: string
 ): Promise<Set<unknown>> {
   const set = new Set();
@@ -34,7 +38,9 @@ export async function getDifficultWordsSet(
   return set;
 }
 
-export async function getLearntWordsSet(userId: string): Promise<Set<unknown>> {
+export async function getRemoteLearntSet(
+  userId: string
+): Promise<Set<unknown>> {
   const set = new Set();
   await ServerApi.getSettings(userId).then((settings) => {
     const { learnt } = settings.optional;
@@ -47,4 +53,48 @@ export async function getLearntWordsSet(userId: string): Promise<Set<unknown>> {
     }
   });
   return set;
+}
+
+export function getLocalDifficultArr(userId: string): string[] | never[] {
+  const difficultWords: string | null = localStorage.getItem('difficultWords');
+  let difficultArray: never[] | string[] = [];
+
+  if (userId && difficultWords) {
+    difficultArray = getArrayFromString(difficultWords);
+  }
+  return difficultArray;
+}
+
+export function getLocalLearntArr(userId: string): string[] | never[] {
+  const learntWords: string | null = localStorage.getItem('learntWords');
+  let learntArray: never[] | string[] = [];
+
+  if (userId && learntWords) {
+    learntArray = getArrayFromString(learntWords);
+  }
+  return learntArray;
+}
+
+export function getUniqueLocalWordsArray() {
+  const userId = localStorage.getItem('userId');
+  const commonArray: string[] = [];
+
+  if (userId) {
+    const difficultWordsArray = getLocalDifficultArr(userId);
+    const learntWordsArray = getLocalLearntArr(userId);
+
+    difficultWordsArray.forEach((id) => {
+      commonArray.push(id);
+    });
+
+    learntWordsArray.forEach((id) => {
+      commonArray.push(id);
+    });
+  }
+
+  const finalArray = commonArray
+    .filter((item, pos) => commonArray.indexOf(item) === pos)
+    .filter((el) => el !== 'difficult' && el !== 'learnt');
+
+  return finalArray;
 }
