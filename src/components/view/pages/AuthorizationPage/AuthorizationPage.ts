@@ -104,9 +104,6 @@ export class AuthorizationPage {
     const passwordRepeatInput = <HTMLInputElement>(
       document.getElementById('passwordRepeat')
     );
-    const emailRepeatInput = <HTMLInputElement>(
-      document.getElementById('emailRepeat')
-    );
 
     const logInData = {
       email: emailInput.value,
@@ -134,16 +131,34 @@ export class AuthorizationPage {
       } else {
         this.addErrorMessage('The passwords must match');
       }
-    } else if (emailRepeatInput) {
+    } else {
+      checkEmailAndPassword();
+    }
+
+    return result;
+  }
+
+  checkEmails(): SignRequestBody | undefined {
+    const emailRepeatInput = <HTMLInputElement>(
+      document.getElementById('emailRepeat')
+    );
+    const emailInput = <HTMLInputElement>document.getElementById('email');
+    const passwordInput = <HTMLInputElement>document.getElementById('password');
+
+    const logInData = {
+      email: emailInput.value,
+      password: passwordInput.value,
+    };
+
+    let result: typeof logInData | undefined;
+
+    if (emailRepeatInput) {
       if (emailRepeatInput.value !== emailInput.value) {
         this.addErrorMessage('Try write email correctly');
       } else {
         result = logInData;
       }
-    } else {
-      checkEmailAndPassword();
     }
-
     return result;
   }
 
@@ -280,16 +295,15 @@ export class AuthorizationPage {
 
     const deleteClick = (event) => {
       const button = <HTMLButtonElement>event.target;
-      this.getCheckedFormData().then((logInData) => {
-        if (logInData) {
-          button.disabled = true;
-          this.addLoading();
-          this.deleteUser().then(() => {
-            this.removeLoading();
-            button.disabled = false;
-          });
-        }
-      });
+      const loginData = this.checkEmails();
+      if (loginData) {
+        button.disabled = true;
+        this.addLoading();
+        this.deleteUser().then(() => {
+          this.removeLoading();
+          button.disabled = false;
+        });
+      }
     };
 
     const updateClick = (event) => {
