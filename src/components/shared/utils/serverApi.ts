@@ -2,7 +2,6 @@ import {
   WordType,
   UserBodyType,
   UpdateUserBodyType,
-  GetTokensType,
   UserWordType,
   StatisticsType,
   SettingsType,
@@ -12,6 +11,10 @@ import {
   ErrorType,
   UserWordInitialType,
 } from '../../types';
+import {
+  logOutUser,
+  userDataLocalStorageWorker,
+} from '../helpers/UserDataLocalStorageWorker';
 
 export default class ServerApi {
   static baseURL = 'https://rs-school-learn-words.herokuapp.com';
@@ -77,7 +80,17 @@ export default class ServerApi {
         Accept: 'application/json',
       },
     });
-    return response.json();
+
+    let userData;
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        userData = await ServerApi.getUser(userId);
+      }
+    } else {
+      userData = response.json();
+    }
+
+    return userData;
   }
 
   static async updateUser(
@@ -93,21 +106,36 @@ export default class ServerApi {
       },
       body: JSON.stringify(body),
     });
-    return response.json();
+
+    let userData;
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        userData = await ServerApi.updateUser(userId, body);
+      }
+    } else {
+      userData = response.json();
+    }
+
+    return userData;
   }
 
   static async deleteUser(userId: string | null): Promise<void> {
-    await fetch(`${ServerApi.usersURL}/${userId}`, {
+    const response = await fetch(`${ServerApi.usersURL}/${userId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('userToken')}`,
         Accept: 'application/json',
       },
     });
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        await ServerApi.deleteUser(userId);
+      }
+    }
   }
 
-  static async getNewUserTokens(userId: string | null): Promise<GetTokensType> {
-    // TODO - need to realize how getNewUserTokens should work correctly
+  static async getNewUserTokens(userId: string | null): Promise<boolean> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/tokens`,
       {
@@ -118,7 +146,16 @@ export default class ServerApi {
         },
       }
     );
-    return response.json();
+
+    if (response.ok) {
+      console.log('new tokens: ', response.json());
+      userDataLocalStorageWorker(await response.json());
+      return true;
+    }
+
+    console.log('response not ok ', response);
+    await logOutUser();
+    return false;
   }
 
   static async getUserWords(userId: string): Promise<UserWordType[]> {
@@ -132,7 +169,18 @@ export default class ServerApi {
         },
       }
     );
-    return response.json();
+
+    let wordsData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        wordsData = await ServerApi.getUserWords(userId);
+      }
+    } else {
+      wordsData = response.json();
+    }
+
+    return wordsData;
   }
 
   static async getUserWord(
@@ -149,12 +197,24 @@ export default class ServerApi {
         },
       }
     );
+
+    let wordData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        wordData = await ServerApi.getUserWord(userId, wordId);
+      }
+    } else {
+      wordData = response.json();
+    }
+
     if (response.status === 404) {
       console.log(
         `Sorry, but there is ${response.status} error: ${response.statusText}`
       );
     }
-    return response.json();
+
+    return wordData;
   }
 
   static async createUserWord(
@@ -174,13 +234,25 @@ export default class ServerApi {
         body: JSON.stringify(body),
       }
     );
+
+    let wordData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        wordData = await ServerApi.createUserWord(userId, wordId, body);
+      }
+    } else {
+      wordData = response.json();
+    }
+
     if (!response.ok) {
       console.log(
         `Sorry, but there is ${response.status} error: ${response.statusText}`
       );
       return [];
     }
-    return response.json();
+
+    return wordData;
   }
 
   static async updateUserWord(
@@ -200,16 +272,48 @@ export default class ServerApi {
         body: JSON.stringify(body),
       }
     );
-    return response.json();
+
+    let wordData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        wordData = await ServerApi.updateUserWord(userId, wordId, body);
+      }
+    } else {
+      wordData = response.json();
+    }
+
+    if (response.status === 404) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+    }
+
+    return wordData;
   }
 
   static async deleteUserWord(userId: string, wordId: string): Promise<void> {
-    await fetch(`${ServerApi.usersURL}/${userId}/words/${wordId}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('userToken')}`,
-      },
-    });
+    const response = await fetch(
+      `${ServerApi.usersURL}/${userId}/words/${wordId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+        },
+      }
+    );
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        await ServerApi.deleteUserWord(userId, wordId);
+      }
+    }
+
+    if (response.status === 404) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+    }
   }
 
   static async getUserAggregatedWords(
@@ -230,7 +334,24 @@ export default class ServerApi {
         Accept: 'application/json',
       },
     });
-    return response.json();
+
+    let wordsData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        wordsData = await ServerApi.getUserAggregatedWords(userId);
+      }
+    } else {
+      wordsData = response.json();
+    }
+
+    if (response.status === 404) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+    }
+
+    return wordsData;
   }
 
   static async getUserAggregatedWord(
@@ -247,7 +368,24 @@ export default class ServerApi {
         },
       }
     );
-    return response.json();
+
+    let wordData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        wordData = await ServerApi.getUserAggregatedWord(userId, wordId);
+      }
+    } else {
+      wordData = response.json();
+    }
+
+    if (response.status === 404) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+    }
+
+    return wordData;
   }
 
   static async getUserStatistics(userId: string): Promise<StatisticsType> {
@@ -261,7 +399,24 @@ export default class ServerApi {
         },
       }
     );
-    return response.json();
+
+    let statisticsData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        statisticsData = await ServerApi.getUserStatistics(userId);
+      }
+    } else {
+      statisticsData = response.json();
+    }
+
+    if (response.status === 404) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+    }
+
+    return statisticsData;
   }
 
   static async updateUserStatistics(
@@ -280,7 +435,24 @@ export default class ServerApi {
         body: JSON.stringify(body),
       }
     );
-    return response.json();
+
+    let statisticsData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        statisticsData = await ServerApi.updateUserStatistics(userId, body);
+      }
+    } else {
+      statisticsData = response.json();
+    }
+
+    if (response.status === 404) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+    }
+
+    return statisticsData;
   }
 
   static async getSettings(userId: string): Promise<SettingsType> {
@@ -294,7 +466,24 @@ export default class ServerApi {
         },
       }
     );
-    return response.json();
+
+    let settingsData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        settingsData = await ServerApi.getSettings(userId);
+      }
+    } else {
+      settingsData = response.json();
+    }
+
+    if (response.status === 404) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+    }
+
+    return settingsData;
   }
 
   static async updateSettings(
@@ -313,7 +502,24 @@ export default class ServerApi {
         body: JSON.stringify(body),
       }
     );
-    return response.json();
+
+    let settingsData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        settingsData = await ServerApi.updateSettings(userId, body);
+      }
+    } else {
+      settingsData = response.json();
+    }
+
+    if (response.status === 404) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+    }
+
+    return settingsData;
   }
 
   static async signIn(
