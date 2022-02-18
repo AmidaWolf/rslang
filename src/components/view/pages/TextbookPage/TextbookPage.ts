@@ -2,12 +2,7 @@ import { Page } from '../../Page';
 import baseHTML from './baseHTML';
 import { getWordCard } from './card';
 import ServerApi from '../../../shared/utils/serverApi';
-import {
-  listControlButtons,
-  storageControlButtonsUpdate,
-  serverWordsUpdate,
-  listWordsSettingsUpdate,
-} from '../../../shared/helpers/wordCardSupport';
+import { listControlButtons } from '../../../shared/helpers/wordCardSupport';
 import { WordType } from '../../../types';
 
 async function removeLoading() {
@@ -43,10 +38,7 @@ export class TextbookPage implements Page {
   async afterRender() {
     removeLoading();
     await TextbookPage.renderCards();
-    serverWordsUpdate();
     await TextbookPage.addButtonsListener();
-    listWordsSettingsUpdate();
-    // storageControlButtonsUpdate();
   }
 
   async run() {
@@ -83,8 +75,6 @@ export class TextbookPage implements Page {
         audio2.play();
       });
     });
-
-    await storageControlButtonsUpdate();
   }
 
   static async addButtonsListener(): Promise<void> {

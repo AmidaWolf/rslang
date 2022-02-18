@@ -4,6 +4,10 @@ import { Header } from '../shared/common/header/Header';
 import { parseLocationURL } from '../shared/utils/parseLocationURL';
 import { Footer } from '../shared/common/footer/Footer';
 import { RoutesPath } from './RoutesPath';
+import {
+  serverWordsUpdate,
+  listWordsSettingsUpdate,
+} from '../shared/helpers/wordCardSupport';
 
 export class App {
   static async renderHeader() {
@@ -53,6 +57,9 @@ export class App {
   }
 
   async run() {
-    await App.renderContent();
+    await App.renderContent().then(() => {
+      serverWordsUpdate();
+      listWordsSettingsUpdate();
+    });
   }
 }

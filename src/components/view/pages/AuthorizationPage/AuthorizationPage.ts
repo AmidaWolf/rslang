@@ -46,6 +46,18 @@ export class AuthorizationPage {
     errorElement.innerText = text;
   }
 
+  updateLocalStorageOnLogOut() {
+    localStorage.setItem('userMessage', 'LoggedOut');
+    localStorage.setItem('userName', '');
+    localStorage.setItem('userRefToken', '');
+    localStorage.setItem('userToken', '');
+    localStorage.setItem('userId', '');
+    localStorage.setItem('userEmail', '');
+    localStorage.setItem('userOptions', '');
+    localStorage.setItem('learntWords', '');
+    localStorage.setItem('difficultWords', '');
+  }
+
   async switchHiddenSectionsAccess() {
     // TODO Add required functional to show or hide target blocks
 

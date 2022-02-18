@@ -2,13 +2,8 @@ import { Page } from '../../Page';
 import baseHTML from './baseHTML';
 import { getWordCard } from './card';
 import ServerApi from '../../../shared/utils/serverApi';
-import { getArrayFromString } from '../../../shared/helpers/dataManipulations';
-import {
-  listControlButtons,
-  listWordsSettingsUpdate,
-  serverWordsUpdate,
-  storageControlButtonsUpdate,
-} from '../../../shared/helpers/wordCardSupport';
+import { getUniqueLocalWordsArray } from '../../../shared/helpers/dataManipulations';
+import { listControlButtons } from '../../../shared/helpers/wordCardSupport';
 import { WordType } from '../../../types';
 
 async function removeLoading() {
@@ -44,46 +39,11 @@ export class VocabularyPage implements Page {
   async afterRender() {
     removeLoading();
     await VocabularyPage.renderCards();
-    serverWordsUpdate();
     await VocabularyPage.addButtonsListener();
-    listWordsSettingsUpdate();
-    // storageControlButtonsUpdate();
   }
 
   async run() {
     await this.renderHTML().then(() => this.afterRender());
-  }
-
-  static getStorageWordsArray() {
-    const difficultWords: string | null =
-      localStorage.getItem('difficultWords');
-    const learntWords: string | null = localStorage.getItem('learntWords');
-    const commonArray: string[] = [];
-    let difficult: string[];
-    let learnt: string[];
-
-    if (difficultWords) {
-      difficult = getArrayFromString(difficultWords);
-      difficult.forEach((id) => {
-        if (typeof id === 'string') {
-          commonArray.push(id);
-        }
-      });
-    }
-    if (learntWords) {
-      learnt = getArrayFromString(learntWords);
-      learnt.forEach((id) => {
-        if (typeof id === 'string') {
-          commonArray.push(id);
-        }
-      });
-    }
-
-    const finalArray = commonArray
-      .filter((item, pos) => commonArray.indexOf(item) === pos)
-      .filter((el) => el !== 'difficult' && el !== 'learnt');
-
-    return finalArray;
   }
 
   static async renderCards(): Promise<void> {
@@ -91,9 +51,9 @@ export class VocabularyPage implements Page {
 
     if (cards) cards.innerHTML = '';
 
-    const requestedWordsArray = VocabularyPage.getStorageWordsArray();
+    const localWordsArray = getUniqueLocalWordsArray();
 
-    const arrayOfWordsPromises: Promise<void>[] = requestedWordsArray.map(
+    const arrayOfWordsPromises: Promise<void>[] = localWordsArray.map(
       async (wordId) => {
         ServerApi.getWord(wordId).then((word) =>
           VocabularyPage.appendCard(word)
@@ -115,8 +75,6 @@ export class VocabularyPage implements Page {
         audio2.play();
       });
     });
-
-    // await storageControlButtonsUpdate();
   }
 
   static async addButtonsListener(): Promise<void> {
