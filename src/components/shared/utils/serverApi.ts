@@ -2,14 +2,14 @@ import {
   WordType,
   UserBodyType,
   UpdateUserBodyType,
-  UserWordType,
+  UserWordResponseType,
   StatisticsType,
   SettingsType,
   SignRequestBody,
   SignResponseBody,
   GetUserResponseType,
   ErrorType,
-  UserWordInitialType,
+  UserWordRequestType,
 } from '../../types';
 import {
   logOutUser,
@@ -31,7 +31,7 @@ export default class ServerApi {
       {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
       }
     );
@@ -44,11 +44,10 @@ export default class ServerApi {
     return response.json();
   }
 
-  static async getWord(userId: string): Promise<WordType> {
-    const response: Response = await fetch(`${ServerApi.wordsURL}/${userId}`, {
+  static async getWord(wordId: string): Promise<WordType> {
+    const response: Response = await fetch(`${ServerApi.wordsURL}/${wordId}`, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         Accept: 'application/json',
       },
     });
@@ -62,7 +61,6 @@ export default class ServerApi {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
     });
@@ -158,7 +156,7 @@ export default class ServerApi {
     return false;
   }
 
-  static async getUserWords(userId: string): Promise<UserWordType[]> {
+  static async getUserWords(userId: string): Promise<UserWordResponseType[]> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words`,
       {
@@ -186,7 +184,7 @@ export default class ServerApi {
   static async getUserWord(
     userId: string,
     wordId: string
-  ): Promise<UserWordType> {
+  ): Promise<UserWordResponseType> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {
@@ -220,8 +218,8 @@ export default class ServerApi {
   static async createUserWord(
     userId: string,
     wordId: string,
-    body: UserWordInitialType
-  ): Promise<UserWordType | []> {
+    body: UserWordRequestType
+  ): Promise<UserWordResponseType | []> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {
@@ -258,8 +256,8 @@ export default class ServerApi {
   static async updateUserWord(
     userId: string,
     wordId: string,
-    body: UserWordInitialType
-  ): Promise<UserWordType> {
+    body: UserWordRequestType
+  ): Promise<UserWordResponseType> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {

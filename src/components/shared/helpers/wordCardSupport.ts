@@ -88,7 +88,7 @@ export function toggleDifficultBtn(userId: string, wordId: string | undefined) {
       );
       updateWordCondition(difficultBtn, className, set, wordId);
     } else {
-      const set = new Set();
+      const set = new Set(['difficult']);
       const difficultBtn = <HTMLElement>(
         document
           .querySelector(`div[data-id="${wordId}"]`)
@@ -105,6 +105,14 @@ export function toggleLearntBtn(userId: string, wordId: string | undefined) {
 
   if (userId && learntWordsString) {
     const set = getSetFromString(learntWordsString);
+    const learntBtn = <HTMLElement>(
+      document
+        .querySelector(`div[data-id="${wordId}"]`)
+        ?.querySelector(`.learnt-word`)
+    );
+    updateWordCondition(learntBtn, className, set, wordId);
+  } else {
+    const set = new Set(['learnt']);
     const learntBtn = <HTMLElement>(
       document
         .querySelector(`div[data-id="${wordId}"]`)
