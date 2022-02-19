@@ -5,6 +5,9 @@ import ServerApi from '../../../shared/utils/serverApi';
 import { listControlButtons } from '../../../shared/helpers/wordCardSupport';
 import { WordType } from '../../../types';
 import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
+import { AudiogamePage } from '../AudiogamePage/AudiogamePage';
+import { RoutesPath } from '../../../app/RoutesPath';
+import { SprintgamePage } from '../SprintgamePage/SprintgamePage';
 
 async function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -69,16 +72,15 @@ export class TextbookPage implements Page {
 
     if (cards) cards.innerHTML = '';
 
-    const wordsArray = await ServerApi.getWords(
+    TextbookPage.currentWordOnPage = await ServerApi.getWords(
       TextbookPage.currentGroup,
       TextbookPage.currentPage
     );
 
-    const arrayOfWordsPromises: Promise<void>[] = wordsArray.map(
-      async (word) => {
+    const arrayOfWordsPromises: Promise<void>[] =
+      TextbookPage.currentWordOnPage.map(async (word) => {
         await TextbookPage.appendCard(word);
-      }
-    );
+      });
 
     await Promise.all(arrayOfWordsPromises);
 
@@ -102,6 +104,12 @@ export class TextbookPage implements Page {
     const btnPrev = document.querySelector('#btn-prev') as HTMLButtonElement;
     const btnNext = document.querySelector('#btn-next') as HTMLButtonElement;
     const btnLast = document.querySelector('#btn-last') as HTMLButtonElement;
+    const btnAudio = document.querySelector(
+      '#textbook__btn-audio'
+    ) as HTMLButtonElement;
+    const btnSprint = document.querySelector(
+      '#textbook__btn-sprint'
+    ) as HTMLButtonElement;
     const selectGroup = document.querySelector('#group-words');
 
     selectGroup?.addEventListener('change', async (el) => {
@@ -151,6 +159,18 @@ export class TextbookPage implements Page {
 
     cards?.addEventListener('click', (e) => {
       listControlButtons(e);
+    });
+
+    btnAudio.addEventListener('click', () => {
+      console.log('Launch Audio game!');
+      AudiogamePage.arrayWords = TextbookPage.currentWordOnPage;
+      window.location.hash = `#${RoutesPath.AUDIOGAME}`;
+    });
+
+    btnSprint.addEventListener('click', () => {
+      console.log('Launch Sprint game!');
+      SprintgamePage.arrayWords = TextbookPage.currentWordOnPage;
+      window.location.hash = `#${RoutesPath.SPRINTGAME}`;
     });
   }
 
