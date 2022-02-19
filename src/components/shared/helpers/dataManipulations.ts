@@ -82,13 +82,13 @@ export function getUniqueLocalWordsArray() {
     const learntWordsArray = getLocalLearntArr(userId);
 
     difficultWordsArray.forEach((id) => {
-      if (id !== 'difficult' && id !== 'learnt' && id !== null) {
+      if (id !== 'difficult' && id !== 'learnt' && id !== 'null') {
         commonArray.push(id);
       }
     });
 
     learntWordsArray.forEach((id) => {
-      if (id !== 'difficult' && id !== 'learnt' && id !== null) {
+      if (id !== 'difficult' && id !== 'learnt' && id !== 'null') {
         commonArray.push(id);
       }
     });
@@ -97,8 +97,6 @@ export function getUniqueLocalWordsArray() {
   const finalArray = commonArray
     .filter((item, pos) => commonArray.indexOf(item) === pos)
     .filter((el) => el !== 'difficult' && el !== 'learnt');
-
-  console.log('finalArray: ', finalArray);
 
   return finalArray;
 }

@@ -61,6 +61,7 @@ export default class ServerApi {
       method: 'POST',
       headers: {
         Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
     });
@@ -467,18 +468,24 @@ export default class ServerApi {
 
     let settingsData;
 
-    if (response.status === 401) {
-      if (await ServerApi.getNewUserTokens(userId)) {
-        settingsData = await ServerApi.getSettings(userId);
+    if (!response.ok) {
+      if (response.status === 401) {
+        if (await ServerApi.getNewUserTokens(userId)) {
+          settingsData = await ServerApi.getSettings(userId);
+        }
+      }
+      if (response.status === 404) {
+        const baseSettings = {
+          wordsPerDay: 0,
+          optional: {
+            difficult: `difficult;`,
+            learnt: `learnt;`,
+          },
+        };
+        settingsData = await ServerApi.updateSettings(userId, baseSettings);
       }
     } else {
       settingsData = response.json();
-    }
-
-    if (response.status === 404) {
-      console.log(
-        `Sorry, but there is ${response.status} error: ${response.statusText}`
-      );
     }
 
     return settingsData;

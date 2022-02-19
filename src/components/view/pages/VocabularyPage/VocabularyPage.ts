@@ -55,9 +55,11 @@ export class VocabularyPage implements Page {
 
     const arrayOfWordsPromises: Promise<void>[] = localWordsArray.map(
       async (wordId) => {
-        ServerApi.getWord(wordId).then((word) =>
-          VocabularyPage.appendCard(word)
-        );
+        if (wordId !== 'null') {
+          ServerApi.getWord(wordId).then((word) =>
+            VocabularyPage.appendCard(word)
+          );
+        }
       }
     );
 

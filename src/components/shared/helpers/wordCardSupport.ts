@@ -220,4 +220,4 @@ export async function listWordsSettingsUpdate() {
   logOutBtn?.addEventListener('click', updateRemoteWordsSettings);
 }
 
-// firstControlButtonsUpdate - called only in serverWordsUpdate. serverWordsUpdate is not being used now
+// firstControlButtonsUpdate() - called in serverWordsUpdate on the first app load only
