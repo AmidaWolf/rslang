@@ -3,6 +3,7 @@ import baseHTML from './baseHTML';
 import { AudiogamePage } from '../AudiogamePage/AudiogamePage';
 import { SprintgamePage } from '../SprintgamePage/SprintgamePage';
 import { RoutesPath } from '../../../app/RoutesPath';
+import { gameCheckerCard } from './gameCheckerCard';
 
 function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -25,25 +26,32 @@ export class MinigamesPage implements Page {
 
     SprintgamePage.level = 0;
 
-    const buttonsAudioContainer = <HTMLElement>(
-      document.querySelector('.audio-container')
+    const games = [
+      {
+        gameName: 'audio',
+        rout: RoutesPath.AUDIOGAME,
+      },
+      {
+        gameName: 'sprint',
+        rout: RoutesPath.SPRINTGAME,
+      },
+    ];
+
+    const minigamesList = <HTMLElement>(
+      document.querySelector('.minigames__games')
     );
-    const buttonsSprintContainer = <HTMLElement>(
-      document.querySelector('.sprint-container')
+
+    games.forEach((game) => {
+      minigamesList.innerHTML += gameCheckerCard(game.gameName, game.rout);
+    });
+
+    const btnStartAudioGame = <HTMLButtonElement>(
+      document.querySelector('.minigames__btn-start_audio')
     );
 
-    const btnStartAudioGame = document.createElement('a');
-    btnStartAudioGame.className = 'button minigames__btn-start_audio';
-    btnStartAudioGame.href = `#${RoutesPath.AUDIOGAME}`;
-    btnStartAudioGame.innerText = 'Start Game';
-
-    const btnStartSprintGame = document.createElement('a');
-    btnStartSprintGame.className = 'button minigames__btn-start_sprint';
-    btnStartSprintGame.href = `#${RoutesPath.SPRINTGAME}`;
-    btnStartSprintGame.innerText = 'Start Game';
-
-    buttonsAudioContainer.appendChild(btnStartAudioGame);
-    buttonsSprintContainer.appendChild(btnStartSprintGame);
+    const btnStartSprintGame = <HTMLButtonElement>(
+      document.querySelector('.minigames__btn-start_sprint')
+    );
 
     btnStartAudioGame.addEventListener('click', () => {
       const selectAudio = document.querySelectorAll(
