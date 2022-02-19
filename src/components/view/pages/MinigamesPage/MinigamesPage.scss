@@ -72,14 +72,15 @@
   -moz-appearance: none;
   appearance: none;
 
-  border-radius: 50%;
   width: 1em;
   height: 1em;
   margin: 0;
 
+  border-radius: 50%;
   border: 2px solid $font-color;
-  transition: 0.2s all linear;
   outline: none;
+
+  transition: 0.3s all linear;
 }
 
 .game__input:checked {
@@ -88,6 +89,8 @@
 
 .game__label {
   font-size: 1.2em;
+
+  transition: 0.3s all linear;
 }
 
 .game__input:checked ~ .game__label {
