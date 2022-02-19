@@ -18,6 +18,10 @@ const content = `
         <button id="btn-next" class="button">&gt;</button>
         <button id="btn-last" class="button">&raquo;</button>
       </div>
+      <div class="textbook__games">
+        <button id="textbook__btn-audio" class="button">Audio</button>
+        <button id="textbook__btn-sprint" class="button">Sprint</button>
+      </div>
     </div>
 
     <div class="cards"></div>

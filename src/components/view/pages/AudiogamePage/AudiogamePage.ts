@@ -79,14 +79,17 @@ export class AudiogamePage implements Page {
   }
 
   static async setDataGame(): Promise<void> {
-    const arrayPromise: Promise<WordType[]>[] = [];
-    for (let i = 0; i <= 29; i += 1) {
-      arrayPromise.push(ServerApi.getWords(AudiogamePage.level, i));
+    if (AudiogamePage.arrayWords.length === 0) {
+      const arrayPromise: Promise<WordType[]>[] = [];
+      for (let i = 0; i <= 29; i += 1) {
+        arrayPromise.push(ServerApi.getWords(AudiogamePage.level, i));
+      }
+      AudiogamePage.arrayWords = (await Promise.all(arrayPromise)).flat();
     }
-
-    AudiogamePage.arrayWords = (await Promise.all(arrayPromise)).flat();
-
-    while (AudiogamePage.arrayIndexGameWords.length < 20) {
+    while (
+      AudiogamePage.arrayIndexGameWords.length < 20 &&
+      AudiogamePage.arrayIndexGameWords.length < AudiogamePage.arrayWords.length
+    ) {
       const result = AudiogamePage.getIndexRandomWord();
       if (!AudiogamePage.arrayIndexGameWords.includes(result))
         AudiogamePage.arrayIndexGameWords.push(result);
@@ -157,6 +160,8 @@ export class AudiogamePage implements Page {
       <div class="word-wrapper">${AudiogamePage.arrayWords[i].word}&nbsp;${AudiogamePage.arrayWords[i].transcription}&nbsp;${AudiogamePage.arrayWords[i].wordTranslate}</div>
       `;
     });
+
+    AudiogamePage.arrayWords = [];
   }
 
   static showAnswers(index: number): void {
@@ -236,6 +241,7 @@ export class AudiogamePage implements Page {
     document.addEventListener('keydown', AudiogamePage.checkKeys);
     window.addEventListener('hashchange', function x() {
       document.removeEventListener('keydown', AudiogamePage.checkKeys);
+      AudiogamePage.arrayWords = [];
       window.removeEventListener('hashchange', x);
     });
   }
