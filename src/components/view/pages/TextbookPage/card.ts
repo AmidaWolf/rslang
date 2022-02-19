@@ -26,9 +26,9 @@ export function getWordCard(word: WordType): string {
     return `
       <div class="card-container" data-id="${word.id}">
         <div class="card__picture">
-          <img class="card__picture-src" src="https://rs-school-learn-words.herokuapp.com/${
-            word.image
-          }" alt="Picture">
+          <img class="card__picture-src" src="${ServerApi.baseURL}/${
+      word.image
+    }" alt="${word.word}">
           <div class="card__controls">
             <button class="difficult-word ${toggleButtonClass(
               getLocalDifficultArr(userId),
@@ -79,9 +79,9 @@ export function getWordCard(word: WordType): string {
   return `
       <div class="card-container" data-id="${word.id}">
         <div class="card__picture">
-          <img class="card__picture-src" src="https://rs-school-learn-words.herokuapp.com/${
-            word.image
-          }" alt="Picture">
+          <img class="card__picture-src" src="${ServerApi.baseURL}/${
+    word.image
+  }" alt="${word.word}">
         </div>
         <div class="card__content">
           <div class="card__word">

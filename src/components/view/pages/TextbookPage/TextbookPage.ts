@@ -4,6 +4,7 @@ import { getWordCard } from './card';
 import ServerApi from '../../../shared/utils/serverApi';
 import { listControlButtons } from '../../../shared/helpers/wordCardSupport';
 import { WordType } from '../../../types';
+import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
 
 async function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -13,9 +14,13 @@ async function removeLoading() {
 export class TextbookPage implements Page {
   container: HTMLElement;
 
+  private static maxPage = 29;
+
   private static currentPage = 0;
 
   private static currentGroup = 0;
+
+  private static currentWordOnPage: WordType[] = [];
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -29,6 +34,16 @@ export class TextbookPage implements Page {
   static showPageNumber(): void {
     const pageText = document.querySelector('#page-text span');
     if (pageText) pageText.textContent = String(TextbookPage.currentPage + 1);
+
+    const btnFirst = document.querySelector('#btn-first') as HTMLButtonElement;
+    const btnPrev = document.querySelector('#btn-prev') as HTMLButtonElement;
+    const btnNext = document.querySelector('#btn-next') as HTMLButtonElement;
+    const btnLast = document.querySelector('#btn-last') as HTMLButtonElement;
+
+    btnFirst.disabled = TextbookPage.currentPage === 0;
+    btnPrev.disabled = TextbookPage.currentPage === 0;
+    btnNext.disabled = TextbookPage.currentPage === TextbookPage.maxPage;
+    btnLast.disabled = TextbookPage.currentPage === TextbookPage.maxPage;
   }
 
   async renderHTML() {
@@ -39,6 +54,7 @@ export class TextbookPage implements Page {
     removeLoading();
     await TextbookPage.renderCards();
     await TextbookPage.addButtonsListener();
+    TextbookPage.addSevenGroup();
   }
 
   async run() {
@@ -46,6 +62,9 @@ export class TextbookPage implements Page {
   }
 
   static async renderCards(): Promise<void> {
+    if (TextbookPage.currentGroup === 6)
+      TextbookPage.renderDifficultWordsGroup();
+
     const cards = document.querySelector('.cards');
 
     if (cards) cards.innerHTML = '';
@@ -83,35 +102,32 @@ export class TextbookPage implements Page {
     const btnPrev = document.querySelector('#btn-prev') as HTMLButtonElement;
     const btnNext = document.querySelector('#btn-next') as HTMLButtonElement;
     const btnLast = document.querySelector('#btn-last') as HTMLButtonElement;
-    const selectGroup = document.querySelector('.group-words');
+    const selectGroup = document.querySelector('#group-words');
 
-    selectGroup?.addEventListener('change', (el) => {
+    selectGroup?.addEventListener('change', async (el) => {
       const target = el.target as HTMLElement & { selectedIndex: string };
       TextbookPage.currentPage = 0;
-      this.showPageNumber();
       TextbookPage.currentGroup = +target.selectedIndex;
-      TextbookPage.renderCards();
+      if (TextbookPage.currentGroup === 6) {
+        TextbookPage.renderDifficultWordsGroup();
+      } else {
+        TextbookPage.maxPage = 29;
+        this.showPageNumber();
+        TextbookPage.renderCards();
+      }
     });
 
     btnFirst.addEventListener('click', () => {
       if (TextbookPage.currentPage !== 0) {
         TextbookPage.currentPage = 0;
-        btnNext.disabled = false;
-        btnLast.disabled = false;
-        btnFirst.disabled = true;
-        btnPrev.disabled = true;
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
     });
 
     btnLast.addEventListener('click', () => {
-      if (TextbookPage.currentPage !== 29) {
-        TextbookPage.currentPage = 29;
-        btnNext.disabled = true;
-        btnLast.disabled = true;
-        btnFirst.disabled = false;
-        btnPrev.disabled = false;
+      if (TextbookPage.currentPage !== TextbookPage.maxPage) {
+        TextbookPage.currentPage = TextbookPage.maxPage;
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
@@ -120,36 +136,14 @@ export class TextbookPage implements Page {
     btnPrev.addEventListener('click', () => {
       if (TextbookPage.currentPage > 0) {
         TextbookPage.currentPage -= 1;
-        if (TextbookPage.currentPage > 0) {
-          btnNext.disabled = false;
-          btnLast.disabled = false;
-          btnFirst.disabled = false;
-          btnPrev.disabled = false;
-        } else {
-          btnNext.disabled = false;
-          btnLast.disabled = false;
-          btnFirst.disabled = true;
-          btnPrev.disabled = true;
-        }
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
     });
 
     btnNext.addEventListener('click', () => {
-      if (TextbookPage.currentPage < 29) {
+      if (TextbookPage.currentPage < TextbookPage.maxPage) {
         TextbookPage.currentPage += 1;
-        if (TextbookPage.currentPage < 29) {
-          btnNext.disabled = false;
-          btnLast.disabled = false;
-          btnFirst.disabled = false;
-          btnPrev.disabled = false;
-        } else {
-          btnNext.disabled = true;
-          btnLast.disabled = true;
-          btnFirst.disabled = false;
-          btnPrev.disabled = false;
-        }
         TextbookPage.showPageNumber();
         TextbookPage.renderCards();
       }
@@ -158,5 +152,71 @@ export class TextbookPage implements Page {
     cards?.addEventListener('click', (e) => {
       listControlButtons(e);
     });
+  }
+
+  private static addSevenGroup(): void {
+    if (isUserAuthorized()) {
+      const selectGroup = document.querySelector('#group-words') as HTMLElement;
+      selectGroup.innerHTML += `
+      <option value="group-7">Difficult words</option>
+      `;
+    }
+  }
+
+  private static async getDifficultWords(): Promise<void> {
+    let result: WordType[] = [];
+    const stringID = localStorage.getItem('difficultWords');
+    if (stringID) {
+      const arrayAllID = stringID.split(';');
+      TextbookPage.maxPage = Math.ceil(arrayAllID.length / 20) - 1;
+      const arrayID = arrayAllID.slice(
+        TextbookPage.currentPage * 20,
+        (TextbookPage.currentPage + 1) * 20
+      );
+      const promises: Promise<WordType>[] = [];
+      arrayID.forEach((el) => {
+        promises.push(ServerApi.getWord(el));
+      });
+      result = await Promise.all(promises);
+    }
+    TextbookPage.currentWordOnPage = result;
+  }
+
+  private static async renderDifficultWordsGroup(): Promise<void> {
+    const cards = document.querySelector('.cards') as HTMLElement;
+
+    cards.innerHTML = '';
+
+    await TextbookPage.getDifficultWords();
+    TextbookPage.showPageNumber();
+
+    TextbookPage.currentWordOnPage.forEach((el2) => {
+      TextbookPage.appendCard(el2);
+    });
+
+    if (TextbookPage.currentGroup === 6) {
+      const btnsDifficult = document.querySelectorAll('.difficult-word');
+      btnsDifficult.forEach((el) => {
+        const callback = (
+          mutations: MutationRecord[],
+          observer: MutationObserver
+        ) => {
+          mutations.forEach((mutation) => {
+            console.log(mutation, observer);
+            TextbookPage.renderDifficultWordsGroup();
+          });
+        };
+        const mutationObserver = new MutationObserver(callback);
+        const config = {
+          attributes: true,
+          characterData: true,
+          childList: true,
+          subtree: true,
+          attributeOldValue: true,
+          characterDataOldValue: true,
+        };
+        mutationObserver.observe(el, config);
+      });
+    }
   }
 }
