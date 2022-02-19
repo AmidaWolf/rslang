@@ -44,9 +44,6 @@ export class TextbookPage implements Page {
     btnPrev.disabled = TextbookPage.currentPage === 0;
     btnNext.disabled = TextbookPage.currentPage === TextbookPage.maxPage;
     btnLast.disabled = TextbookPage.currentPage === TextbookPage.maxPage;
-
-    console.log(TextbookPage.currentPage);
-    console.log(TextbookPage.maxPage);
   }
 
   async renderHTML() {
@@ -161,7 +158,7 @@ export class TextbookPage implements Page {
     if (isUserAuthorized()) {
       const selectGroup = document.querySelector('#group-words') as HTMLElement;
       selectGroup.innerHTML += `
-      <option value="group-7">Group 7</option>
+      <option value="group-7">Difficult words</option>
       `;
     }
   }
@@ -196,5 +193,30 @@ export class TextbookPage implements Page {
     TextbookPage.currentWordOnPage.forEach((el2) => {
       TextbookPage.appendCard(el2);
     });
+
+    if (TextbookPage.currentGroup === 6) {
+      const btnsDifficult = document.querySelectorAll('.difficult-word');
+      btnsDifficult.forEach((el) => {
+        const callback = (
+          mutations: MutationRecord[],
+          observer: MutationObserver
+        ) => {
+          mutations.forEach((mutation) => {
+            console.log(mutation, observer);
+            TextbookPage.renderDifficultWordsGroup();
+          });
+        };
+        const mutationObserver = new MutationObserver(callback);
+        const config = {
+          attributes: true,
+          characterData: true,
+          childList: true,
+          subtree: true,
+          attributeOldValue: true,
+          characterDataOldValue: true,
+        };
+        mutationObserver.observe(el, config);
+      });
+    }
   }
 }
