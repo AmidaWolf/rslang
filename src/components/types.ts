@@ -3,6 +3,25 @@ export type OptionalType = {
   [key: string]: string;
 };
 
+export type UserWordOptionalType = {
+  sprint: boolean[];
+  audio: boolean[];
+  allGames: boolean[];
+  learnt: boolean;
+};
+
+export type UserWordResponseType = {
+  id: string;
+  difficulty: string; // (hard/easy)
+  wordId: string;
+  optional: UserWordOptionalType;
+};
+
+export type UserWordRequestType = {
+  difficulty: string; // (hard/easy)
+  optional: UserWordOptionalType;
+};
+
 export type WordType = {
   id: string;
   group: number;
@@ -38,18 +57,6 @@ export type GetTokensType = {
   refreshToken: string;
   userId: string;
   name: string;
-};
-
-export type UserWordType = {
-  id: string;
-  difficulty: string;
-  optional: OptionalType;
-  wordId: string;
-};
-
-export type UserWordInitialType = {
-  difficulty: string;
-  optional: OptionalType;
 };
 
 export type StatisticsType = {

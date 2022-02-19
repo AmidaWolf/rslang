@@ -155,6 +155,17 @@ export class AuthorizationPage {
     return result;
   }
 
+  async initUserSettings(userId) {
+    const baseSettings = {
+      wordsPerDay: 0,
+      optional: {
+        difficult: `difficult;`,
+        learnt: `learnt;`,
+      },
+    };
+    await ServerApi.updateSettings(userId, baseSettings);
+  }
+
   async signInUser(logInData: SignRequestBody) {
     ServerApi.signIn(logInData)
       .then((result: GetTokensType | ErrorType | number) => {
@@ -167,6 +178,7 @@ export class AuthorizationPage {
         } else {
           this.validateUserData(result, logInData.email);
           this.switchHiddenSectionsAccess();
+          this.initUserSettings(result.userId);
         }
       })
       .catch((e) => {

@@ -24,13 +24,12 @@ export function getSetFromArray(array: string[] | never[]) {
 export async function getRemoteDifficultSet(
   userId: string
 ): Promise<Set<unknown>> {
-  const set = new Set();
+  const set = new Set(['difficult']);
   await ServerApi.getSettings(userId).then((settings) => {
     const { difficult } = settings.optional;
     if (difficult) {
       const array = difficult.split(';');
       array.forEach(async (id) => {
-        set.add('difficult');
         set.add(id);
       });
     }
@@ -41,13 +40,12 @@ export async function getRemoteDifficultSet(
 export async function getRemoteLearntSet(
   userId: string
 ): Promise<Set<unknown>> {
-  const set = new Set();
+  const set = new Set(['learnt']);
   await ServerApi.getSettings(userId).then((settings) => {
     const { learnt } = settings.optional;
     if (learnt) {
       const array = learnt.split(';');
       array.forEach(async (id) => {
-        set.add('learnt');
         set.add(id);
       });
     }
@@ -84,11 +82,15 @@ export function getUniqueLocalWordsArray() {
     const learntWordsArray = getLocalLearntArr(userId);
 
     difficultWordsArray.forEach((id) => {
-      commonArray.push(id);
+      if (id !== 'difficult' && id !== 'learnt' && id !== 'null') {
+        commonArray.push(id);
+      }
     });
 
     learntWordsArray.forEach((id) => {
-      commonArray.push(id);
+      if (id !== 'difficult' && id !== 'learnt' && id !== 'null') {
+        commonArray.push(id);
+      }
     });
   }
 

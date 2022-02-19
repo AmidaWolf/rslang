@@ -22,6 +22,10 @@ const content = `
         <button id="textbook__btn-audio" class="button">Audio</button>
         <button id="textbook__btn-sprint" class="button">Sprint</button>
       </div>
+      <div class="textbook__games">
+        <button id="textbook__btn-audio" class="button">Audio</button>
+        <button id="textbook__btn-sprint" class="button">Sprint</button>
+      </div>
     </div>
 
     <div class="cards"></div>

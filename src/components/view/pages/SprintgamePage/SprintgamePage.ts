@@ -88,12 +88,14 @@ export class SprintgamePage implements Page {
   }
 
   async setDataGame(): Promise<void> {
-    const arrayPromise: Promise<WordType[]>[] = [];
-    for (let i = 0; i <= 29; i += 1) {
-      arrayPromise.push(ServerApi.getWords(SprintgamePage.level, i));
-    }
+    if (SprintgamePage.arrayWords.length === 0) {
+      const arrayPromise: Promise<WordType[]>[] = [];
+      for (let i = 0; i <= 29; i += 1) {
+        arrayPromise.push(ServerApi.getWords(SprintgamePage.level, i));
+      }
 
-    SprintgamePage.arrayWords = (await Promise.all(arrayPromise)).flat();
+      SprintgamePage.arrayWords = (await Promise.all(arrayPromise)).flat();
+    }
 
     const arrayIndexAll = Object.keys(SprintgamePage.arrayWords);
 
@@ -114,6 +116,9 @@ export class SprintgamePage implements Page {
   }
 
   static showGame(): void {
+    console.log(SprintgamePage.arrayWords);
+    console.log(SprintgamePage.arrayIndexGameWords);
+
     const sprintGameWrapper = document.querySelector(
       '.sprint__wrapper'
     ) as HTMLElement;
@@ -152,6 +157,14 @@ export class SprintgamePage implements Page {
       if (target.classList.contains('button')) {
         const answerUser = target.id.slice(4) === 'true';
         this.checkAnswer(answerUser);
+        if (
+          SprintgamePage.indexGameStep ===
+          SprintgamePage.arrayIndexGameWords.length
+        ) {
+          console.log('Delete intervals');
+          clearInterval(timerInterval);
+          clearTimeout(timerResult);
+        }
       }
     });
 
@@ -204,8 +217,17 @@ export class SprintgamePage implements Page {
       this.scoreAdd = 10;
       this.countStepsNoErrors = 0;
     }
-    this.indexGameStep += 1;
-    this.updateDataQuestion();
+
+    SprintgamePage.indexGameStep += 1;
+    if (
+      SprintgamePage.indexGameStep === SprintgamePage.arrayIndexGameWords.length
+    ) {
+      console.log('Words ended!');
+      document.removeEventListener('keydown', SprintgamePage.checkKeys);
+      SprintgamePage.showResultsGame();
+    } else {
+      SprintgamePage.updateDataQuestion();
+    }
   }
 
   static updateDataQuestion(): void {
@@ -287,5 +309,7 @@ export class SprintgamePage implements Page {
       <div class="word-wrapper">${SprintgamePage.arrayWords[i].word}&nbsp;${SprintgamePage.arrayWords[i].transcription}&nbsp;${SprintgamePage.arrayWords[i].wordTranslate}</div>
       `;
     });
+
+    SprintgamePage.arrayWords = [];
   }
 }
