@@ -3,12 +3,12 @@ const content = `
     <div class="container-manage">
 
       <select name="group-words" id="group-words">
-        <option selected value="Группа 1">Группа 1</option>
-        <option value="Группа 2">Группа 2</option>
-        <option value="Группа 3">Группа 3</option>
-        <option value="Группа 4">Группа 4</option>
-        <option value="Группа 5">Группа 5</option>
-        <option value="Группа 6">Группа 6</option>
+        <option selected value="group-1">Group 1</option>
+        <option value="group-2">Group 2</option>
+        <option value="group-3">Group 3</option>
+        <option value="group-4">Group 4</option>
+        <option value="group-5">Group 5</option>
+        <option value="group-6">Group 6</option>
       </select>
 
       <div class="textbook__pages">
