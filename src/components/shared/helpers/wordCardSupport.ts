@@ -1,4 +1,5 @@
 import ServerApi from '../utils/serverApi';
+import { updateLocalStorageOnLogOut } from './UserDataLocalStorageWorker';
 import {
   getStringFromSet,
   getSetFromString,
@@ -218,6 +219,7 @@ export async function listWordsSettingsUpdate() {
   window.addEventListener('hashchange', updateRemoteWordsSettings);
   window.addEventListener('beforeunload', updateRemoteWordsSettings);
   logOutBtn?.addEventListener('click', updateRemoteWordsSettings);
+  logOutBtn?.addEventListener('click', updateLocalStorageOnLogOut);
 }
 
 // firstControlButtonsUpdate() - called in serverWordsUpdate on the first app load only

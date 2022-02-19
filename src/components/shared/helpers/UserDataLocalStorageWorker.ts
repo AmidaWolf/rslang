@@ -20,6 +20,8 @@ export function updateLocalStorageOnLogOut() {
   localStorage.setItem('userId', '');
   localStorage.setItem('userEmail', '');
   localStorage.setItem('userOptions', '');
+  localStorage.setItem('learntWords', '');
+  localStorage.setItem('difficultWords', '');
 }
 
 export function logOutUser() {
