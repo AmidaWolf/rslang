@@ -6,6 +6,7 @@
   min-height: 100vh;
   align-items: center;
   justify-content: flex-start;
+  padding: 0 2em;
 
   gap: 1em;
 
@@ -15,142 +16,131 @@
   background-size: cover;
 }
 
-.card-container {
-  border: 5px solid rgb(63, 63, 63);
-  max-width: 850px;
-  width: 100%;
-  min-height: 260px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background-color: rgb(158, 158, 158);
-}
-
-.card__content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
-  margin-left: 50px;
-  font-size: 20px;
-  position: relative;
-}
-
-.btn-sound {
-  background-image: url("../../../../assets/img/sound.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  min-width: 50px;
-  height: 60px;
-  cursor: pointer;
-  position: relative;
-  opacity: 0.8;
-  border: none;
-  outline: none;
-  background-color: transparent;
-}
-
-.btn-sound.word {
-  left: -25px;
-}
-
-.btn-sound.meaning {
-  left: -25px;
-}
-
-.btn-sound.example {
-  left: -25px;
-}
-
-.card__example,
-.card__meaning,
-.card__word {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  position: relative;
-}
-
-.card__word-container,
-.card__example-container,
-.card__meaning-container {
-  margin-left: 0;
-  margin-right: 30px;
-}
-
-.textbook__pages,
 .container-manage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2em;
+
+  gap: 1em;
+}
+
+.textbook__pages {
   margin-left: auto;
   margin-right: auto;
   display: flex;
   flex-direction: row;
-  height: 50px;
 
+  gap: 0.5em;
 }
 
-.card__picture {
-  width: 400px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
+.button-pagination {
+  width: 2em;
+  height: 2em;
+  min-width: 2em;
+
+  padding: 1em;
+
+  align-self: center;
+
+  background-size: 1em 1em;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+
+  cursor: pointer;
+}
+
+.button-pagination_first {
+  background-image: url("../../../../assets/chevron-double-left.svg");
+}
+
+.button-pagination_prev {
+  background-image: url("../../../../assets/chevron-left.svg");
+}
+
+.button-pagination_next {
+  background-image: url("../../../../assets/chevron-right.svg");
+}
+
+.button-pagination_last {
+  background-image: url("../../../../assets/chevron-double-right.svg");
 }
 
 .page-text {
-  font-size: 30px;
-  width: 150px;
+  font-size: 1em;
   text-align: center;
   display: flex;
   justify-content: center;
-  align-items:center;
+  align-items: center;
 }
 
-#group-words {
-  width: 200px;
-  font-size: 30px;
-  margin-right: 50px;
-  padding-left: 15px;
+.group-words {
+  min-width: 150px;
+  height: 2.2em;
+  padding: 0 0.5em;
+
+  border: 2px solid $font-color;
+  border-radius: 2em;
+  color: $font-color;
+
+  cursor: pointer;
+  background: transparent;
+}
+
+.group-words option {
+  background-color: $bg-color;
 }
 
 .cards {
-  margin-top: 30px;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
   justify-content: center;
+  margin: 2em 0;
+
+  gap: 1em;
 }
 
-.card__word-block {
+.card-container {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 15px;
+  width: 100%;
+  max-width: 850px;
+  min-height: 260px;
+
+  gap: 2em;
+
+  padding: 1em 2em;
+
+  border: 2px solid $font-color;
+  border-radius: 2em;
 }
 
-.card__word-text {
-  font-size: 20px;
+.card__picture {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 50%;
+
+  gap: 1em;
 }
 
-.card__word-transcription {
-  font-size: 20px;
-  opacity: 0.7;
+.card__picture-image-wrapper {
+  width: 100%;
+  height: auto;
 }
 
-.card__meaning-translate,
-.card__example-translate,
-.card__word-translate {
-  font-size: 20px;
-  opacity: 0.7;
+.card__picture-image {
+  height: auto;
 }
 
 .card__controls {
   justify-content: center;
   display: flex;
-}
 
-.hidden {
-  display: none;
+  gap: 1em;
 }
 
 .difficult-active {
@@ -161,18 +151,68 @@
   background-color: green;
 }
 
-.textbook__games {
-  margin-left: 50px;
+.card__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
 }
 
-.textbook__games button {
-  background-color: green;
-}
-
-#btn-first,
-#btn-prev,
-#btn-next,
-#btn-last {
+.btn-sound {
+  width: 3em;
+  height: 3em;
   min-width: 3em;
+  padding: 1em;
+
+  align-self: center;
+
+  background-size: 2em 2em;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  background-image: url("../../../../assets/sound.svg");
+
+  cursor: pointer;
+  opacity: 0.8;
 }
 
+.card__example,
+.card__meaning,
+.card__word {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+
+  gap: 1em;
+}
+
+.card__word-block {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.card__word-text {
+  font-size: 2em;
+}
+
+.card__word-transcription {
+  font-size: 1.5em;
+  opacity: 0.7;
+}
+
+.card__meaning-translate,
+.card__example-translate,
+.card__word-translate {
+  font-size: 1em;
+  opacity: 0.7;
+}
+
+.hidden {
+  display: none;
+}
+
+@import 'TextbookPage.media';
