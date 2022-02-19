@@ -241,6 +241,7 @@ export class AudiogamePage implements Page {
     document.addEventListener('keydown', AudiogamePage.checkKeys);
     window.addEventListener('hashchange', function x() {
       document.removeEventListener('keydown', AudiogamePage.checkKeys);
+      AudiogamePage.arrayWords = [];
       window.removeEventListener('hashchange', x);
     });
   }
