@@ -1,7 +1,7 @@
 import { ModalContentType } from '../../../types';
 
 export const authContent: ModalContentType = {
-  title: 'Authorization',
+  title: 'Authentication',
   html: `
 <form class="authentication">
   <fieldset class="auth-fieldset">

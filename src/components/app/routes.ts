@@ -20,7 +20,7 @@ export interface RoutesI {
 
 export const routesText = {
   [RoutesPath.START]: 'Main',
-  [RoutesPath.AUTHORIZATION]: 'Authorization',
+  [RoutesPath.AUTHORIZATION]: 'Authentication',
   [RoutesPath.TEXTBOOK]: 'Textbook',
   [RoutesPath.VOCABULARY]: 'Vocabulary',
   [RoutesPath.STATISTICS]: 'Statistics',
