@@ -1,5 +1,6 @@
+import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
 import ServerApi from '../../../shared/utils/serverApi';
-import { WordType } from '../../../types';
+import { WordType, UserWordResponseType } from '../../../types';
 import { Page } from '../../Page';
 import baseHTML from './baseHTML';
 // eslint-disable-next-line import/no-cycle
@@ -271,7 +272,6 @@ export class AudiogamePage implements Page {
   }
 
   static checkAnswer(target: HTMLElement): void {
-    console.log(`проверяем ответ`, target);
     const btnsAnswers = document.querySelectorAll(
       '.audio-game__answers .button'
     ) as NodeListOf<HTMLButtonElement>;
@@ -290,9 +290,14 @@ export class AudiogamePage implements Page {
       target.classList.add('button_false');
       AudiogamePage.resultGameWordsFalse.push(index);
       AudiogamePage.audioFail.play();
+      AudiogamePage.uploadResultToServer(
+        AudiogamePage.arrayWords[index],
+        false
+      );
     } else {
       AudiogamePage.resultGameWordsTrue.push(index);
       AudiogamePage.audioFanfar.play();
+      AudiogamePage.uploadResultToServer(AudiogamePage.arrayWords[index], true);
     }
     rightAnswer.classList.add('button_true');
     AudiogamePage.showRightAnswer(AudiogamePage.arrayWords[index]);
@@ -304,5 +309,56 @@ export class AudiogamePage implements Page {
     ) as HTMLElement;
 
     resultContainer.innerHTML = getRightAnswerHTML(word);
+  }
+
+  static async uploadResultToServer(
+    word: WordType,
+    result: boolean
+  ): Promise<void> {
+    if (isUserAuthorized()) {
+      const userId = localStorage.getItem('userId') as string;
+      const wordUser = await ServerApi.getUserWord(userId, word.id);
+
+      const obj = {
+        difficulty: 'easy',
+        optional: {
+          sprint: ' ',
+          audio: ' ',
+          allGames: ' ',
+          learnt: false,
+        },
+      };
+
+      if (wordUser) {
+        obj.difficulty = wordUser.difficulty;
+        obj.optional.sprint = wordUser.optional.sprint;
+        obj.optional.audio = wordUser.optional.audio;
+        obj.optional.allGames = wordUser.optional.allGames;
+        obj.optional.learnt = wordUser.optional.learnt;
+
+        obj.optional.audio += result ? '1' : '0';
+        obj.optional.allGames += result ? '1' : '0';
+
+        if (
+          obj.difficulty === 'easy' &&
+          obj.optional.allGames.slice(-3) === '111'
+        )
+          obj.optional.learnt = true;
+
+        if (
+          obj.difficulty === 'hard' &&
+          obj.optional.allGames.slice(-5) === '11111'
+        )
+          obj.optional.learnt = true;
+
+        await ServerApi.updateUserWord(userId, word.id, obj);
+      } else {
+        obj.optional.audio += result ? '1' : '0';
+        obj.optional.allGames += result ? '1' : '0';
+        await ServerApi.createUserWord(userId, word.id, obj);
+      }
+
+      const wordUser2 = await ServerApi.getUserWord(userId, word.id);
+    }
   }
 }

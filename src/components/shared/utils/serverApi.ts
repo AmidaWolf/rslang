@@ -185,7 +185,7 @@ export default class ServerApi {
   static async getUserWord(
     userId: string,
     wordId: string
-  ): Promise<UserWordResponseType> {
+  ): Promise<UserWordRequestType | null> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {
@@ -196,22 +196,21 @@ export default class ServerApi {
         },
       }
     );
-
+    console.log(response);
     let wordData;
 
     if (response.status === 401) {
       if (await ServerApi.getNewUserTokens(userId)) {
         wordData = await ServerApi.getUserWord(userId, wordId);
       }
-    } else {
-      wordData = response.json();
-    }
-
-    if (response.status === 404) {
+    } else if (!response.ok) {
       console.log(
         `Sorry, but there is ${response.status} error: ${response.statusText}`
       );
+      return null;
     }
+
+    wordData = await response.json();
 
     return wordData;
   }
@@ -220,7 +219,7 @@ export default class ServerApi {
     userId: string,
     wordId: string,
     body: UserWordRequestType
-  ): Promise<UserWordResponseType | []> {
+  ): Promise<UserWordResponseType | null> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {
@@ -240,15 +239,13 @@ export default class ServerApi {
       if (await ServerApi.getNewUserTokens(userId)) {
         wordData = await ServerApi.createUserWord(userId, wordId, body);
       }
-    } else {
-      wordData = response.json();
-    }
-
-    if (!response.ok) {
+    } else if (!response.ok) {
       console.log(
         `Sorry, but there is ${response.status} error: ${response.statusText}`
       );
-      return [];
+      return null;
+    } else {
+      wordData = await response.json();
     }
 
     return wordData;
@@ -258,7 +255,7 @@ export default class ServerApi {
     userId: string,
     wordId: string,
     body: UserWordRequestType
-  ): Promise<UserWordResponseType> {
+  ): Promise<UserWordResponseType | null> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {
@@ -278,15 +275,14 @@ export default class ServerApi {
       if (await ServerApi.getNewUserTokens(userId)) {
         wordData = await ServerApi.updateUserWord(userId, wordId, body);
       }
-    } else {
-      wordData = response.json();
-    }
-
-    if (response.status === 404) {
+    } else if (!response.ok) {
       console.log(
         `Sorry, but there is ${response.status} error: ${response.statusText}`
       );
+      return null;
     }
+
+    wordData = await response.json();
 
     return wordData;
   }
