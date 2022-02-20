@@ -196,7 +196,7 @@ export default class ServerApi {
         },
       }
     );
-    console.log(response);
+
     let wordData;
 
     if (response.status === 401) {
