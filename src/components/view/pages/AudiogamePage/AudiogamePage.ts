@@ -355,6 +355,7 @@ export class AudiogamePage implements Page {
       } else {
         obj.optional.audio += result ? '1' : '0';
         obj.optional.allGames += result ? '1' : '0';
+        obj.optional.learnt = false;
         await ServerApi.createUserWord(userId, word.id, obj);
       }
 
