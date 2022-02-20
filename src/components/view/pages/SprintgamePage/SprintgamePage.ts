@@ -140,10 +140,12 @@ export class SprintgamePage implements Page {
 
     this.updateDataQuestion();
 
-    const timerResult = setInterval(() => {
-      clearInterval(timerInterval);
-      document.removeEventListener('keydown', SprintgamePage.checkKeys);
-      this.showResultsGame();
+    const timerResult = setTimeout(() => {
+      if (SprintgamePage.arrayWords.length > 0) {
+        clearInterval(timerInterval);
+        document.removeEventListener('keydown', SprintgamePage.checkKeys);
+        this.showResultsGame();
+      }
     }, 60000);
 
     const buttonsContainer = document.querySelector(

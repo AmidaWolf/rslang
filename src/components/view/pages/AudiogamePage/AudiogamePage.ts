@@ -342,14 +342,16 @@ export class AudiogamePage implements Page {
         if (
           obj.difficulty === 'easy' &&
           obj.optional.allGames.slice(-3) === '111'
-        )
+        ) {
           obj.optional.learnt = true;
-
-        if (
+        } else if (
           obj.difficulty === 'hard' &&
           obj.optional.allGames.slice(-5) === '11111'
-        )
+        ) {
           obj.optional.learnt = true;
+        } else {
+          obj.optional.learnt = false;
+        }
 
         await ServerApi.updateUserWord(userId, word.id, obj);
       } else {
