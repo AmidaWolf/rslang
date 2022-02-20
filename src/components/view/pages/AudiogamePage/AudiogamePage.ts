@@ -2,7 +2,7 @@ import ServerApi from '../../../shared/utils/serverApi';
 import { WordType } from '../../../types';
 import { Page } from '../../Page';
 import baseHTML from './baseHTML';
-// eslint-disable-next-line import/no-cycle
+
 import {
   getGameHTML,
   getAnswersHTML,
@@ -10,7 +10,7 @@ import {
   getGameResultsHTML,
 } from './game';
 
-async function removeLoading() {
+function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
   loading.classList.add('visibility-hidden');
 }
@@ -56,25 +56,27 @@ export class AudiogamePage implements Page {
       '.audio-game__wrapper'
     ) as HTMLElement;
 
-    let secondsLast = 4;
+    const secondsStart = 0;
+    const secondsLast = 4;
+    let secondsCount = 4;
     AudiogamePage.timerStart = setInterval(() => {
-      if (secondsLast === 4) {
+      if (secondsCount === secondsLast) {
         audioGameWrapper.innerHTML = `<div class="timer-start">READY?</div>`;
-        secondsLast -= 1;
-      } else if (secondsLast > 0 && secondsLast < 4) {
-        audioGameWrapper.innerHTML = `<div class="timer-start">${secondsLast}</div>`;
-        secondsLast -= 1;
-      } else if (secondsLast === 0) {
+        secondsCount -= 1;
+      } else if (secondsCount > secondsStart && secondsCount < secondsLast) {
+        audioGameWrapper.innerHTML = `<div class="timer-start">${secondsCount}</div>`;
+        secondsCount -= 1;
+      } else if (secondsCount === secondsStart) {
         audioGameWrapper.innerHTML = `<div class="timer-start">GO!</div>`;
-        secondsLast -= 1;
+        secondsCount -= 1;
       } else {
         clearInterval(AudiogamePage.timerStart);
         AudiogamePage.showGame();
       }
     }, 1000);
-    window.addEventListener('hashchange', function y() {
+    window.addEventListener('hashchange', function disableTimerAudioStart() {
       clearInterval(AudiogamePage.timerStart);
-      window.removeEventListener('hashchange', y);
+      window.removeEventListener('hashchange', disableTimerAudioStart);
     });
   }
 
