@@ -9,6 +9,7 @@ import {
   getRightAnswerHTML,
   getGameResultsHTML,
 } from './game';
+import { renderSources } from '../../../shared/helpers/renderSources';
 
 function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -125,8 +126,11 @@ export class AudiogamePage implements Page {
     btnNext.addEventListener('click', AudiogamePage.btnNext);
   }
 
-  private static btnNext(): void {
-    const btnNext = document.querySelector('.button.next') as HTMLButtonElement;
+  private static btnNext(event?): void {
+    const btnNext = event
+      ? event.target
+      : (document.querySelector('.button.next') as HTMLButtonElement);
+
     AudiogamePage.indexGameStep += 1;
     if (
       AudiogamePage.indexGameStep < AudiogamePage.arrayIndexGameWords.length
@@ -151,7 +155,7 @@ export class AudiogamePage implements Page {
     ) as HTMLElement;
     AudiogamePage.resultGameWordsTrue.forEach((i) => {
       resTrueCont.innerHTML += `
-      <div class="word-wrapper">${AudiogamePage.arrayWords[i].word}&nbsp;${AudiogamePage.arrayWords[i].transcription}&nbsp;${AudiogamePage.arrayWords[i].wordTranslate}</div>
+      <p class="word-wrapper">${AudiogamePage.arrayWords[i].word}&nbsp;${AudiogamePage.arrayWords[i].transcription}&nbsp;${AudiogamePage.arrayWords[i].wordTranslate}</p>
       `;
     });
     const resFalseCont = document.querySelector(
@@ -159,7 +163,7 @@ export class AudiogamePage implements Page {
     ) as HTMLElement;
     AudiogamePage.resultGameWordsFalse.forEach((i) => {
       resFalseCont.innerHTML += `
-      <div class="word-wrapper">${AudiogamePage.arrayWords[i].word}&nbsp;${AudiogamePage.arrayWords[i].transcription}&nbsp;${AudiogamePage.arrayWords[i].wordTranslate}</div>
+      <p class="word-wrapper">${AudiogamePage.arrayWords[i].word}&nbsp;${AudiogamePage.arrayWords[i].transcription}&nbsp;${AudiogamePage.arrayWords[i].wordTranslate}</p>
       `;
     });
 
@@ -231,10 +235,10 @@ export class AudiogamePage implements Page {
 
     audioBtn.addEventListener('click', () => audio.play());
 
-    answersWrapper.addEventListener('click', (el) => {
+    answersWrapper.addEventListener('click', async (el) => {
       const target = el.target as HTMLElement;
       if (target.classList.contains('button')) {
-        AudiogamePage.checkAnswer(target);
+        await AudiogamePage.checkAnswer(target);
         btnNext.disabled = false;
         audio.volume = 0;
       }
@@ -248,7 +252,7 @@ export class AudiogamePage implements Page {
     });
   }
 
-  private static checkKeys(el: KeyboardEvent): void {
+  private static async checkKeys(el: KeyboardEvent): Promise<void> {
     const btnsAnswers = document.querySelectorAll(
       '.audio-game__answers .button'
     ) as NodeListOf<HTMLButtonElement>;
@@ -256,7 +260,7 @@ export class AudiogamePage implements Page {
     const audio = document.querySelector('.question-audio') as HTMLAudioElement;
 
     if (+el.key >= 1 && +el.key <= 5 && !btnsAnswers[+el.key - 1].disabled) {
-      AudiogamePage.checkAnswer(btnsAnswers[+el.key - 1]);
+      await AudiogamePage.checkAnswer(btnsAnswers[+el.key - 1]);
       btnNext.disabled = false;
       audio.volume = 0;
     }
@@ -265,11 +269,11 @@ export class AudiogamePage implements Page {
     }
     if (el.key === ' ') {
       el.preventDefault();
-      audio.play();
+      await audio.play();
     }
   }
 
-  static checkAnswer(target: HTMLElement): void {
+  static async checkAnswer(target: HTMLElement): Promise<void> {
     const btnsAnswers = document.querySelectorAll(
       '.audio-game__answers .button'
     ) as NodeListOf<HTMLButtonElement>;
@@ -287,20 +291,28 @@ export class AudiogamePage implements Page {
     if (answerWordTranslate !== AudiogamePage.arrayWords[index].wordTranslate) {
       target.classList.add('button_false');
       AudiogamePage.resultGameWordsFalse.push(index);
-      AudiogamePage.audioFail.play();
+      await AudiogamePage.audioFail.play();
     } else {
       AudiogamePage.resultGameWordsTrue.push(index);
-      AudiogamePage.audioFanfar.play();
+      await AudiogamePage.audioFanfar.play();
     }
     rightAnswer.classList.add('button_true');
-    AudiogamePage.showRightAnswer(AudiogamePage.arrayWords[index]);
+    await AudiogamePage.showRightAnswer(AudiogamePage.arrayWords[index]);
   }
 
-  private static showRightAnswer(word: WordType): void {
+  private static async showRightAnswer(word: WordType): Promise<void> {
     const resultContainer = document.querySelector(
       '.audio-game__result'
     ) as HTMLElement;
 
-    resultContainer.innerHTML = getRightAnswerHTML(word);
+    const wordImg = await renderSources.renderImageHTML(
+      `${ServerApi.baseURL}/${word.image}`,
+      `${word.word}`,
+      'card__picture-image',
+      390,
+      260
+    );
+
+    resultContainer.innerHTML = getRightAnswerHTML(word, wordImg);
   }
 }
