@@ -1,3 +1,4 @@
+import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
 import ServerApi from '../../../shared/utils/serverApi';
 import { WordType } from '../../../types';
 import { Page } from '../../Page';
@@ -117,6 +118,10 @@ export class AudiogamePage implements Page {
       AudiogamePage.arrayIndexGameWords.length
     );
 
+    const answersWrapper = document.querySelector(
+      '.audio-game__answers'
+    ) as HTMLElement;
+
     AudiogamePage.showAnswers(
       AudiogamePage.arrayIndexGameWords[AudiogamePage.indexGameStep]
     );
@@ -124,6 +129,21 @@ export class AudiogamePage implements Page {
     const btnNext = document.querySelector('.button.next') as HTMLButtonElement;
 
     btnNext.addEventListener('click', AudiogamePage.btnNext);
+
+    answersWrapper.addEventListener('click', (el) => {
+      const target = el.target as HTMLElement;
+      if (target.classList.contains('button')) {
+        await AudiogamePage.checkAnswer(target);
+        btnNext.disabled = false;
+      }
+    });
+
+    document.addEventListener('keydown', AudiogamePage.checkKeys);
+    window.addEventListener('hashchange', function x() {
+      document.removeEventListener('keydown', AudiogamePage.checkKeys);
+      AudiogamePage.arrayWords = [];
+      window.removeEventListener('hashchange', x);
+    });
   }
 
   private static btnNext(event?): void {
@@ -234,22 +254,6 @@ export class AudiogamePage implements Page {
     const audioBtn = document.querySelector('.audio-word') as HTMLElement;
 
     audioBtn.addEventListener('click', () => audio.play());
-
-    answersWrapper.addEventListener('click', async (el) => {
-      const target = el.target as HTMLElement;
-      if (target.classList.contains('button')) {
-        await AudiogamePage.checkAnswer(target);
-        btnNext.disabled = false;
-        audio.volume = 0;
-      }
-    });
-
-    document.addEventListener('keydown', AudiogamePage.checkKeys);
-    window.addEventListener('hashchange', function x() {
-      document.removeEventListener('keydown', AudiogamePage.checkKeys);
-      AudiogamePage.arrayWords = [];
-      window.removeEventListener('hashchange', x);
-    });
   }
 
   private static async checkKeys(el: KeyboardEvent): Promise<void> {
@@ -260,7 +264,8 @@ export class AudiogamePage implements Page {
     const audio = document.querySelector('.question-audio') as HTMLAudioElement;
 
     if (+el.key >= 1 && +el.key <= 5 && !btnsAnswers[+el.key - 1].disabled) {
-      await AudiogamePage.checkAnswer(btnsAnswers[+el.key - 1]);
+      await 
+      (btnsAnswers[+el.key - 1]);
       btnNext.disabled = false;
       audio.volume = 0;
     }
@@ -292,9 +297,14 @@ export class AudiogamePage implements Page {
       target.classList.add('button_false');
       AudiogamePage.resultGameWordsFalse.push(index);
       await AudiogamePage.audioFail.play();
+      AudiogamePage.uploadResultToServer(
+        AudiogamePage.arrayWords[index],
+        false
+      );
     } else {
       AudiogamePage.resultGameWordsTrue.push(index);
       await AudiogamePage.audioFanfar.play();
+      AudiogamePage.uploadResultToServer(AudiogamePage.arrayWords[index], true);
     }
     rightAnswer.classList.add('button_true');
     await AudiogamePage.showRightAnswer(AudiogamePage.arrayWords[index]);
@@ -314,5 +324,56 @@ export class AudiogamePage implements Page {
     );
 
     resultContainer.innerHTML = getRightAnswerHTML(word, wordImg);
+  }
+
+  static async uploadResultToServer(
+    word: WordType,
+    result: boolean
+  ): Promise<void> {
+    if (isUserAuthorized()) {
+      const userId = localStorage.getItem('userId') as string;
+      const wordUser = await ServerApi.getUserWord(userId, word.id);
+
+      const obj = {
+        difficulty: 'easy',
+        optional: {
+          sprint: ' ',
+          audio: ' ',
+          allGames: ' ',
+          learnt: false,
+        },
+      };
+
+      if (wordUser) {
+        obj.difficulty = wordUser.difficulty;
+        obj.optional.sprint = wordUser.optional.sprint;
+        obj.optional.audio = wordUser.optional.audio;
+        obj.optional.allGames = wordUser.optional.allGames;
+        obj.optional.learnt = wordUser.optional.learnt;
+
+        obj.optional.audio += result ? '1' : '0';
+        obj.optional.allGames += result ? '1' : '0';
+
+        if (
+          obj.difficulty === 'easy' &&
+          obj.optional.allGames.slice(-3) === '111'
+        ) {
+          obj.optional.learnt = true;
+        } else if (
+          obj.difficulty === 'hard' &&
+          obj.optional.allGames.slice(-5) === '11111'
+        ) {
+          obj.optional.learnt = true;
+        } else {
+          obj.optional.learnt = false;
+        }
+
+        await ServerApi.updateUserWord(userId, word.id, obj);
+      } else {
+        obj.optional.audio += result ? '1' : '0';
+        obj.optional.allGames += result ? '1' : '0';
+        await ServerApi.createUserWord(userId, word.id, obj);
+      }
+    }
   }
 }
