@@ -315,7 +315,6 @@ export class AudiogamePage implements Page {
     word: WordType,
     result: boolean
   ): Promise<void> {
-    console.log(word);
     if (isUserAuthorized()) {
       const userId = localStorage.getItem('userId') as string;
       const wordUser = await ServerApi.getUserWord(userId, word.id);
@@ -331,7 +330,6 @@ export class AudiogamePage implements Page {
       };
 
       if (wordUser) {
-        console.log('Update user word!');
         obj.difficulty = wordUser.difficulty;
         obj.optional.sprint = wordUser.optional.sprint;
         obj.optional.audio = wordUser.optional.audio;
@@ -355,14 +353,12 @@ export class AudiogamePage implements Page {
 
         await ServerApi.updateUserWord(userId, word.id, obj);
       } else {
-        console.log('Create user word!');
         obj.optional.audio += result ? '1' : '0';
         obj.optional.allGames += result ? '1' : '0';
         await ServerApi.createUserWord(userId, word.id, obj);
       }
 
       const wordUser2 = await ServerApi.getUserWord(userId, word.id);
-      console.log(wordUser2);
     }
   }
 }
