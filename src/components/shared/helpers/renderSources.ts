@@ -18,11 +18,19 @@ export const renderSources = {
   async renderImageHTML(
     image: string,
     description: string,
-    className: string
+    className: string,
+    width?: number,
+    height?: number
   ): Promise<string> {
     const myImage = <HTMLImageElement>await loadSources.loadImage(image);
     return `
-            <img class=${className} src=${myImage.src} alt=${description} width="100" height="100">
+            <img 
+            class=${className} 
+            src=${myImage.src} 
+            alt=${description} 
+            width="${width || 100}" 
+            height="${height || 100}"
+            >
         `;
   },
 
