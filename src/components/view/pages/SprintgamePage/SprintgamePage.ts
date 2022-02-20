@@ -1,3 +1,4 @@
+import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
 import ServerApi from '../../../shared/utils/serverApi';
 import { WordType } from '../../../types';
 import { Page } from '../../Page';
@@ -116,9 +117,6 @@ export class SprintgamePage implements Page {
   }
 
   static showGame(): void {
-    console.log(SprintgamePage.arrayWords);
-    console.log(SprintgamePage.arrayIndexGameWords);
-
     const sprintGameWrapper = document.querySelector(
       '.sprint__wrapper'
     ) as HTMLElement;
@@ -142,10 +140,12 @@ export class SprintgamePage implements Page {
 
     this.updateDataQuestion();
 
-    const timerResult = setInterval(() => {
-      clearInterval(timerInterval);
-      document.removeEventListener('keydown', SprintgamePage.checkKeys);
-      this.showResultsGame();
+    const timerResult = setTimeout(() => {
+      if (SprintgamePage.arrayWords.length > 0) {
+        clearInterval(timerInterval);
+        document.removeEventListener('keydown', SprintgamePage.checkKeys);
+        this.showResultsGame();
+      }
     }, 60000);
 
     const buttonsContainer = document.querySelector(
@@ -161,7 +161,6 @@ export class SprintgamePage implements Page {
           SprintgamePage.indexGameStep ===
           SprintgamePage.arrayIndexGameWords.length
         ) {
-          console.log('Delete intervals');
           clearInterval(timerInterval);
           clearTimeout(timerResult);
         }
@@ -200,6 +199,7 @@ export class SprintgamePage implements Page {
     SprintgamePage.audioFail.currentTime = 0;
 
     if (answerUser === answer) {
+      SprintgamePage.uploadResultToServer(wordCurrent, true);
       SprintgamePage.audioFanfar.play();
       this.resultGameWordsTrue.push(
         SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
@@ -210,6 +210,7 @@ export class SprintgamePage implements Page {
       if (this.countStepsNoErrors === 8) this.scoreAdd = 40;
       if (this.countStepsNoErrors === 12) this.scoreAdd = 80;
     } else {
+      SprintgamePage.uploadResultToServer(wordCurrent, false);
       SprintgamePage.audioFail.play();
       this.resultGameWordsFalse.push(
         SprintgamePage.arrayIndexGameWords[SprintgamePage.indexGameStep]
@@ -222,7 +223,6 @@ export class SprintgamePage implements Page {
     if (
       SprintgamePage.indexGameStep === SprintgamePage.arrayIndexGameWords.length
     ) {
-      console.log('Words ended!');
       document.removeEventListener('keydown', SprintgamePage.checkKeys);
       SprintgamePage.showResultsGame();
     } else {
@@ -311,5 +311,61 @@ export class SprintgamePage implements Page {
     });
 
     SprintgamePage.arrayWords = [];
+  }
+
+  static async uploadResultToServer(
+    word: WordType,
+    result: boolean
+  ): Promise<void> {
+    if (isUserAuthorized()) {
+      const userId = localStorage.getItem('userId') as string;
+      const wordUser = await ServerApi.getUserWord(userId, word.id);
+
+      const obj = {
+        difficulty: 'easy',
+        optional: {
+          sprint: ' ',
+          audio: ' ',
+          allGames: ' ',
+          learnt: false,
+        },
+      };
+
+      if (wordUser) {
+        console.log('Update user word');
+        obj.difficulty = wordUser.difficulty;
+        obj.optional.sprint = wordUser.optional.sprint;
+        obj.optional.audio = wordUser.optional.audio;
+        obj.optional.allGames = wordUser.optional.allGames;
+
+        obj.optional.sprint += result ? '1' : '0';
+        obj.optional.allGames += result ? '1' : '0';
+
+        if (
+          obj.difficulty === 'easy' &&
+          obj.optional.allGames.slice(-3) === '111'
+        ) {
+          obj.optional.learnt = true;
+        } else if (
+          obj.difficulty === 'hard' &&
+          obj.optional.allGames.slice(-5) === '11111'
+        ) {
+          obj.optional.learnt = true;
+        } else {
+          obj.optional.learnt = false;
+        }
+
+        await ServerApi.updateUserWord(userId, word.id, obj);
+      } else {
+        console.log('Create new user word');
+        obj.optional.sprint += result ? '1' : '0';
+        obj.optional.allGames += result ? '1' : '0';
+        obj.optional.learnt = false;
+        await ServerApi.createUserWord(userId, word.id, obj);
+      }
+
+      const wordUser2 = await ServerApi.getUserWord(userId, word.id);
+      console.log(wordUser2);
+    }
   }
 }

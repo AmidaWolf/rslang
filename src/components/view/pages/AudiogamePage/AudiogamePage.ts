@@ -1,6 +1,6 @@
 import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
 import ServerApi from '../../../shared/utils/serverApi';
-import { WordType, UserWordResponseType } from '../../../types';
+import { WordType } from '../../../types';
 import { Page } from '../../Page';
 import baseHTML from './baseHTML';
 // eslint-disable-next-line import/no-cycle
@@ -176,7 +176,7 @@ export class AudiogamePage implements Page {
       '.audio-game__answers-false'
     ) as HTMLElement;
     AudiogamePage.resultGameWordsFalse.forEach((i) => {
-       resFalseCont.innerHTML += `
+      resFalseCont.innerHTML += `
       <div class="word-wrapper">${AudiogamePage.arrayWords[i].word}&nbsp;${AudiogamePage.arrayWords[i].transcription}&nbsp;${AudiogamePage.arrayWords[i].wordTranslate}</div>
       `;
     });
@@ -342,14 +342,16 @@ export class AudiogamePage implements Page {
         if (
           obj.difficulty === 'easy' &&
           obj.optional.allGames.slice(-3) === '111'
-        )
+        ) {
           obj.optional.learnt = true;
-
-        if (
+        } else if (
           obj.difficulty === 'hard' &&
           obj.optional.allGames.slice(-5) === '11111'
-        )
+        ) {
           obj.optional.learnt = true;
+        } else {
+          obj.optional.learnt = false;
+        }
 
         await ServerApi.updateUserWord(userId, word.id, obj);
       } else {
@@ -357,8 +359,6 @@ export class AudiogamePage implements Page {
         obj.optional.allGames += result ? '1' : '0';
         await ServerApi.createUserWord(userId, word.id, obj);
       }
-
-      const wordUser2 = await ServerApi.getUserWord(userId, word.id);
     }
   }
 }
