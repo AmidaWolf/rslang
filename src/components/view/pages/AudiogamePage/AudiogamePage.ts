@@ -114,6 +114,10 @@ export class AudiogamePage implements Page {
       AudiogamePage.arrayIndexGameWords.length
     );
 
+    const answersWrapper = document.querySelector(
+      '.audio-game__answers'
+    ) as HTMLElement;
+
     AudiogamePage.showAnswers(
       AudiogamePage.arrayIndexGameWords[AudiogamePage.indexGameStep]
     );
@@ -121,6 +125,21 @@ export class AudiogamePage implements Page {
     const btnNext = document.querySelector('.button.next') as HTMLButtonElement;
 
     btnNext.addEventListener('click', AudiogamePage.btnNext);
+
+    answersWrapper.addEventListener('click', (el) => {
+      const target = el.target as HTMLElement;
+      if (target.classList.contains('button')) {
+        AudiogamePage.checkAnswer(target);
+        btnNext.disabled = false;
+      }
+    });
+
+    document.addEventListener('keydown', AudiogamePage.checkKeys);
+    window.addEventListener('hashchange', function x() {
+      document.removeEventListener('keydown', AudiogamePage.checkKeys);
+      AudiogamePage.arrayWords = [];
+      window.removeEventListener('hashchange', x);
+    });
   }
 
   private static btnNext(): void {
@@ -156,7 +175,7 @@ export class AudiogamePage implements Page {
       '.audio-game__answers-false'
     ) as HTMLElement;
     AudiogamePage.resultGameWordsFalse.forEach((i) => {
-      resFalseCont.innerHTML += `
+       resFalseCont.innerHTML += `
       <div class="word-wrapper">${AudiogamePage.arrayWords[i].word}&nbsp;${AudiogamePage.arrayWords[i].transcription}&nbsp;${AudiogamePage.arrayWords[i].wordTranslate}</div>
       `;
     });
@@ -228,22 +247,6 @@ export class AudiogamePage implements Page {
     const audioBtn = document.querySelector('.audio-word') as HTMLElement;
 
     audioBtn.addEventListener('click', () => audio.play());
-
-    answersWrapper.addEventListener('click', (el) => {
-      const target = el.target as HTMLElement;
-      if (target.classList.contains('button')) {
-        AudiogamePage.checkAnswer(target);
-        btnNext.disabled = false;
-        audio.volume = 0;
-      }
-    });
-
-    document.addEventListener('keydown', AudiogamePage.checkKeys);
-    window.addEventListener('hashchange', function x() {
-      document.removeEventListener('keydown', AudiogamePage.checkKeys);
-      AudiogamePage.arrayWords = [];
-      window.removeEventListener('hashchange', x);
-    });
   }
 
   private static checkKeys(el: KeyboardEvent): void {
@@ -268,6 +271,7 @@ export class AudiogamePage implements Page {
   }
 
   static checkAnswer(target: HTMLElement): void {
+    console.log(`проверяем ответ`, target);
     const btnsAnswers = document.querySelectorAll(
       '.audio-game__answers .button'
     ) as NodeListOf<HTMLButtonElement>;
