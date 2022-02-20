@@ -1,6 +1,6 @@
-import { registerContent } from './registerContent';
 import { userContent } from './userContent';
 import { ModalContentType } from '../../../types';
+import { authContent } from './authContent';
 
 export class AuthorizationModal {
   modalBaseHTML: string;
@@ -80,7 +80,7 @@ export class AuthorizationModal {
   async run(
     loginButton: HTMLElement,
     logged: boolean,
-    innerContent = registerContent
+    innerContent = authContent
   ) {
     if (logged) {
       this.createModal(userContent, true).then(() => {
