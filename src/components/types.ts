@@ -37,6 +37,7 @@ export type WordType = {
   textExampleTranslate: string;
   textMeaningTranslate: string;
   wordTranslate: string;
+  userWord?: UserWordRequestType;
 };
 
 export type UserBodyType = {

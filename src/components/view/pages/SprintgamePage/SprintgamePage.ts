@@ -332,7 +332,6 @@ export class SprintgamePage implements Page {
       };
 
       if (wordUser) {
-        console.log('Update user word');
         obj.difficulty = wordUser.difficulty;
         obj.optional.sprint = wordUser.optional.sprint;
         obj.optional.audio = wordUser.optional.audio;
@@ -357,15 +356,11 @@ export class SprintgamePage implements Page {
 
         await ServerApi.updateUserWord(userId, word.id, obj);
       } else {
-        console.log('Create new user word');
         obj.optional.sprint += result ? '1' : '0';
         obj.optional.allGames += result ? '1' : '0';
         obj.optional.learnt = false;
         await ServerApi.createUserWord(userId, word.id, obj);
       }
-
-      const wordUser2 = await ServerApi.getUserWord(userId, word.id);
-      console.log(wordUser2);
     }
   }
 }
