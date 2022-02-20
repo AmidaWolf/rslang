@@ -2,8 +2,10 @@ import ServerApi from '../../../shared/utils/serverApi';
 import { Page } from '../../Page';
 import { Stat } from '../../../types';
 import baseHTML from './baseHTML';
+import { wordsStatisticsCard } from './wordsStatisticsCard';
+import { minigameStatisticsCard } from './minigameStatisticsCard';
 
-async function removeLoading() {
+function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
   loading.classList.add('visibility-hidden');
 }
@@ -20,6 +22,18 @@ export class StatisticsPage implements Page {
   }
 
   async afterRender() {
+    const gamesStatistics = <HTMLElement>(
+      document.querySelector('.games-statistics')
+    );
+    const wordsStatistics = <HTMLElement>(
+      document.querySelector('.words-statistics')
+    );
+
+    const audioStatistics = minigameStatisticsCard('AudioGame', 50, 73, 3);
+    const sprintStatistics = minigameStatisticsCard('SprintGame', 4, 70, 10);
+
+    gamesStatistics.innerHTML = audioStatistics + sprintStatistics;
+    wordsStatistics.innerHTML = wordsStatisticsCard(14, 3, 50);
     removeLoading();
     const stat = await StatisticsPage.getStatistic();
     console.log(stat);
