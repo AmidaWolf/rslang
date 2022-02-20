@@ -33,7 +33,7 @@ export const routesText = {
 export const routes = {
   [RoutesPath.START]: MainPage,
   [RoutesPath.TEXTBOOK]: TextbookPage,
-  [RoutesPath.VOCABULARY]: VocabularyPage,
+  [RoutesPath.VOCABULARY]: TextbookPage,
   [RoutesPath.STATISTICS]: StatisticsPage,
   [RoutesPath.MINIGAMES]: MinigamesPage,
   [RoutesPath.AUDIOGAME]: AudiogamePage,

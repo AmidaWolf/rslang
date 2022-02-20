@@ -13,7 +13,7 @@ const content = `
               </a>
               </li>
               <li class="futures-benefits__item future-card">
-              <a class="future-card__link" href="/#/textbook">
+              <a class="future-card__link" href="/#/vocabulary">
                 <div class="future-card__icon book-icon"></div>
                 <p class="future-card__text">
                   Personal dictionary with the ability to add newly and delete already learned words.
