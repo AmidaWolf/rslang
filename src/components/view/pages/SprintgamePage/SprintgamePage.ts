@@ -154,7 +154,11 @@ export class SprintgamePage implements Page {
 
     buttonsContainer.addEventListener('click', (el) => {
       const target = el.target as HTMLElement;
-      if (target.classList.contains('button')) {
+      const closestTarget = target.closest('button') as HTMLElement;
+      if (
+        target.classList.contains('button') ||
+        closestTarget.classList.contains('button')
+      ) {
         const answerUser = target.id.slice(4) === 'true';
         this.checkAnswer(answerUser);
         if (
@@ -249,22 +253,46 @@ export class SprintgamePage implements Page {
 
     if (this.countStepsNoErrors < 12) {
       for (let i = 0; i < this.countStepsNoErrors % 4; i += 1) {
-        dots[i].style.backgroundColor = 'green';
+        dots[i].style.backgroundColor = '#08aa05';
       }
     } else {
       dots[0].style.display = 'none';
       dots[2].style.display = 'none';
-      dots[1].style.backgroundColor = 'green';
+      dots[1].style.backgroundColor = '#08aa05';
     }
 
     if (this.countStepsNoErrors < 4) {
-      textScoreWord.style.color = 'green';
+      textScoreWord.classList.remove(
+        'score-green',
+        'score-yellow',
+        'score-orange',
+        'score-red'
+      );
+      textScoreWord.classList.add('score-green');
     } else if (this.countStepsNoErrors < 8) {
-      textScoreWord.style.color = 'yellow';
+      textScoreWord.classList.remove(
+        'score-green',
+        'score-yellow',
+        'score-orange',
+        'score-red'
+      );
+      textScoreWord.classList.add('score-yellow');
     } else if (this.countStepsNoErrors < 12) {
-      textScoreWord.style.color = 'orange';
+      textScoreWord.classList.remove(
+        'score-green',
+        'score-yellow',
+        'score-orange',
+        'score-red'
+      );
+      textScoreWord.classList.add('score-orange');
     } else {
-      textScoreWord.style.color = 'red';
+      textScoreWord.classList.remove(
+        'score-green',
+        'score-yellow',
+        'score-orange',
+        'score-red'
+      );
+      textScoreWord.classList.add('score-red');
     }
     numScoreWord.textContent = String(this.scoreAdd);
     score.textContent = String(SprintgamePage.score);
@@ -298,7 +326,7 @@ export class SprintgamePage implements Page {
     ) as HTMLElement;
     SprintgamePage.resultGameWordsTrue.forEach((i) => {
       resTrueCont.innerHTML += `
-      <div class="word-wrapper">${SprintgamePage.arrayWords[i].word}&nbsp;${SprintgamePage.arrayWords[i].transcription}&nbsp;${SprintgamePage.arrayWords[i].wordTranslate}</div>
+      <p class="word-wrapper">${SprintgamePage.arrayWords[i].word}&nbsp;${SprintgamePage.arrayWords[i].transcription}&nbsp;${SprintgamePage.arrayWords[i].wordTranslate}</p>
       `;
     });
     const resFalseCont = document.querySelector(
@@ -306,7 +334,7 @@ export class SprintgamePage implements Page {
     ) as HTMLElement;
     SprintgamePage.resultGameWordsFalse.forEach((i) => {
       resFalseCont.innerHTML += `
-      <div class="word-wrapper">${SprintgamePage.arrayWords[i].word}&nbsp;${SprintgamePage.arrayWords[i].transcription}&nbsp;${SprintgamePage.arrayWords[i].wordTranslate}</div>
+      <p class="word-wrapper">${SprintgamePage.arrayWords[i].word}&nbsp;${SprintgamePage.arrayWords[i].transcription}&nbsp;${SprintgamePage.arrayWords[i].wordTranslate}</p>
       `;
     });
 

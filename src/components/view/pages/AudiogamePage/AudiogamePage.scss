@@ -64,9 +64,19 @@
   padding: 0.2em 1em;
 }
 
+.button_true {
+  color: $green-color;
+  border-color: $green-color;
+}
+
 .button_true:disabled {
   color: $green-color;
   border-color: $green-color;
+}
+
+.button_false {
+  color: $red-color;
+  border-color: $red-color;
 }
 
 .button_false:disabled {

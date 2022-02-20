@@ -3,9 +3,10 @@
 .sprint {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   align-items: center;
   justify-content: center;
+  min-height: 70vh;
+  padding: 1em 2em 0 2em;
 
   gap: 1em;
 
@@ -18,21 +19,24 @@
 .sprint__wrapper {
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  align-content: center;
-  // border: 3px solid red;
-  padding: 30px;
+  width: 100%;
 
+  gap: 2em;
 }
 
 .sprint__question-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border: 3px solid rgb(0, 0, 255);
   padding: 30px;
   min-height: 20rem;
-  background-color: $card-color;
+
+  gap: 2em;
+
+  border: 2px solid $font-color;
+  border-radius: 2em;
 }
 
 .question {
@@ -41,38 +45,101 @@
   align-content: center;
   justify-content: center;
   text-align: center;
-  // gap: 10px;
-  margin-bottom: 20px;
-  font-size: 50px;
-  color:black;
+
+  gap: 0.3em;
+
+  font-size: 2em;
+}
+
+.dots-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1em;
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.4em;
 }
 
 .dot {
-  border: 3px solid black;
-  border-radius: 10px;
   width: 1rem;
   height: 1rem;
-}
 
-.container.dots {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  border: 3px solid $font-color;
+  border-radius: 1em;
 }
 
 .text-score-word {
+  padding-bottom: 1em;
+
   text-align: center;
-  border-bottom: 3px solid rgb(0, 0, 255);
-  margin-bottom: 10px;
-  padding-bottom: 10px;
+
+  border-bottom: 2px solid $font-color;
+}
+
+.score-green {
+  color: $green-color;
+}
+
+.score-yellow {
+  color: $favorite-color;
+}
+
+.score-orange {
+  color: $orange-color;
+}
+
+.score-red {
+  color: $red-color;
 }
 
 .sprint-buttons {
   display: flex;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1em;
+}
+
+.sprint-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1em;
+}
+
+.btn-choice {
+  width: 1em;
+  height: 1em;
+
+  align-self: center;
+
+  background-size: 1em 1em;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+
+.btn-choice_false {
+  background-image: url("../../../../assets/chevron-left.svg");
+}
+
+.btn-choice_true {
+  background-image: url("../../../../assets/chevron-right.svg");
+}
+
+.sprint__timer {
+  margin-bottom: 2em;
 }
 
 .timer-start {
   font-size: 2em;
 }
+
+@import 'SprintgamePage.media';
