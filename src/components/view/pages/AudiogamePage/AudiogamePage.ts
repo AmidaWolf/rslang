@@ -130,7 +130,7 @@ export class AudiogamePage implements Page {
 
     btnNext.addEventListener('click', AudiogamePage.btnNext);
 
-    answersWrapper.addEventListener('click', (el) => {
+    answersWrapper.addEventListener('click', async (el) => {
       const target = el.target as HTMLElement;
       if (target.classList.contains('button')) {
         await AudiogamePage.checkAnswer(target);
@@ -264,8 +264,7 @@ export class AudiogamePage implements Page {
     const audio = document.querySelector('.question-audio') as HTMLAudioElement;
 
     if (+el.key >= 1 && +el.key <= 5 && !btnsAnswers[+el.key - 1].disabled) {
-      await 
-      (btnsAnswers[+el.key - 1]);
+      await AudiogamePage.checkAnswer(btnsAnswers[+el.key - 1]);
       btnNext.disabled = false;
       audio.volume = 0;
     }
@@ -297,14 +296,17 @@ export class AudiogamePage implements Page {
       target.classList.add('button_false');
       AudiogamePage.resultGameWordsFalse.push(index);
       await AudiogamePage.audioFail.play();
-      AudiogamePage.uploadResultToServer(
+      await AudiogamePage.uploadResultToServer(
         AudiogamePage.arrayWords[index],
         false
       );
     } else {
       AudiogamePage.resultGameWordsTrue.push(index);
       await AudiogamePage.audioFanfar.play();
-      AudiogamePage.uploadResultToServer(AudiogamePage.arrayWords[index], true);
+      await AudiogamePage.uploadResultToServer(
+        AudiogamePage.arrayWords[index],
+        true
+      );
     }
     rightAnswer.classList.add('button_true');
     await AudiogamePage.showRightAnswer(AudiogamePage.arrayWords[index]);
