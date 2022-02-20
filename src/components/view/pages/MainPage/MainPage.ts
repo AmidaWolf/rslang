@@ -1,6 +1,5 @@
 import { Page } from '../../Page';
 import baseHTML from './baseHTML';
-import { setElementHeight } from '../../../shared/helpers/setElementHeight';
 
 function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -19,8 +18,6 @@ export class MainPage implements Page {
   }
 
   async afterRender() {
-    setElementHeight();
-
     removeLoading();
   }
 

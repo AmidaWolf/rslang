@@ -9,6 +9,7 @@ import {
   serverWordsUpdate,
   listWordsSettingsUpdate,
 } from '../shared/helpers/wordCardSupport';
+import { setElementHeight } from '../shared/helpers/setElementHeight';
 
 export class App {
   static async renderHeader() {
@@ -55,6 +56,7 @@ export class App {
     } else {
       await App.renderFooter();
     }
+    setElementHeight();
   }
 
   async run() {
