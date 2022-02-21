@@ -1,3 +1,5 @@
+import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
+
 const content = `
   <section class="container textbook">
     <div class="container-manage">
@@ -18,7 +20,9 @@ const content = `
         <button id="btn-next" class="button button-pagination button-pagination_next"></button>
         <button id="btn-last" class="button button-pagination button-pagination_last"></button>
       </div>
-      <div class="textbook__games">
+      <div class="textbook__games ${
+        !isUserAuthorized() ? 'visibility-hidden' : ''
+      }">
         <button id="textbook__btn-audio" class="button">Audio</button>
         <button id="textbook__btn-sprint" class="button">Sprint</button>
       </div>

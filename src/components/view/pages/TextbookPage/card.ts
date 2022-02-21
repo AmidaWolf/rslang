@@ -1,45 +1,27 @@
 import { WordType } from '../../../types';
 import ServerApi from '../../../shared/utils/serverApi';
 import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
-import {
-  getLocalDifficultArr,
-  getLocalLearntArr,
-  getSetFromArray,
-} from '../../../shared/helpers/dataManipulations';
-
-function toggleButtonClass(
-  array: string[] | never[],
-  btnClass: string,
-  wordId: string
-): string {
-  const set = getSetFromArray(array);
-  if (set.has(wordId)) {
-    return btnClass;
-  }
-  return '';
-}
 
 export function getWordCard(word: WordType): string {
   const userId = localStorage.getItem('userId');
   const isAuthAndUserId = !!(isUserAuthorized() && userId);
   const wordControlsButtons = isAuthAndUserId
     ? `
-  <button class="button difficult-word ${toggleButtonClass(
-    getLocalDifficultArr(userId),
-    'difficult-active',
-    word.id
-  )}" data-button="difficult">Difficult word</button>
+  <button class="button difficult-word ${
+    word.userWord?.difficulty === 'hard' ? 'difficult-active' : ''
+  } data-button="difficult">Difficult word</button>
 
-  <button class="button learnt-word ${toggleButtonClass(
-    getLocalLearntArr(userId),
-    'learnt-active',
-    word.id
-  )}" data-button="learnt">Learnt word</button>
+  <button class="button learnt-word ${
+    word.userWord?.optional?.learnt ? 'learnt-active' : ''
+  }" data-button="learnt">Learnt word</button>
   `
     : '';
+  let classWordContainer = '';
+  if (word.userWord?.difficulty) classWordContainer += word.userWord.difficulty;
+  if (word.userWord?.optional?.learnt) classWordContainer += ' learnt';
 
   return `
-      <div class="card-container" data-id="${word.id}">
+      <div class="card-container ${classWordContainer}" data-id="${word.id}">
         <div class="card__picture">
           <div class="card__picture-image-wrapper">
             <img 
