@@ -218,7 +218,7 @@ export class AudiogamePage implements Page {
       let randomIndexWord = 100000;
       while (!findedRandomWord) {
         const random = AudiogamePage.getIndexRandomWord();
-        if (random !== index) {
+        if (random !== index || AudiogamePage.arrayWords.length === 1) {
           if (
             !answersIndexes.includes(random) ||
             AudiogamePage.arrayWords.length < 4
@@ -299,7 +299,7 @@ export class AudiogamePage implements Page {
       const btn = el;
       btn.disabled = true;
     });
-    const answerWordTranslate = (target.textContent as string).split(' ')[1];
+    const answerWordTranslate = (target.textContent as string).slice(3);
     const index =
       AudiogamePage.arrayIndexGameWords[AudiogamePage.indexGameStep];
     const rightAnswer = document.querySelector(

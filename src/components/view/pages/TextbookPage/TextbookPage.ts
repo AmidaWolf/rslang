@@ -207,13 +207,21 @@ export class TextbookPage implements Page {
     });
 
     btnAudio.addEventListener('click', () => {
-      AudiogamePage.arrayWords = TextbookPage.currentWordOnPage;
-      window.location.hash = `#${RoutesPath.AUDIOGAME}`;
+      if (AudiogamePage.arrayWords.length < 2) {
+        AudiogamePage.arrayWords = TextbookPage.currentWordOnPage;
+        window.location.hash = `#${RoutesPath.AUDIOGAME}`;
+      } else {
+        console.log("Game don't work with 1 word or nothing");
+      }
     });
 
     btnSprint.addEventListener('click', () => {
-      SprintgamePage.arrayWords = TextbookPage.currentWordOnPage;
-      window.location.hash = `#${RoutesPath.SPRINTGAME}`;
+      if (AudiogamePage.arrayWords.length < 2) {
+        SprintgamePage.arrayWords = TextbookPage.currentWordOnPage;
+        window.location.hash = `#${RoutesPath.SPRINTGAME}`;
+      } else {
+        console.log("Game don't work with 1 word or nothing");
+      }
     });
   }
 
