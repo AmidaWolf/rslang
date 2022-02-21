@@ -398,7 +398,7 @@ export default class ServerApi {
       // eslint-disable-next-line no-underscore-dangle
       delete res._id;
     });
-    console.log(wordsData);
+
     const res = {
       array: result,
       countAll:

@@ -1,23 +1,6 @@
 import { WordType } from '../../../types';
 import ServerApi from '../../../shared/utils/serverApi';
 import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
-import {
-  getLocalDifficultArr,
-  getLocalLearntArr,
-  getSetFromArray,
-} from '../../../shared/helpers/dataManipulations';
-
-function toggleButtonClass(
-  array: string[] | never[],
-  btnClass: string,
-  wordId: string
-): string {
-  const set = getSetFromArray(array);
-  if (set.has(wordId)) {
-    return btnClass;
-  }
-  return '';
-}
 
 export function getWordCard(word: WordType): string {
   const userId = localStorage.getItem('userId');

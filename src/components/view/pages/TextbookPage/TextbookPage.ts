@@ -69,8 +69,8 @@ export class TextbookPage implements Page {
 
     await TextbookPage.setData();
 
-    TextbookPage.currentWordOnPage.forEach((el2) => {
-      TextbookPage.appendCard(el2);
+    TextbookPage.currentWordOnPage.forEach(async (el2) => {
+      await TextbookPage.appendCard(el2);
     });
 
     const btnsSound = document.querySelectorAll('.btn-sound');
@@ -90,12 +90,12 @@ export class TextbookPage implements Page {
     const btnsLearnt = document.querySelectorAll('.learnt-word');
 
     btnsDifficult.forEach((el) => {
-      el.addEventListener('click', async (el2) => {
-        const target = el2 as Event & { path: HTMLElement[] };
-        const target2 = target.path[3] as HTMLElement & {
+      el.addEventListener('click', async () => {
+        const target2 = el as HTMLElement;
+        const target = el.closest('.card-container') as HTMLElement & {
           dataset: Record<string, string>;
         };
-        const { id } = target2.dataset;
+        const { id } = target.dataset;
         if (target2.classList.contains('hard')) {
           target2.classList.remove('hard');
           target2.classList.add('easy');
@@ -110,13 +110,12 @@ export class TextbookPage implements Page {
     });
 
     btnsLearnt.forEach((el) => {
-      el.addEventListener('click', (el2) => {
-        const target = el2 as Event & { path: HTMLElement[] };
-        const target2 = target.path[3] as HTMLElement & {
+      el.addEventListener('click', async () => {
+        const target = el.closest('.card-container') as HTMLElement & {
           dataset: Record<string, string>;
         };
-        const { id } = target2.dataset;
-        target2.classList.toggle('learnt');
+        const { id } = target.dataset;
+        target.classList.toggle('learnt');
         TextbookPage.changePropertyUserWord(id, 'learnt');
         el.classList.toggle('learnt-active');
       });
@@ -265,7 +264,6 @@ export class TextbookPage implements Page {
     if (res?.countAll !== undefined)
       TextbookPage.maxPage = Math.floor(res.countAll / 20);
     TextbookPage.showPageNumber();
-    console.log(TextbookPage.maxPage);
     if (result) TextbookPage.currentWordOnPage = result;
   }
 }
