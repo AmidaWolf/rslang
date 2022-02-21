@@ -99,6 +99,10 @@ export class TextbookPage implements Page {
         const target = el.closest('.card-container') as HTMLElement & {
           dataset: Record<string, string>;
         };
+        const btnLearnt = target.querySelector(
+          '.learnt-word'
+        ) as HTMLButtonElement;
+
         const { id } = target.dataset;
         if (target.classList.contains('hard')) {
           target.classList.remove('hard');
@@ -106,9 +110,12 @@ export class TextbookPage implements Page {
         } else {
           target.classList.remove('easy');
           target.classList.add('hard');
+          target.classList.remove('learnt');
+          btnLearnt.classList.remove('learnt-active');
         }
         await TextbookPage.changePropertyUserWord(id, 'difficulty');
         el.classList.toggle('difficult-active');
+        TextbookPage.checkAllLearnedWordsOnPage();
         if (TextbookPage.currentGroup === 6) await TextbookPage.renderCards();
       });
     });
@@ -118,13 +125,24 @@ export class TextbookPage implements Page {
         const target = el.closest('.card-container') as HTMLElement & {
           dataset: Record<string, string>;
         };
+        const btnDifficult = target.querySelector(
+          '.difficult-word'
+        ) as HTMLButtonElement;
         const { id } = target.dataset;
-        target.classList.toggle('learnt');
+
+        if (!target.classList.contains('learnt')) {
+          btnDifficult.classList.remove('difficult-active');
+          target.classList.remove('hard');
+          target.classList.add('easy');
+        }
+
         await TextbookPage.changePropertyUserWord(id, 'learnt');
         el.classList.toggle('learnt-active');
+        target.classList.toggle('learnt');
         TextbookPage.checkAllLearnedWordsOnPage();
         if (document.location.hash === '#/vocabulary')
           await TextbookPage.renderCards();
+        if (TextbookPage.currentGroup === 6) await TextbookPage.renderCards();
       });
     });
   }
@@ -251,10 +269,20 @@ export class TextbookPage implements Page {
       obj.optional.allGames = wordUser.optional.allGames;
       obj.optional.learnt = wordUser.optional.learnt;
 
-      if (attr === 'difficulty')
-        obj.difficulty = wordUser.difficulty === 'easy' ? 'hard' : 'easy';
-      if (attr === 'learnt') obj.optional.learnt = !wordUser.optional.learnt;
-
+      if (attr === 'difficulty') {
+        if (wordUser.difficulty === 'easy') {
+          obj.difficulty = 'hard';
+          obj.optional.learnt = false;
+        } else {
+          obj.difficulty = 'easy';
+        }
+      }
+      if (attr === 'learnt') {
+        if (!wordUser.optional.learnt) {
+          obj.difficulty = 'easy';
+        }
+        obj.optional.learnt = !wordUser.optional.learnt;
+      }
       await ServerApi.updateUserWord(userId, id, obj);
     } else {
       if (attr === 'difficulty') obj.difficulty = 'hard';
@@ -319,6 +347,7 @@ export class TextbookPage implements Page {
     cardsContainers.forEach((el) => {
       if (!el.classList.contains('learnt')) result = false;
     });
+    if (cardsContainers.length === 0) result = false;
     if (result) {
       numPage.classList.add('green-page');
       cardsContainer.classList.add('all-learnt');

@@ -375,11 +375,13 @@ export class AudiogamePage implements Page {
           obj.optional.allGames.slice(-3) === '111'
         ) {
           obj.optional.learnt = true;
+          obj.difficulty = 'easy';
         } else if (
           obj.difficulty === 'hard' &&
           obj.optional.allGames.slice(-5) === '11111'
         ) {
           obj.optional.learnt = true;
+          obj.difficulty = 'easy';
         } else {
           obj.optional.learnt = false;
         }

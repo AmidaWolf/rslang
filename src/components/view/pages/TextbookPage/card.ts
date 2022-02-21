@@ -9,7 +9,7 @@ export function getWordCard(word: WordType): string {
     ? `
   <button class="button difficult-word ${
     word.userWord?.difficulty === 'hard' ? 'difficult-active' : ''
-  } data-button="difficult">Difficult word</button>
+  }" data-button="difficult">Difficult word</button>
 
   <button class="button learnt-word ${
     word.userWord?.optional?.learnt ? 'learnt-active' : ''
