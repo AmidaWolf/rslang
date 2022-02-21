@@ -13,7 +13,7 @@ const content = `
               </a>
               </li>
               <li class="futures-benefits__item future-card">
-              <a class="future-card__link" href="/#/vocabulary">
+              <a class="future-card__link" id="vocabularyLink" href="/#/vocabulary">
                 <div class="future-card__icon book-icon"></div>
                 <p class="future-card__text">
                   Personal dictionary with the ability to add newly and delete already learned words.
@@ -21,7 +21,7 @@ const content = `
                 </a>
               </li>
               <li class="futures-benefits__item future-card">
-              <a class="future-card__link" href="/#/statistics">
+              <a class="future-card__link" id="statisticsLink" href="/#/statistics">
                 <div class="future-card__icon statistics-icon"></div>
                 <p class="future-card__text">
                   Exact statistics to track progress.
