@@ -249,7 +249,7 @@ export class TextbookPage implements Page {
   }
 
   private static addSevenGroup(): void {
-    if (isUserAuthorized()) {
+    if (isUserAuthorized() && document.location.hash === '#/textbook') {
       const selectGroup = document.querySelector('#group-words') as HTMLElement;
       selectGroup.innerHTML += `
       <option value="group-7">Difficult words</option>
