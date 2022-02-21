@@ -13,6 +13,12 @@ export enum RoutesPath {
 export enum RoutesPathMainNav {
   START = '/',
   TEXTBOOK = '/textbook',
+  MINIGAMES = '/minigames',
+}
+
+export enum RoutesPathMainNavAuth {
+  START = '/',
+  TEXTBOOK = '/textbook',
   VOCABULARY = '/vocabulary',
   MINIGAMES = '/minigames',
   STATISTICS = '/statistics',
