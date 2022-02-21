@@ -20,7 +20,7 @@ export interface RoutesI {
 
 export const routesText = {
   [RoutesPath.START]: 'Main',
-  [RoutesPath.AUTHORIZATION]: 'Authorization',
+  [RoutesPath.AUTHORIZATION]: 'Authentication',
   [RoutesPath.TEXTBOOK]: 'Textbook',
   [RoutesPath.VOCABULARY]: 'Vocabulary',
   [RoutesPath.STATISTICS]: 'Statistics',
@@ -33,7 +33,7 @@ export const routesText = {
 export const routes = {
   [RoutesPath.START]: MainPage,
   [RoutesPath.TEXTBOOK]: TextbookPage,
-  [RoutesPath.VOCABULARY]: VocabularyPage,
+  [RoutesPath.VOCABULARY]: TextbookPage,
   [RoutesPath.STATISTICS]: StatisticsPage,
   [RoutesPath.MINIGAMES]: MinigamesPage,
   [RoutesPath.AUDIOGAME]: AudiogamePage,

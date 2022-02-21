@@ -37,6 +37,7 @@ export type WordType = {
   textExampleTranslate: string;
   textMeaningTranslate: string;
   wordTranslate: string;
+  userWord?: UserWordRequestType;
 };
 
 export type UserBodyType = {
@@ -95,4 +96,24 @@ export type ErrorType = {
 export type ModalContentType = {
   title: string;
   html: string;
+};
+
+export type Stat = {
+  allWords: number;
+  hardWords: number;
+  easyWords: number;
+  lerntWords: number;
+  winRateAll: number;
+  sprint: {
+    all: number;
+    win: number;
+    lose: number;
+    winRate: number;
+  };
+  audio: {
+    all: number;
+    win: number;
+    lose: number;
+    winRate: number;
+  };
 };

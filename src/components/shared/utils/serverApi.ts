@@ -41,6 +41,7 @@ export default class ServerApi {
       );
       return [];
     }
+
     return response.json();
   }
 
@@ -185,7 +186,7 @@ export default class ServerApi {
   static async getUserWord(
     userId: string,
     wordId: string
-  ): Promise<UserWordResponseType> {
+  ): Promise<UserWordRequestType | null> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {
@@ -224,11 +225,16 @@ export default class ServerApi {
           baseUserWordData
         );
       }
-    } else {
-      wordData = response.json();
+
+    } else if (!response.ok) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+      return null;
     }
 
-    console.log('wordData: ', wordData);
+
+    wordData = await response.json();
 
     return wordData;
   }
@@ -237,7 +243,7 @@ export default class ServerApi {
     userId: string,
     wordId: string,
     body: UserWordRequestType
-  ): Promise<UserWordResponseType | []> {
+  ): Promise<UserWordResponseType | null> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {
@@ -257,8 +263,15 @@ export default class ServerApi {
       if (await ServerApi.getNewUserTokens(userId)) {
         wordData = await ServerApi.createUserWord(userId, wordId, body);
       }
+
+    } else if (!response.ok) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+      return null;
     } else {
-      wordData = response.json();
+      wordData = await response.json();
+
     }
 
     return wordData;
@@ -268,7 +281,7 @@ export default class ServerApi {
     userId: string,
     wordId: string,
     body: UserWordRequestType
-  ): Promise<UserWordResponseType> {
+  ): Promise<UserWordResponseType | null> {
     const response: Response = await fetch(
       `${ServerApi.usersURL}/${userId}/words/${wordId}`,
       {
@@ -312,9 +325,16 @@ export default class ServerApi {
       if (response.status === 422) {
         console.log(response.status, response.statusText);
       }
-    } else {
-      wordData = response.json();
+
+    } else if (!response.ok) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+      return null;
     }
+
+    wordData = await response.json();
+
 
     return wordData;
   }
@@ -368,17 +388,127 @@ export default class ServerApi {
       if (await ServerApi.getNewUserTokens(userId)) {
         wordsData = await ServerApi.getUserAggregatedWords(userId);
       }
-    } else {
-      wordsData = response.json();
-    }
-
-    if (response.status === 404) {
+    } else if (!response.ok) {
       console.log(
         `Sorry, but there is ${response.status} error: ${response.statusText}`
       );
+      return [];
     }
 
-    return wordsData;
+    wordsData = await response.json();
+    const result = wordsData[0].paginatedResults;
+
+    // eslint-disable-next-line array-callback-return
+    result.map((el) => {
+      const res = el;
+      // eslint-disable-next-line no-underscore-dangle
+      res.id = res._id;
+      // eslint-disable-next-line no-underscore-dangle
+      delete res._id;
+    });
+
+    return result;
+  }
+
+  static async getUserHardWords(
+    userId: string,
+    page: number
+  ): Promise<{ array: WordType[]; countAll: number } | null> {
+    const response: Response = await fetch(
+      `${ServerApi.usersURL}/${userId}/aggregatedWords?page=${page}&wordsPerPage=20&filter={"userWord.difficulty":"hard"}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
+        },
+      }
+    );
+
+    let wordsData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        wordsData = await ServerApi.getUserAggregatedWords(userId);
+      }
+    } else if (!response.ok) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+      return null;
+    }
+
+    wordsData = await response.json();
+    const result = wordsData[0].paginatedResults;
+
+    // eslint-disable-next-line array-callback-return
+    result.map((el) => {
+      const res = el;
+      // eslint-disable-next-line no-underscore-dangle
+      res.id = res._id;
+      // eslint-disable-next-line no-underscore-dangle
+      delete res._id;
+    });
+
+    const res = {
+      array: result,
+      countAll:
+        wordsData[0].totalCount.length === 1
+          ? wordsData[0].totalCount[0].count
+          : 0,
+    };
+    return res;
+  }
+
+  static async getAllUserWords(
+    userId: string,
+    page: number,
+    group: number
+  ): Promise<{ array: WordType[]; countAll: number } | null> {
+    const response: Response = await fetch(
+      `${ServerApi.usersURL}/${userId}/aggregatedWords?group=${group}&page=${page}&wordsPerPage=20&filter={"userWord.optional.learnt": false}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
+        },
+      }
+    );
+
+    let wordsData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        wordsData = await ServerApi.getUserAggregatedWords(userId);
+      }
+    } else if (!response.ok) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+      return null;
+    }
+
+    wordsData = await response.json();
+    const result = wordsData[0].paginatedResults;
+
+    // eslint-disable-next-line array-callback-return
+    result.map((el) => {
+      const res = el;
+      // eslint-disable-next-line no-underscore-dangle
+      res.id = res._id;
+      // eslint-disable-next-line no-underscore-dangle
+      delete res._id;
+    });
+
+    const res = {
+      array: result,
+      countAll:
+        wordsData[0].totalCount.length === 1
+          ? wordsData[0].totalCount[0].count
+          : 0,
+    };
+    return res;
   }
 
   static async getUserAggregatedWord(

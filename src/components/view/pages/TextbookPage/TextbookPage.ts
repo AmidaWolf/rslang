@@ -2,7 +2,6 @@ import { Page } from '../../Page';
 import baseHTML from './baseHTML';
 import { getWordCard } from './card';
 import ServerApi from '../../../shared/utils/serverApi';
-import { listControlButtons } from '../../../shared/helpers/wordCardSupport';
 import { WordType } from '../../../types';
 import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
 import { AudiogamePage } from '../AudiogamePage/AudiogamePage';
@@ -10,7 +9,7 @@ import { RoutesPath } from '../../../app/RoutesPath';
 import { SprintgamePage } from '../SprintgamePage/SprintgamePage';
 import { getLocalDifficultArr } from '../../../shared/helpers/dataManipulations';
 
-async function removeLoading() {
+function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
   loading.classList.add('visibility-hidden');
 }
@@ -56,6 +55,9 @@ export class TextbookPage implements Page {
 
   async afterRender() {
     removeLoading();
+    TextbookPage.currentPage = 0;
+    TextbookPage.currentGroup = 0;
+    TextbookPage.showPageNumber();
     await TextbookPage.renderCards();
     await TextbookPage.addButtonsListener();
     TextbookPage.addSevenGroup();
@@ -66,24 +68,14 @@ export class TextbookPage implements Page {
   }
 
   static async renderCards(): Promise<void> {
-    if (TextbookPage.currentGroup === 6)
-      TextbookPage.renderDifficultWordsGroup();
+    const cards = document.querySelector('.cards') as HTMLElement;
+    cards.innerHTML = '';
 
-    const cards = document.querySelector('.cards');
+    await TextbookPage.setData();
 
-    if (cards) cards.innerHTML = '';
-
-    TextbookPage.currentWordOnPage = await ServerApi.getWords(
-      TextbookPage.currentGroup,
-      TextbookPage.currentPage
-    );
-
-    const arrayOfWordsPromises: Promise<void>[] =
-      TextbookPage.currentWordOnPage.map(async (word) => {
-        await TextbookPage.appendCard(word);
-      });
-
-    await Promise.all(arrayOfWordsPromises);
+    TextbookPage.currentWordOnPage.forEach(async (el2) => {
+      await TextbookPage.appendCard(el2);
+    });
 
     const btnsSound = document.querySelectorAll('.btn-sound');
     const audio2 = document.querySelector('.audio') as HTMLAudioElement;
@@ -97,10 +89,71 @@ export class TextbookPage implements Page {
         audio2.play();
       });
     });
+
+    const btnsDifficult = document.querySelectorAll('.difficult-word');
+    const btnsLearnt = document.querySelectorAll('.learnt-word');
+
+    btnsDifficult.forEach((el) => {
+      el.addEventListener('click', async () => {
+        const target = el.closest('.card-container') as HTMLElement & {
+          dataset: Record<string, string>;
+        };
+        const { id } = target.dataset;
+        if (target.classList.contains('hard')) {
+          target.classList.remove('hard');
+          target.classList.add('easy');
+        } else {
+          target.classList.remove('easy');
+          target.classList.add('hard');
+        }
+        await TextbookPage.changePropertyUserWord(id, 'difficulty');
+        el.classList.toggle('difficult-active');
+        if (TextbookPage.currentGroup === 6) await TextbookPage.renderCards();
+      });
+    });
+
+    btnsLearnt.forEach((el) => {
+      el.addEventListener('click', async () => {
+        const target = el.closest('.card-container') as HTMLElement & {
+          dataset: Record<string, string>;
+        };
+        const { id } = target.dataset;
+        target.classList.toggle('learnt');
+        await TextbookPage.changePropertyUserWord(id, 'learnt');
+        el.classList.toggle('learnt-active');
+        if (document.location.hash === '#/vocabulary')
+          await TextbookPage.renderCards();
+      });
+    });
+  }
+
+  static async setData(): Promise<void> {
+    const userId = localStorage.getItem('userId') as string;
+
+    if (document.location.hash === '#/vocabulary') {
+      if (!isUserAuthorized()) {
+        window.location.href = '/#/';
+      } else {
+        await TextbookPage.getUserWords();
+      }
+    } else if (TextbookPage.currentGroup === 6) {
+      await TextbookPage.getDifficultWords();
+    } else {
+      TextbookPage.currentWordOnPage = isUserAuthorized()
+        ? await ServerApi.getUserAggregatedWords(
+            userId,
+            TextbookPage.currentGroup,
+            TextbookPage.currentPage,
+            20
+          )
+        : await ServerApi.getWords(
+            TextbookPage.currentGroup,
+            TextbookPage.currentPage
+          );
+    }
   }
 
   static async addButtonsListener(): Promise<void> {
-    const cards = document.querySelector('.cards');
     const btnFirst = document.querySelector('#btn-first') as HTMLButtonElement;
     const btnPrev = document.querySelector('#btn-prev') as HTMLButtonElement;
     const btnNext = document.querySelector('#btn-next') as HTMLButtonElement;
@@ -117,13 +170,9 @@ export class TextbookPage implements Page {
       const target = el.target as HTMLElement & { selectedIndex: string };
       TextbookPage.currentPage = 0;
       TextbookPage.currentGroup = +target.selectedIndex;
-      if (TextbookPage.currentGroup === 6) {
-        TextbookPage.renderDifficultWordsGroup();
-      } else {
-        TextbookPage.maxPage = 29;
-        this.showPageNumber();
-        TextbookPage.renderCards();
-      }
+      if (TextbookPage.currentGroup !== 6) TextbookPage.maxPage = 29;
+      this.showPageNumber();
+      await TextbookPage.renderCards();
     });
 
     btnFirst.addEventListener('click', () => {
@@ -158,25 +207,55 @@ export class TextbookPage implements Page {
       }
     });
 
-    cards?.addEventListener('click', (e) => {
-      listControlButtons(e);
-    });
-
     btnAudio.addEventListener('click', () => {
-      console.log('Launch Audio game!');
       AudiogamePage.arrayWords = TextbookPage.currentWordOnPage;
       window.location.hash = `#${RoutesPath.AUDIOGAME}`;
     });
 
     btnSprint.addEventListener('click', () => {
-      console.log('Launch Sprint game!');
       SprintgamePage.arrayWords = TextbookPage.currentWordOnPage;
       window.location.hash = `#${RoutesPath.SPRINTGAME}`;
     });
   }
 
+  private static async changePropertyUserWord(
+    id: string,
+    attr: string
+  ): Promise<void> {
+    const userId = localStorage.getItem('userId') as string;
+    const wordUser = await ServerApi.getUserWord(userId, id);
+    const obj = {
+      difficulty: 'easy',
+      optional: {
+        sprint: ' ',
+        audio: ' ',
+        allGames: ' ',
+        learnt: false,
+      },
+    };
+
+    if (wordUser) {
+      obj.difficulty = wordUser.difficulty;
+      obj.optional.sprint = wordUser.optional.sprint;
+      obj.optional.audio = wordUser.optional.audio;
+      obj.optional.allGames = wordUser.optional.allGames;
+      obj.optional.learnt = wordUser.optional.learnt;
+
+      if (attr === 'difficulty')
+        obj.difficulty = wordUser.difficulty === 'easy' ? 'hard' : 'easy';
+      if (attr === 'learnt') obj.optional.learnt = !wordUser.optional.learnt;
+
+      await ServerApi.updateUserWord(userId, id, obj);
+    } else {
+      if (attr === 'difficulty') obj.difficulty = 'hard';
+      if (attr === 'learnt') obj.optional.learnt = true;
+
+      await ServerApi.createUserWord(userId, id, obj);
+    }
+  }
+
   private static addSevenGroup(): void {
-    if (isUserAuthorized()) {
+    if (isUserAuthorized() && document.location.hash === '#/textbook') {
       const selectGroup = document.querySelector('#group-words') as HTMLElement;
       selectGroup.innerHTML += `
       <option value="group-7">Difficult words</option>
@@ -185,62 +264,33 @@ export class TextbookPage implements Page {
   }
 
   private static async getDifficultWords(): Promise<void> {
-    let result: WordType[] = [];
-    const userId = localStorage.getItem('userId');
 
-    if (userId) {
-      const arrayAllID = getLocalDifficultArr(userId);
-      TextbookPage.maxPage = Math.ceil(arrayAllID.length / 20) - 1;
-      const arrayID = arrayAllID.slice(
-        TextbookPage.currentPage * 20,
-        (TextbookPage.currentPage + 1) * 20
-      );
-      const promises: Promise<WordType>[] = [];
-      arrayID.forEach((el) => {
-        promises.push(ServerApi.getWord(el));
-      });
+    const userId = localStorage.getItem('userId') as string;
 
-      result = await Promise.all(promises);
 
-      TextbookPage.currentWordOnPage = result;
-    }
+    const res = await ServerApi.getUserHardWords(
+      userId,
+      TextbookPage.currentPage
+    );
+    const result = res?.array;
+    if (res?.countAll !== undefined)
+      TextbookPage.maxPage = Math.floor(res.countAll / 21);
+    TextbookPage.showPageNumber();
+    if (result) TextbookPage.currentWordOnPage = result;
   }
 
-  private static async renderDifficultWordsGroup(): Promise<void> {
-    const cards = document.querySelector('.cards') as HTMLElement;
+  private static async getUserWords(): Promise<void> {
+    const userId = localStorage.getItem('userId') as string;
 
-    cards.innerHTML = '';
-
-    await TextbookPage.getDifficultWords();
+    const res = await ServerApi.getAllUserWords(
+      userId,
+      TextbookPage.currentPage,
+      TextbookPage.currentGroup
+    );
+    const result = res?.array;
+    if (res?.countAll !== undefined)
+      TextbookPage.maxPage = Math.floor(res.countAll / 21);
     TextbookPage.showPageNumber();
-
-    TextbookPage.currentWordOnPage.forEach((el2) => {
-      TextbookPage.appendCard(el2);
-    });
-
-    if (TextbookPage.currentGroup === 6) {
-      const btnsDifficult = document.querySelectorAll('.difficult-word');
-      btnsDifficult.forEach((el) => {
-        const callback = (
-          mutations: MutationRecord[],
-          observer: MutationObserver
-        ) => {
-          mutations.forEach((mutation) => {
-            console.log(mutation, observer);
-            TextbookPage.renderDifficultWordsGroup();
-          });
-        };
-        const mutationObserver = new MutationObserver(callback);
-        const config = {
-          attributes: true,
-          characterData: true,
-          childList: true,
-          subtree: true,
-          attributeOldValue: true,
-          characterDataOldValue: true,
-        };
-        mutationObserver.observe(el, config);
-      });
-    }
+    if (result) TextbookPage.currentWordOnPage = result;
   }
 }

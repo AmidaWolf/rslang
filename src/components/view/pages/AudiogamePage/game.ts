@@ -1,14 +1,7 @@
 import { WordType } from '../../../types';
-import ServerApi from '../../../shared/utils/serverApi';
 
 export function getGameHTML(step: number, length: number): string {
   return `
-  <pre>
-  Keyboard controls:
-  - 1, 2, 3, 4, 5 - choice of answer;
-  - space - word audio repeat;
-  - enter - next question;
-  </pre>
   <h1 class="audio-game__title">AudioGame - ${step + 1}/${length}</h1>
 
   <div class="audio-game__result"></div>
@@ -18,27 +11,33 @@ export function getGameHTML(step: number, length: number): string {
   <div class="audio-game__next">
     <button class="button next" disabled>Next</button>
   </div>
-
+  
+  <pre class="shortkeys">
+  Keyboard controls:
+  - 1, 2, 3, 4, 5 - choice of answer;
+  - space - word audio repeat;
+  - enter - next question;
+  </pre>
   <audio class="question-audio" src=""></audio>
 `;
 }
 
 export function getAnswersHTML(index: string[]): string {
   return `
-    <button class="button" data-text="${index[0]}"><span class="btn_choise">1 </span>${index[0]}</button>
-    <button class="button" data-text="${index[1]}"><span class="btn_choise">2 </span>${index[1]}</button>
-    <button class="button" data-text="${index[2]}"><span class="btn_choise">3 </span>${index[2]}</button>
-    <button class="button" data-text="${index[3]}"><span class="btn_choise">4 </span>${index[3]}</button>
-    <button class="button" data-text="${index[4]}"><span class="btn_choise">5 </span>${index[4]}</button>
+    <button class="button button-game" data-text="${index[0]}">1. ${index[0]}</button>
+    <button class="button button-game" data-text="${index[1]}">2. ${index[1]}</button>
+    <button class="button button-game" data-text="${index[2]}">3. ${index[2]}</button>
+    <button class="button button-game" data-text="${index[3]}">4. ${index[3]}</button>
+    <button class="button button-game" data-text="${index[4]}">5. ${index[4]}</button>
 `;
 }
 
-export function getRightAnswerHTML(word: WordType): string {
+export function getRightAnswerHTML(word: WordType, img: string): string {
   return `
 
   <article class="card-container" data-id="${word.id}">
   <div class="card__picture">
-    <img class="card__picture-src" src="${ServerApi.baseURL}/${word.image}" alt="Picture">
+    ${img}
   </div>
   <div class="card__content">
     <div class="card__word">
@@ -74,11 +73,11 @@ export function getGameResultsHTML(): string {
   return `
   <h1 class="audio-game__title">AudioGame - results</h1>
   <div class="audio-game__result-all">
-    <div class="container answers true">
+    <div class="answers true">
       <h3 class="text-result">Right answers</h3>
       <div class="audio-game__answers-true"></div>
     </div>
-    <div class="container answers false">
+    <div class="answers false">
       <h3 class="text-result">Wrong answers</h3>
       <div class="audio-game__answers-false"></div>
     </div>
