@@ -313,18 +313,19 @@ export class TextbookPage implements Page {
     const btnSprintGame = document.querySelector(
       '#textbook__btn-sprint'
     ) as HTMLButtonElement;
+    const numPage = document.querySelector('.page-text') as HTMLSpanElement;
 
     let result = true;
     cardsContainers.forEach((el) => {
       if (!el.classList.contains('learnt')) result = false;
     });
     if (result) {
-      console.log('All learnt!');
-      console.log(cardsContainer);
+      numPage.classList.add('green-page');
       cardsContainer.classList.add('all-learnt');
       btnAudioGame.disabled = true;
       btnSprintGame.disabled = true;
     } else {
+      numPage.classList.remove('green-page');
       cardsContainer.classList.remove('all-learnt');
       btnAudioGame.disabled = false;
       btnSprintGame.disabled = false;
