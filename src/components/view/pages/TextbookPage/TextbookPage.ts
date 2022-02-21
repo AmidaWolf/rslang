@@ -129,8 +129,6 @@ export class TextbookPage implements Page {
           '.difficult-word'
         ) as HTMLButtonElement;
         const { id } = target.dataset;
-        console.log(btnDifficult);
-        console.log(target.classList);
 
         if (!target.classList.contains('learnt')) {
           btnDifficult.classList.remove('difficult-active');
@@ -144,6 +142,7 @@ export class TextbookPage implements Page {
         TextbookPage.checkAllLearnedWordsOnPage();
         if (document.location.hash === '#/vocabulary')
           await TextbookPage.renderCards();
+        if (TextbookPage.currentGroup === 6) await TextbookPage.renderCards();
       });
     });
   }
@@ -348,6 +347,7 @@ export class TextbookPage implements Page {
     cardsContainers.forEach((el) => {
       if (!el.classList.contains('learnt')) result = false;
     });
+    if (cardsContainers.length === 0) result = false;
     if (result) {
       numPage.classList.add('green-page');
       cardsContainer.classList.add('all-learnt');

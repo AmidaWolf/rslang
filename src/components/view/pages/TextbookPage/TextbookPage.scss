@@ -129,6 +129,11 @@
 
 .card-container.learnt {
   background-color: $light-bg-color;
+  transition: color 1s;
+  -webkit-transition: color 1s;
+  -moz-transition: color 1s;
+  -ms-transition: color 1s;
+  -o-transition: color 1s;
 }
 
 .card__picture {
