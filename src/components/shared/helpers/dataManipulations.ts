@@ -9,7 +9,10 @@ export function getStringFromSet(set: Set<unknown>): string {
 }
 
 export function getArrayFromString(string: string) {
-  return string.split(';');
+  const arr = string.split(';');
+  return arr.filter(
+    (el) => el !== 'learnt' && el !== 'difficult' && el !== 'null' && el !== ''
+  );
 }
 
 export function getSetFromString(string: string) {
@@ -19,6 +22,10 @@ export function getSetFromString(string: string) {
 
 export function getSetFromArray(array: string[] | never[]) {
   return new Set(array);
+}
+
+export function getStringFromArray(array: string[]) {
+  return array.join(';');
 }
 
 export async function getRemoteDifficultSet(
@@ -53,7 +60,7 @@ export async function getRemoteLearntSet(
   return set;
 }
 
-export function getLocalDifficultArr(userId: string): string[] | never[] {
+export function getLocalDifficultArr(userId: string): string[] {
   const difficultWords: string | null = localStorage.getItem('difficultWords');
   let difficultArray: never[] | string[] = [];
 
@@ -82,21 +89,25 @@ export function getUniqueLocalWordsArray() {
     const learntWordsArray = getLocalLearntArr(userId);
 
     difficultWordsArray.forEach((id) => {
-      if (id !== 'difficult' && id !== 'learnt' && id !== 'null') {
-        commonArray.push(id);
-      }
+      commonArray.push(id);
     });
 
     learntWordsArray.forEach((id) => {
-      if (id !== 'difficult' && id !== 'learnt' && id !== 'null') {
-        commonArray.push(id);
-      }
+      commonArray.push(id);
     });
   }
 
-  const finalArray = commonArray
-    .filter((item, pos) => commonArray.indexOf(item) === pos)
-    .filter((el) => el !== 'difficult' && el !== 'learnt');
+  const finalArray = commonArray.filter(
+    (item, pos) => commonArray.indexOf(item) === pos
+  );
 
   return finalArray;
 }
+
+// 1. Get (difficult & learnt & new) words from settings
+// 2. Change words via cards locally
+// 3. Update settings on hashchange (if no such userWord -> create)
+
+// 4. Change words in games
+// 5. Update all userWords after game finish
+// 6. While playing need to create arrays containing results and after game's finished - update userWords & settings

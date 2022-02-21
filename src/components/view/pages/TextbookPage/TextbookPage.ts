@@ -8,6 +8,7 @@ import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
 import { AudiogamePage } from '../AudiogamePage/AudiogamePage';
 import { RoutesPath } from '../../../app/RoutesPath';
 import { SprintgamePage } from '../SprintgamePage/SprintgamePage';
+import { getLocalDifficultArr } from '../../../shared/helpers/dataManipulations';
 
 async function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -185,9 +186,10 @@ export class TextbookPage implements Page {
 
   private static async getDifficultWords(): Promise<void> {
     let result: WordType[] = [];
-    const stringID = localStorage.getItem('difficultWords');
-    if (stringID) {
-      const arrayAllID = stringID.split(';');
+    const userId = localStorage.getItem('userId');
+
+    if (userId) {
+      const arrayAllID = getLocalDifficultArr(userId);
       TextbookPage.maxPage = Math.ceil(arrayAllID.length / 20) - 1;
       const arrayID = arrayAllID.slice(
         TextbookPage.currentPage * 20,
@@ -197,9 +199,11 @@ export class TextbookPage implements Page {
       arrayID.forEach((el) => {
         promises.push(ServerApi.getWord(el));
       });
+
       result = await Promise.all(promises);
+
+      TextbookPage.currentWordOnPage = result;
     }
-    TextbookPage.currentWordOnPage = result;
   }
 
   private static async renderDifficultWordsGroup(): Promise<void> {

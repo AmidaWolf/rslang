@@ -3,7 +3,10 @@ import baseHTML from './baseHTML';
 import { getWordCard } from './card';
 import ServerApi from '../../../shared/utils/serverApi';
 import { getUniqueLocalWordsArray } from '../../../shared/helpers/dataManipulations';
-import { listControlButtons } from '../../../shared/helpers/wordCardSupport';
+import {
+  listControlButtons,
+  updateDifficultWords,
+} from '../../../shared/helpers/wordCardSupport';
 import { WordType } from '../../../types';
 
 async function removeLoading() {
@@ -40,6 +43,7 @@ export class VocabularyPage implements Page {
     removeLoading();
     await VocabularyPage.renderCards();
     await VocabularyPage.addButtonsListener();
+    // await updateDifficultWords();
   }
 
   async run() {
@@ -52,6 +56,8 @@ export class VocabularyPage implements Page {
     if (cards) cards.innerHTML = '';
 
     const localWordsArray = getUniqueLocalWordsArray();
+
+    console.log('localWordsArray: ', localWordsArray);
 
     const arrayOfWordsPromises: Promise<void>[] = localWordsArray.map(
       async (wordId) => {

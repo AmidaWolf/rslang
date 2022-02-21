@@ -6,7 +6,7 @@ import { Footer } from '../shared/common/footer/Footer';
 import { RoutesPath } from './RoutesPath';
 import { isUserAuthorized } from '../shared/helpers/isUserAuthorized';
 import {
-  serverWordsUpdate,
+  updateLocalWordsSettings,
   listWordsSettingsUpdate,
 } from '../shared/helpers/wordCardSupport';
 
@@ -60,7 +60,7 @@ export class App {
   async run() {
     await App.renderContent().then(() => {
       if (isUserAuthorized()) {
-        serverWordsUpdate();
+        updateLocalWordsSettings();
         listWordsSettingsUpdate();
       }
     });

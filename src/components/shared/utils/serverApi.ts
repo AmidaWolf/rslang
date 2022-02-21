@@ -199,19 +199,36 @@ export default class ServerApi {
 
     let wordData;
 
-    if (response.status === 401) {
-      if (await ServerApi.getNewUserTokens(userId)) {
-        wordData = await ServerApi.getUserWord(userId, wordId);
+    if (!response.ok) {
+      if (response.status === 401) {
+        if (await ServerApi.getNewUserTokens(userId)) {
+          wordData = await ServerApi.getUserWord(userId, wordId);
+        }
+      }
+
+      if (response.status === 404) {
+        console.log(`${response.status}: ${response.statusText}`);
+
+        const baseUserWordData = {
+          difficulty: ' ',
+          optional: {
+            sprint: ' ',
+            audio: ' ',
+            allGames: ' ',
+            learnt: false,
+          },
+        };
+        wordData = await ServerApi.createUserWord(
+          userId,
+          wordId,
+          baseUserWordData
+        );
       }
     } else {
       wordData = response.json();
     }
 
-    if (response.status === 404) {
-      console.log(
-        `Sorry, but there is ${response.status} error: ${response.statusText}`
-      );
-    }
+    console.log('wordData: ', wordData);
 
     return wordData;
   }
@@ -244,13 +261,6 @@ export default class ServerApi {
       wordData = response.json();
     }
 
-    if (!response.ok) {
-      console.log(
-        `Sorry, but there is ${response.status} error: ${response.statusText}`
-      );
-      return [];
-    }
-
     return wordData;
   }
 
@@ -266,7 +276,6 @@ export default class ServerApi {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('userToken')}`,
           Accept: 'application/json',
-          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
       }
@@ -274,18 +283,37 @@ export default class ServerApi {
 
     let wordData;
 
-    if (response.status === 401) {
-      if (await ServerApi.getNewUserTokens(userId)) {
-        wordData = await ServerApi.updateUserWord(userId, wordId, body);
+    if (!response.ok) {
+      if (response.status === 401) {
+        if (await ServerApi.getNewUserTokens(userId)) {
+          wordData = await ServerApi.getUserWord(userId, wordId);
+        }
+      }
+
+      if (response.status === 404) {
+        const baseUserWordData = {
+          difficulty: ' ',
+          optional: {
+            sprint: '',
+            audio: '',
+            allGames: '',
+            learnt: false,
+          },
+        };
+        wordData = await ServerApi.createUserWord(
+          userId,
+          wordId,
+          baseUserWordData
+        ).then(() => {
+          ServerApi.updateUserWord(userId, wordId, body);
+        });
+      }
+
+      if (response.status === 422) {
+        console.log(response.status, response.statusText);
       }
     } else {
       wordData = response.json();
-    }
-
-    if (response.status === 404) {
-      console.log(
-        `Sorry, but there is ${response.status} error: ${response.statusText}`
-      );
     }
 
     return wordData;

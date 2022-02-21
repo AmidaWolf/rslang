@@ -4,9 +4,9 @@ export type OptionalType = {
 };
 
 export type UserWordOptionalType = {
-  sprint: boolean[];
-  audio: boolean[];
-  allGames: boolean[];
+  sprint: string;
+  audio: string;
+  allGames: string;
   learnt: boolean;
 };
 
