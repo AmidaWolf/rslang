@@ -118,8 +118,10 @@ export class TextbookPage implements Page {
         };
         const { id } = target.dataset;
         target.classList.toggle('learnt');
-        TextbookPage.changePropertyUserWord(id, 'learnt');
+        await TextbookPage.changePropertyUserWord(id, 'learnt');
         el.classList.toggle('learnt-active');
+        if (document.location.hash === '#/vocabulary')
+          await TextbookPage.renderCards();
       });
     });
   }
@@ -266,7 +268,7 @@ export class TextbookPage implements Page {
     );
     const result = res?.array;
     if (res?.countAll !== undefined)
-      TextbookPage.maxPage = Math.floor(res.countAll / 20);
+      TextbookPage.maxPage = Math.floor(res.countAll / 21);
     TextbookPage.showPageNumber();
     if (result) TextbookPage.currentWordOnPage = result;
   }
@@ -281,7 +283,7 @@ export class TextbookPage implements Page {
     );
     const result = res?.array;
     if (res?.countAll !== undefined)
-      TextbookPage.maxPage = Math.floor(res.countAll / 20);
+      TextbookPage.maxPage = Math.floor(res.countAll / 21);
     TextbookPage.showPageNumber();
     if (result) TextbookPage.currentWordOnPage = result;
   }
