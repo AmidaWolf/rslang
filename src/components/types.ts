@@ -97,3 +97,22 @@ export type ModalContentType = {
   title: string;
   html: string;
 };
+
+export type Stat = {
+  allWords: number;
+  hardWords: number;
+  easyWords: number;
+  lerntWords: number;
+  sprint: {
+    all: number;
+    win: number;
+    lose: number;
+    winRate: number;
+  };
+  audio: {
+    all: number;
+    win: number;
+    lose: number;
+    winRate: number;
+  };
+};
