@@ -1,7 +1,7 @@
 export function wordsStatisticsCard(
-  newWords: number,
-  learnedWords: number,
-  percentage: number
+  newWords = 0,
+  learnedWords = 0,
+  percentage = 0
 ) {
   return `
 <p class="minigames__new-words">New words: 

@@ -1,8 +1,8 @@
 export function minigameStatisticsCard(
-  gameName: string,
-  gameNewWords: number,
-  gamePercentage: number,
-  gameSeries: number
+  gameName = 'Something game',
+  gameNewWords = 0,
+  gamePercentage = 0,
+  gameSeries = 0
 ) {
   return `
 <div class="minigames-stat">
