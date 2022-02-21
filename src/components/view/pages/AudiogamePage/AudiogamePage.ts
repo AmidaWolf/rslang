@@ -214,7 +214,21 @@ export class AudiogamePage implements Page {
     const answersIndexes: number[] = [];
 
     for (let i = 0; i < 4; i += 1) {
-      answersIndexes.push(AudiogamePage.getIndexRandomWord());
+      let findedRandomWord = false;
+      let randomIndexWord = 100000;
+      while (!findedRandomWord) {
+        const random = AudiogamePage.getIndexRandomWord();
+        if (random !== index) {
+          if (
+            !answersIndexes.includes(random) ||
+            AudiogamePage.arrayWords.length < 4
+          ) {
+            randomIndexWord = random;
+            findedRandomWord = true;
+          }
+        }
+      }
+      if (randomIndexWord !== 100000) answersIndexes.push(randomIndexWord);
     }
     while (answersIndexes.length < 4) {
       const result = AudiogamePage.getIndexRandomWord();
