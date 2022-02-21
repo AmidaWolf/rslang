@@ -13,6 +13,7 @@ import './components/view/pages/DevelopersPage/DevelopersPage.scss';
 import './components/view/pages/AuthorizationPage/AuthorizationModal.scss';
 import './components/view/pages/MinigamesPage/MinigamesPage.scss';
 import './components/view/pages/SprintgamePage/SprintgamePage.scss';
+import './components/view/pages/StatisticsPage/StatisticsPage.scss';
 
 const app = new App();
 app.run();

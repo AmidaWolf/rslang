@@ -2,8 +2,10 @@ import ServerApi from '../../../shared/utils/serverApi';
 import { Page } from '../../Page';
 import { Stat } from '../../../types';
 import baseHTML from './baseHTML';
+import { wordsStatisticsCard } from './wordsStatisticsCard';
+import { minigameStatisticsCard } from './minigameStatisticsCard';
 
-async function removeLoading() {
+function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
   loading.classList.add('visibility-hidden');
 }
@@ -20,9 +22,35 @@ export class StatisticsPage implements Page {
   }
 
   async afterRender() {
-    removeLoading();
+    const gamesStatistics = <HTMLElement>(
+      document.querySelector('.games-statistics')
+    );
+    const wordsStatistics = <HTMLElement>(
+      document.querySelector('.words-statistics')
+    );
+
     const stat = await StatisticsPage.getStatistic();
     console.log(stat);
+
+    const audioStatistics = minigameStatisticsCard(
+      'AudioGame',
+      stat.audio.all,
+      stat.audio.winRate
+    );
+    const sprintStatistics = minigameStatisticsCard(
+      'SprintGame',
+      stat.sprint.all,
+      stat.sprint.winRate
+    );
+
+    gamesStatistics.innerHTML = audioStatistics + sprintStatistics;
+    wordsStatistics.innerHTML = wordsStatisticsCard(
+      stat.allWords,
+      stat.lerntWords,
+      stat.hardWords,
+      stat.winRateAll
+    );
+    removeLoading();
   }
 
   async run() {
@@ -54,6 +82,7 @@ export class StatisticsPage implements Page {
       hardWords: 0,
       easyWords: 0,
       lerntWords: 0,
+      winRateAll: 0,
       sprint: {
         all: 0,
         win: 0,
@@ -72,15 +101,24 @@ export class StatisticsPage implements Page {
     stat.sprint.win = strSprint.split('').filter((el) => el === '1').length;
     stat.sprint.lose = stat.sprint.all - stat.sprint.win;
     stat.sprint.winRate =
-      Math.floor((stat.sprint.win / stat.sprint.all) * 100 * 100) / 100;
+      stat.sprint.all !== 0
+        ? Math.round((stat.sprint.win / stat.sprint.all) * 100 * 100) / 100
+        : 0;
 
     stat.audio.all = strAudio.length;
     stat.audio.win = strAudio.split('').filter((el) => el === '1').length;
     stat.audio.lose = stat.audio.all - stat.audio.win;
     stat.audio.winRate =
-      Math.floor((stat.audio.win / stat.audio.all) * 100 * 100) / 100;
+      stat.audio.all !== 0
+        ? Math.round((stat.audio.win / stat.audio.all) * 100 * 100) / 100
+        : 0;
 
-    stat.lerntWords = arrLearnt.filter((el) => el === true).length;
+    const gamesAll = stat.audio.all + stat.sprint.all;
+    const winsAll = stat.audio.win + stat.sprint.win;
+
+    stat.winRateAll = Math.round(((winsAll / gamesAll) * 100 * 100) / 100);
+
+    stat.lerntWords = arrLearnt.filter((el) => el).length;
     stat.hardWords = arrHard.filter((el) => el === 'hard').length;
     stat.easyWords = arrHard.filter((el) => el === 'easy').length;
     stat.allWords = stat.lerntWords + stat.hardWords + stat.easyWords;

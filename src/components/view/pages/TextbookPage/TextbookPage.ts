@@ -8,7 +8,7 @@ import { AudiogamePage } from '../AudiogamePage/AudiogamePage';
 import { RoutesPath } from '../../../app/RoutesPath';
 import { SprintgamePage } from '../SprintgamePage/SprintgamePage';
 
-async function removeLoading() {
+function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
   loading.classList.add('visibility-hidden');
 }
@@ -238,8 +238,7 @@ export class TextbookPage implements Page {
 
       if (attr === 'difficulty')
         obj.difficulty = wordUser.difficulty === 'easy' ? 'hard' : 'easy';
-      if (attr === 'learnt')
-        obj.optional.learnt = wordUser.optional.learnt === false;
+      if (attr === 'learnt') obj.optional.learnt = !wordUser.optional.learnt;
 
       await ServerApi.updateUserWord(userId, id, obj);
     } else {

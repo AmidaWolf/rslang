@@ -103,6 +103,7 @@ export type Stat = {
   hardWords: number;
   easyWords: number;
   lerntWords: number;
+  winRateAll: number;
   sprint: {
     all: number;
     win: number;
