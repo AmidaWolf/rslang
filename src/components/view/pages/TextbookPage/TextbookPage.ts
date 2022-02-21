@@ -96,12 +96,12 @@ export class TextbookPage implements Page {
           dataset: Record<string, string>;
         };
         const { id } = target.dataset;
-        if (target2.classList.contains('hard')) {
-          target2.classList.remove('hard');
-          target2.classList.add('easy');
+        if (target.classList.contains('hard')) {
+          target.classList.remove('hard');
+          target.classList.add('easy');
         } else {
-          target2.classList.remove('easy');
-          target2.classList.add('hard');
+          target.classList.remove('easy');
+          target.classList.add('hard');
         }
         await TextbookPage.changePropertyUserWord(id, 'difficulty');
         el.classList.toggle('difficult-active');
