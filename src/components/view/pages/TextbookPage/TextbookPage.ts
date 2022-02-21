@@ -227,21 +227,43 @@ export class TextbookPage implements Page {
       }
     });
 
-    btnAudio.addEventListener('click', () => {
-      if (AudiogamePage.arrayWords.length < 2) {
+    btnAudio.addEventListener('click', async () => {
+      if (
+        TextbookPage.currentWordOnPage.length < 20 &&
+        TextbookPage.currentPage > 0
+      ) {
+        TextbookPage.currentPage -= 1;
+        const addWords = await TextbookPage.setData();
+        for (let i = 19; i > TextbookPage.currentWordOnPage.length; i -= 1) {
+          TextbookPage.currentWordOnPage.push(addWords[i]);
+        }
+      }
+
+      if (TextbookPage.currentWordOnPage.length < 2) {
+        console.log("Game don't work with 1 word or nothing");
+      } else {
         AudiogamePage.arrayWords = TextbookPage.currentWordOnPage;
         window.location.hash = `#${RoutesPath.AUDIOGAME}`;
-      } else {
-        console.log("Game don't work with 1 word or nothing");
       }
     });
 
-    btnSprint.addEventListener('click', () => {
-      if (AudiogamePage.arrayWords.length < 2) {
+    btnSprint.addEventListener('click', async () => {
+      if (
+        TextbookPage.currentWordOnPage.length < 20 &&
+        TextbookPage.currentPage > 0
+      ) {
+        TextbookPage.currentPage -= 1;
+        const addWords = await TextbookPage.setData();
+        for (let i = 19; i > TextbookPage.currentWordOnPage.length; i -= 1) {
+          TextbookPage.currentWordOnPage.push(addWords[i]);
+        }
+      }
+
+      if (TextbookPage.currentWordOnPage.length < 2) {
+        console.log("Game don't work with 1 word or nothing");
+      } else {
         SprintgamePage.arrayWords = TextbookPage.currentWordOnPage;
         window.location.hash = `#${RoutesPath.SPRINTGAME}`;
-      } else {
-        console.log("Game don't work with 1 word or nothing");
       }
     });
   }
