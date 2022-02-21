@@ -26,5 +26,6 @@ export function updateLocalStorageOnLogOut() {
 
 export function logOutUser() {
   updateLocalStorageOnLogOut();
+  window.location.href = '/#/';
   window.location.reload();
 }

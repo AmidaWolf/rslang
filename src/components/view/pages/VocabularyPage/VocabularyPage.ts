@@ -5,6 +5,7 @@ import ServerApi from '../../../shared/utils/serverApi';
 import { getUniqueLocalWordsArray } from '../../../shared/helpers/dataManipulations';
 import { listControlButtons } from '../../../shared/helpers/wordCardSupport';
 import { WordType } from '../../../types';
+import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
 
 async function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -43,7 +44,11 @@ export class VocabularyPage implements Page {
   }
 
   async run() {
-    await this.renderHTML().then(() => this.afterRender());
+    if (!isUserAuthorized()) {
+      window.location.href = '/#/';
+    } else {
+      await this.renderHTML().then(() => this.afterRender());
+    }
   }
 
   static async renderCards(): Promise<void> {

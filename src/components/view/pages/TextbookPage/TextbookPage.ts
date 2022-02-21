@@ -130,7 +130,11 @@ export class TextbookPage implements Page {
     const userId = localStorage.getItem('userId') as string;
 
     if (document.location.hash === '#/vocabulary') {
-      await TextbookPage.getUserWords();
+      if (!isUserAuthorized()) {
+        window.location.href = '/#/';
+      } else {
+        await TextbookPage.getUserWords();
+      }
     } else if (TextbookPage.currentGroup === 6) {
       await TextbookPage.getDifficultWords();
     } else {
