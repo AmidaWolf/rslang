@@ -1,18 +1,15 @@
 import { WordType } from '../../../types';
 import ServerApi from '../../../shared/utils/serverApi';
 import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
-// eslint-disable-next-line import/no-cycle
-import { TextbookPage } from './TextbookPage';
 
 export function getWordCard(word: WordType): string {
-  console.log(word.userWord?.difficulty, word.word);
   const userId = localStorage.getItem('userId');
   const isAuthAndUserId = !!(isUserAuthorized() && userId);
   const wordControlsButtons = isAuthAndUserId
     ? `
   <button class="button difficult-word ${
     word.userWord?.difficulty === 'hard' ? 'difficult-active' : ''
-  } data-button="difficult">Difficult word</button>
+  }" data-button="difficult">Difficult word</button>
 
   <button class="button learnt-word ${
     word.userWord?.optional?.learnt ? 'learnt-active' : ''

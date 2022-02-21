@@ -99,18 +99,24 @@ export class TextbookPage implements Page {
         const target = el.closest('.card-container') as HTMLElement & {
           dataset: Record<string, string>;
         };
+        const btnLearnt = target.querySelector(
+          '.learnt-word'
+        ) as HTMLButtonElement;
+
         const { id } = target.dataset;
-        // if (target.classList.contains('hard')) {
-        //   target.classList.remove('hard');
-        //   target.classList.add('easy');
-        // } else {
-        //   target.classList.remove('easy');
-        //   target.classList.add('hard');
-        //   target.classList.remove('learnt');
-        // }
+        if (target.classList.contains('hard')) {
+          target.classList.remove('hard');
+          target.classList.add('easy');
+        } else {
+          target.classList.remove('easy');
+          target.classList.add('hard');
+          target.classList.remove('learnt');
+          btnLearnt.classList.remove('learnt-active');
+        }
         await TextbookPage.changePropertyUserWord(id, 'difficulty');
-        // el.classList.toggle('difficult-active');
-        await TextbookPage.renderCards();
+        el.classList.toggle('difficult-active');
+        TextbookPage.checkAllLearnedWordsOnPage();
+        if (TextbookPage.currentGroup === 6) await TextbookPage.renderCards();
       });
     });
 
@@ -119,12 +125,25 @@ export class TextbookPage implements Page {
         const target = el.closest('.card-container') as HTMLElement & {
           dataset: Record<string, string>;
         };
+        const btnDifficult = target.querySelector(
+          '.difficult-word'
+        ) as HTMLButtonElement;
         const { id } = target.dataset;
-        // target.classList.toggle('learnt');
+        console.log(btnDifficult);
+        console.log(target.classList);
+
+        if (!target.classList.contains('learnt')) {
+          btnDifficult.classList.remove('difficult-active');
+          target.classList.remove('hard');
+          target.classList.add('easy');
+        }
+
         await TextbookPage.changePropertyUserWord(id, 'learnt');
-        // el.classList.toggle('learnt-active');
+        el.classList.toggle('learnt-active');
+        target.classList.toggle('learnt');
         TextbookPage.checkAllLearnedWordsOnPage();
-        await TextbookPage.renderCards();
+        if (document.location.hash === '#/vocabulary')
+          await TextbookPage.renderCards();
       });
     });
   }
