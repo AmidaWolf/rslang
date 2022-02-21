@@ -76,6 +76,8 @@ export class TextbookPage implements Page {
       await TextbookPage.appendCard(el2);
     });
 
+    TextbookPage.checkAllLearnedWordsOnPage();
+
     const btnsSound = document.querySelectorAll('.btn-sound');
     const audio2 = document.querySelector('.audio') as HTMLAudioElement;
 
@@ -120,6 +122,7 @@ export class TextbookPage implements Page {
         target.classList.toggle('learnt');
         await TextbookPage.changePropertyUserWord(id, 'learnt');
         el.classList.toggle('learnt-active');
+        TextbookPage.checkAllLearnedWordsOnPage();
         if (document.location.hash === '#/vocabulary')
           await TextbookPage.renderCards();
       });
@@ -297,5 +300,35 @@ export class TextbookPage implements Page {
       TextbookPage.maxPage = Math.floor(res.countAll / 21);
     TextbookPage.showPageNumber();
     if (result) TextbookPage.currentWordOnPage = result;
+  }
+
+  private static checkAllLearnedWordsOnPage(): void {
+    const cardsContainers = document.querySelectorAll(
+      '.card-container'
+    ) as NodeListOf<HTMLElement>;
+    const cardsContainer = document.querySelector('.cards') as HTMLElement;
+    const btnAudioGame = document.querySelector(
+      '#textbook__btn-audio'
+    ) as HTMLButtonElement;
+    const btnSprintGame = document.querySelector(
+      '#textbook__btn-sprint'
+    ) as HTMLButtonElement;
+    const numPage = document.querySelector('.page-text') as HTMLSpanElement;
+
+    let result = true;
+    cardsContainers.forEach((el) => {
+      if (!el.classList.contains('learnt')) result = false;
+    });
+    if (result) {
+      numPage.classList.add('green-page');
+      cardsContainer.classList.add('all-learnt');
+      btnAudioGame.disabled = true;
+      btnSprintGame.disabled = true;
+    } else {
+      numPage.classList.remove('green-page');
+      cardsContainer.classList.remove('all-learnt');
+      btnAudioGame.disabled = false;
+      btnSprintGame.disabled = false;
+    }
   }
 }
