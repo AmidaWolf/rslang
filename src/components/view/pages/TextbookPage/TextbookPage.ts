@@ -54,6 +54,9 @@ export class TextbookPage implements Page {
 
   async afterRender() {
     removeLoading();
+    TextbookPage.currentPage = 0;
+    TextbookPage.currentGroup = 0;
+    TextbookPage.showPageNumber();
     await TextbookPage.renderCards();
     await TextbookPage.addButtonsListener();
     TextbookPage.addSevenGroup();
@@ -91,7 +94,6 @@ export class TextbookPage implements Page {
 
     btnsDifficult.forEach((el) => {
       el.addEventListener('click', async () => {
-        const target2 = el as HTMLElement;
         const target = el.closest('.card-container') as HTMLElement & {
           dataset: Record<string, string>;
         };
@@ -116,8 +118,10 @@ export class TextbookPage implements Page {
         };
         const { id } = target.dataset;
         target.classList.toggle('learnt');
-        TextbookPage.changePropertyUserWord(id, 'learnt');
+        await TextbookPage.changePropertyUserWord(id, 'learnt');
         el.classList.toggle('learnt-active');
+        if (document.location.hash === '#/vocabulary')
+          await TextbookPage.renderCards();
       });
     });
   }
@@ -125,7 +129,9 @@ export class TextbookPage implements Page {
   static async setData(): Promise<void> {
     const userId = localStorage.getItem('userId') as string;
 
-    if (TextbookPage.currentGroup === 6) {
+    if (document.location.hash === '#/vocabulary') {
+      await TextbookPage.getUserWords();
+    } else if (TextbookPage.currentGroup === 6) {
       await TextbookPage.getDifficultWords();
     } else {
       TextbookPage.currentWordOnPage = isUserAuthorized()
@@ -245,7 +251,7 @@ export class TextbookPage implements Page {
   }
 
   private static addSevenGroup(): void {
-    if (isUserAuthorized()) {
+    if (isUserAuthorized() && document.location.hash === '#/textbook') {
       const selectGroup = document.querySelector('#group-words') as HTMLElement;
       selectGroup.innerHTML += `
       <option value="group-7">Difficult words</option>
@@ -262,7 +268,22 @@ export class TextbookPage implements Page {
     );
     const result = res?.array;
     if (res?.countAll !== undefined)
-      TextbookPage.maxPage = Math.floor(res.countAll / 20);
+      TextbookPage.maxPage = Math.floor(res.countAll / 21);
+    TextbookPage.showPageNumber();
+    if (result) TextbookPage.currentWordOnPage = result;
+  }
+
+  private static async getUserWords(): Promise<void> {
+    const userId = localStorage.getItem('userId') as string;
+
+    const res = await ServerApi.getAllUserWords(
+      userId,
+      TextbookPage.currentPage,
+      TextbookPage.currentGroup
+    );
+    const result = res?.array;
+    if (res?.countAll !== undefined)
+      TextbookPage.maxPage = Math.floor(res.countAll / 21);
     TextbookPage.showPageNumber();
     if (result) TextbookPage.currentWordOnPage = result;
   }
