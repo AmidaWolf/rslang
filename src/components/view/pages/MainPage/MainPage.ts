@@ -1,5 +1,6 @@
 import { Page } from '../../Page';
 import baseHTML from './baseHTML';
+import { isUserAuthorized } from '../../../shared/helpers/isUserAuthorized';
 
 function removeLoading() {
   const loading = <HTMLElement>document.querySelector('.loading');
@@ -18,6 +19,28 @@ export class MainPage implements Page {
   }
 
   async afterRender() {
+    const vocabularyLink = <HTMLAnchorElement>(
+      document.querySelector('#vocabularyLink')
+    );
+    const statisticsLink = <HTMLAnchorElement>(
+      document.querySelector('#statisticsLink')
+    );
+
+    const noClick = (event) => {
+      event.preventDefault();
+    };
+
+    if (!isUserAuthorized()) {
+      vocabularyLink.title =
+        'Need register or authenticate for look this functionality';
+      vocabularyLink.addEventListener('click', noClick);
+      statisticsLink.title =
+        'Need register or authenticate for look this functionality';
+      statisticsLink.addEventListener('click', noClick);
+    } else {
+      vocabularyLink.removeEventListener('click', noClick);
+      statisticsLink.removeEventListener('click', noClick);
+    }
     removeLoading();
   }
 

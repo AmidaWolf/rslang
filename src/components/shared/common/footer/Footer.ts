@@ -14,6 +14,8 @@ async function drawContent() {
   const rsLogoWrapper = document.createElement('a');
   rsLogoWrapper.className = 'rs-logo-wrapper';
   rsLogoWrapper.href = 'https://rs.school/js/';
+  rsLogoWrapper.target = '_blank';
+  rsLogoWrapper.rel = 'noopener norefferer';
 
   const rsLogo = await renderSources.renderImage(
     './../../../assets/rs_school_js.svg',
