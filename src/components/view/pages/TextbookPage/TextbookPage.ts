@@ -100,16 +100,17 @@ export class TextbookPage implements Page {
           dataset: Record<string, string>;
         };
         const { id } = target.dataset;
-        if (target.classList.contains('hard')) {
-          target.classList.remove('hard');
-          target.classList.add('easy');
-        } else {
-          target.classList.remove('easy');
-          target.classList.add('hard');
-        }
+        // if (target.classList.contains('hard')) {
+        //   target.classList.remove('hard');
+        //   target.classList.add('easy');
+        // } else {
+        //   target.classList.remove('easy');
+        //   target.classList.add('hard');
+        //   target.classList.remove('learnt');
+        // }
         await TextbookPage.changePropertyUserWord(id, 'difficulty');
-        el.classList.toggle('difficult-active');
-        if (TextbookPage.currentGroup === 6) await TextbookPage.renderCards();
+        // el.classList.toggle('difficult-active');
+        await TextbookPage.renderCards();
       });
     });
 
@@ -119,12 +120,11 @@ export class TextbookPage implements Page {
           dataset: Record<string, string>;
         };
         const { id } = target.dataset;
-        target.classList.toggle('learnt');
+        // target.classList.toggle('learnt');
         await TextbookPage.changePropertyUserWord(id, 'learnt');
-        el.classList.toggle('learnt-active');
+        // el.classList.toggle('learnt-active');
         TextbookPage.checkAllLearnedWordsOnPage();
-        if (document.location.hash === '#/vocabulary')
-          await TextbookPage.renderCards();
+        await TextbookPage.renderCards();
       });
     });
   }
@@ -251,10 +251,20 @@ export class TextbookPage implements Page {
       obj.optional.allGames = wordUser.optional.allGames;
       obj.optional.learnt = wordUser.optional.learnt;
 
-      if (attr === 'difficulty')
-        obj.difficulty = wordUser.difficulty === 'easy' ? 'hard' : 'easy';
-      if (attr === 'learnt') obj.optional.learnt = !wordUser.optional.learnt;
-
+      if (attr === 'difficulty') {
+        if (wordUser.difficulty === 'easy') {
+          obj.difficulty = 'hard';
+          obj.optional.learnt = false;
+        } else {
+          obj.difficulty = 'easy';
+        }
+      }
+      if (attr === 'learnt') {
+        if (!wordUser.optional.learnt) {
+          obj.difficulty = 'easy';
+        }
+        obj.optional.learnt = !wordUser.optional.learnt;
+      }
       await ServerApi.updateUserWord(userId, id, obj);
     } else {
       if (attr === 'difficulty') obj.difficulty = 'hard';
