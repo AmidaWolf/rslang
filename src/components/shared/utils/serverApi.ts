@@ -409,6 +409,57 @@ export default class ServerApi {
     return res;
   }
 
+  static async getAllUserWords(
+    userId: string,
+    page: number,
+    group: number
+  ): Promise<{ array: WordType[]; countAll: number } | null> {
+    const response: Response = await fetch(
+      `${ServerApi.usersURL}/${userId}/aggregatedWords?group=${group}&page=${page}&wordsPerPage=20&filter={"userWord.optional.learnt": false}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          Accept: 'application/json',
+        },
+      }
+    );
+
+    let wordsData;
+
+    if (response.status === 401) {
+      if (await ServerApi.getNewUserTokens(userId)) {
+        wordsData = await ServerApi.getUserAggregatedWords(userId);
+      }
+    } else if (!response.ok) {
+      console.log(
+        `Sorry, but there is ${response.status} error: ${response.statusText}`
+      );
+      return null;
+    }
+
+    wordsData = await response.json();
+    const result = wordsData[0].paginatedResults;
+
+    // eslint-disable-next-line array-callback-return
+    result.map((el) => {
+      const res = el;
+      // eslint-disable-next-line no-underscore-dangle
+      res.id = res._id;
+      // eslint-disable-next-line no-underscore-dangle
+      delete res._id;
+    });
+
+    const res = {
+      array: result,
+      countAll:
+        wordsData[0].totalCount.length === 1
+          ? wordsData[0].totalCount[0].count
+          : 0,
+    };
+    return res;
+  }
+
   static async getUserAggregatedWord(
     userId: string,
     wordId: string
