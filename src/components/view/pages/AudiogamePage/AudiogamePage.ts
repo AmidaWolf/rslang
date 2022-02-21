@@ -306,10 +306,6 @@ export class AudiogamePage implements Page {
       `.button[data-text="${AudiogamePage.arrayWords[index].wordTranslate}"]`
     ) as HTMLElement;
 
-    console.log(answerWordTranslate);
-    console.log(AudiogamePage.arrayWords[index].wordTranslate);
-
-
     if (answerWordTranslate !== AudiogamePage.arrayWords[index].wordTranslate) {
       target.classList.add('button_false');
       AudiogamePage.resultGameWordsFalse.push(index);

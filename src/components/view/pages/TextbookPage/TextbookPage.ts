@@ -211,7 +211,7 @@ export class TextbookPage implements Page {
         AudiogamePage.arrayWords = TextbookPage.currentWordOnPage;
         window.location.hash = `#${RoutesPath.AUDIOGAME}`;
       } else {
-        console.log('Game dont work with 1 word or nothing');
+        console.log("Game don't work with 1 word or nothing");
       }
     });
 
@@ -220,7 +220,7 @@ export class TextbookPage implements Page {
         SprintgamePage.arrayWords = TextbookPage.currentWordOnPage;
         window.location.hash = `#${RoutesPath.SPRINTGAME}`;
       } else {
-        console.log('Game dont work with 1 word or nothing');
+        console.log("Game don't work with 1 word or nothing");
       }
     });
   }
