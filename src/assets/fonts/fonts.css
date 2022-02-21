@@ -1,0 +1,13 @@
+/* neucha-regular - latin_cyrillic */
+@font-face {
+    font-family: 'Neucha';
+    font-style: normal;
+    font-weight: 400;
+    src: url('./neucha-v12-latin_cyrillic-regular.eot'); /* IE9 Compat Modes */
+    src: local(''),
+    url('./neucha-v12-latin_cyrillic-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('./neucha-v12-latin_cyrillic-regular.woff2') format('woff2'), /* Super Modern Browsers */
+    url('./neucha-v12-latin_cyrillic-regular.woff') format('woff'), /* Modern Browsers */
+    url('./neucha-v12-latin_cyrillic-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('./neucha-v12-latin_cyrillic-regular.svg#Neucha') format('svg'); /* Legacy iOS */
+}

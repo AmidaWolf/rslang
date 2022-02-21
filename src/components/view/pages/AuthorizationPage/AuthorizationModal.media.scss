@@ -1,0 +1,64 @@
+/*media queries*/
+@media (max-width: 1499.98px) {
+  .modal__content-wrapper {
+    max-width: 60%;
+  }
+}
+
+/*1200-1499.98*/
+@media (max-width: 1199.98px) {
+  .modal__content-wrapper {
+    max-width: 60%;
+  }
+}
+
+/*768-991.98*/
+@media (max-width: 991.98px) {
+  .modal__content-wrapper {
+    max-width: 80%;
+  }
+}
+
+/*576-767.98*/
+@media (max-width: 767.98px) {
+  .modal__content-wrapper {
+    max-width: none;
+    margin: 1em 1em 0 1em;
+  }
+}
+
+/*480-575.98*/
+@media (max-width: 575.98px) {
+  .modal__content-wrapper {
+    padding: 1em;
+  }
+
+  .modal__close {
+    top: 1em;
+    right: 1em;
+  }
+
+  .auth-buttons {
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  .auth-input {
+    margin-bottom: 0.5em;
+    font-size: 0.8em;
+  }
+
+  .button_auth {
+    font-size: 0.8em;
+  }
+}
+
+/*320-479.98*/
+@media (max-width: 479.98px) {
+  .auth-buttons__danger {
+    margin-top: 1em;
+    padding: 0;
+
+    border: none;
+  }
+}

@@ -1,0 +1,32 @@
+/*media queries*/
+@media (max-width: 1199.98px) {
+}
+
+/*768-991.98*/
+@media (max-width: 991.98px) {
+  .logo {
+    width: 120px;
+    height: 35px;
+  }
+
+  .header-menu__link {
+    padding: 0.5em;
+  }
+}
+
+/*576-767.98*/
+@media (max-width: 767.98px) {
+  .header-wrapper {
+    flex-direction: column;
+    gap: 2em;
+  }
+}
+
+/*480-575.98*/
+@media (max-width: 575.98px) {
+  .header-menu {
+    flex-direction: column;
+
+    gap: 1em;
+  }
+}

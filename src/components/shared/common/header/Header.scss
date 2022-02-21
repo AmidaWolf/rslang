@@ -1,0 +1,45 @@
+@import "../../../../colors";
+
+.header {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em;
+}
+
+.logo-wrapper {
+  cursor: pointer;
+  transform: scale(1);
+  transition: transform 0.5s;
+}
+
+.logo-wrapper:hover {
+  transform: scale(1.1);
+  transition: transform 0.5s;
+}
+
+.header-menu {
+  display: flex;
+  align-items: center;
+}
+
+.header-menu__link {
+  padding: 1em;
+
+  text-transform: uppercase;
+  text-decoration: none;
+  color: $font-color;
+  transition: all 1s;
+}
+
+.header-menu__link:hover {
+  color: $favorite-color;
+  transition: all 1s;
+}
+
+@import "Header.media";
